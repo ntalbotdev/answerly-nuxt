@@ -8,8 +8,8 @@ const profileStore = useProfileStore();
 watchEffect(async () => {
     if (user.value) {
         if (
-            !profileStore.profile ||
-            profileStore.profile.user_id !== user.value.id
+            !profileStore.myProfile ||
+            profileStore.myProfile.user_id !== user.value.id
         ) {
             await profileStore.fetchProfileById(user.value.id);
         }
@@ -35,7 +35,7 @@ const logout = async () => {
                     <span v-else-if="profileStore.error" style="color: red">{{
                         profileStore.error
                     }}</span>
-                    <span v-else>{{ profileStore.profile?.username }}</span>
+                    <span v-else>{{ profileStore.myProfile?.username }}</span>
                     <button @click="logout">Sign Out</button>
                 </template>
                 <template v-else>
