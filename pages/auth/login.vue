@@ -19,7 +19,8 @@ const login = async () => {
         if (user.value) {
             await profileStore.fetchProfileById(user.value.id);
         }
-        router.push("/");
+        // Redirect to profile page
+        router.push("/my/profile");
     }
 };
 </script>
