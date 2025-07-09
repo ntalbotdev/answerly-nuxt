@@ -17,10 +17,11 @@ export const useProfileStore = defineStore("profile", {
         error: null as string | null,
     }),
     actions: {
-        async fetchProfile(supabase: any, userId: string) {
+        async fetchProfile(userId: string) {
             this.loading = true;
             this.error = null;
             try {
+                const supabase = useSupabaseClient();
                 const { data, error } = await supabase
                     .from("profiles")
                     .select("*")
@@ -35,15 +36,42 @@ export const useProfileStore = defineStore("profile", {
                 this.loading = false;
             }
         },
+
+        async createProfile(userId: string, username: string) {
+            this.loading = true;
+            this.error = null;
+            try {
+                const supabase = useSupabaseClient();
+                const { error } = await supabase.from("profiles").insert([
+                    {
+                        user_id: userId,
+                        username: username,
+                    },
+                ] as any);
+                if (error) throw error;
+            } catch (err: any) {
+                this.error = err.message || "Failed to create profile";
+            } finally {
+                this.loading = false;
+            }
+        },
+
         clearProfile() {
             this.profile = null;
             this.error = null;
             this.loading = false;
         },
+
         setProfile(profile: Profile) {
             this.profile = profile;
         },
-        updateProfileField(field: keyof Profile, value: any) {
+        getProfile() {
+            return this.profile;
+        },
+        updateProfileField<K extends keyof Profile>(
+            field: K,
+            value: Profile[K]
+        ) {
             if (this.profile) {
                 this.profile[field] = value;
             }
