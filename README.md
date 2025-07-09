@@ -53,7 +53,6 @@ npm install
 create table profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   username text unique not null,
-  display_name text,
   avatar_url text,
   bio text,
   created_at timestamptz default now(),
