@@ -17,7 +17,7 @@ const login = async () => {
     } else {
         // Fetch profile after login
         if (user.value) {
-            await profileStore.fetchProfile(user.value.id);
+            await profileStore.fetchProfileById(user.value.id);
         }
         router.push("/");
     }
