@@ -1,9 +1,12 @@
 <script setup lang="ts">
+
+import { useProfileStore } from '~/stores/profile';
 const supabase = useSupabaseClient();
 const router = useRouter();
 const email = ref("");
 const username = ref("");
 const password = ref("");
+const profileStore = useProfileStore();
 
 const signup = async () => {
     const { data, error } = await supabase.auth.signUp({
@@ -15,19 +18,11 @@ const signup = async () => {
         return;
     }
 
-    // Create profile if sign up was successful and user exists
     const user = data.user;
     if (user) {
-        // Create profile in the "profiles" table
-        // Note: The "profiles" table should have a "user_id" column that matches
-        const { error: profileError } = await supabase.from("profiles").insert([
-            {
-                user_id: user.id,
-                username: username.value,
-            },
-        ]);
-        if (profileError) {
-            alert(profileError.message);
+        await profileStore.createProfile(user.id, username.value);
+        if (profileStore.error) {
+            alert(profileStore.error);
             return;
         }
     }

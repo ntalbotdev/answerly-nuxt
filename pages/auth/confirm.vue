@@ -20,5 +20,5 @@ watchEffect(() => {
 </script>
 
 <template>
-    <p>Finalizing authentication…</p>
+    <p>Finalizing authentication...</p>
 </template>
