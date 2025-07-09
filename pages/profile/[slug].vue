@@ -1,33 +1,49 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-import { useRoute } from "vue-router";
 
-const route = useRoute();
 const profileStore = useProfileStore();
-const slug = route.params.slug as string;
+const route = useRoute();
+const router = useRouter();
 
-onMounted(async () => {
-    await profileStore.fetchProfileByUsername(slug);
+const fetchAndCheckProfile = async (username: string) => {
+    await profileStore.fetchProfileByUsername(username);
+    if (!profileStore.publicProfile && !profileStore.loading) {
+        router.push("/");
+    }
+};
+
+onMounted(() => {
+    fetchAndCheckProfile(route.params.slug as string);
 });
+
+watch(
+    () => route.params.slug,
+    (newSlug) => {
+        if (typeof newSlug === "string") {
+            fetchAndCheckProfile(newSlug);
+        }
+    }
+);
 </script>
 
 <template>
     <div>
-        <h1>Profile: {{ slug }}</h1>
+        <h1>Profile: {{ route.params.slug }}</h1>
         <div v-if="profileStore.loading">Loading...</div>
         <div v-else-if="profileStore.error" style="color: red">
             {{ profileStore.error }}
         </div>
-        <div v-else-if="profileStore.profile">
+        <div v-else-if="profileStore.publicProfile">
             <p>
-                <strong>Username:</strong> {{ profileStore.profile.username }}
+                <strong>Username:</strong>
+                {{ profileStore.publicProfile.username }}
             </p>
-            <p v-if="profileStore.profile.bio">
-                <strong>Bio:</strong> {{ profileStore.profile.bio }}
+            <p v-if="profileStore.publicProfile.bio">
+                <strong>Bio:</strong> {{ profileStore.publicProfile.bio }}
             </p>
             <img
-                v-if="profileStore.profile.avatar_url"
-                :src="profileStore.profile.avatar_url"
+                v-if="profileStore.publicProfile.avatar_url"
+                :src="profileStore.publicProfile.avatar_url"
                 alt="Avatar"
                 style="max-width: 100px; max-height: 100px"
             />

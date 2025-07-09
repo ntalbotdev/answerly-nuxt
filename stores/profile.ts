@@ -10,7 +10,8 @@ interface Profile {
 
 export const useProfileStore = defineStore("profile", {
     state: () => ({
-        profile: null as Profile | null,
+        myProfile: null as Profile | null,
+        publicProfile: null as Profile | null,
         loading: false as boolean,
         error: null as string | null,
     }),
@@ -27,10 +28,10 @@ export const useProfileStore = defineStore("profile", {
                     .eq("user_id", userId)
                     .single();
                 if (error) throw error;
-                this.profile = data;
+                this.myProfile = data;
             } catch (err: any) {
                 this.error = err.message || "Failed to fetch profile";
-                this.profile = null;
+                this.myProfile = null;
             } finally {
                 this.loading = false;
             }
@@ -58,26 +59,41 @@ export const useProfileStore = defineStore("profile", {
 
         // Clear the profile state
         clearProfile() {
-            this.profile = null;
+            this.myProfile = null;
+            this.publicProfile = null;
             this.error = null;
             this.loading = false;
         },
 
         // Set and get profile
-        setProfile(profile: Profile) {
-            this.profile = profile;
+        setMyProfile(profile: Profile) {
+            this.myProfile = profile;
         },
-        getProfile() {
-            return this.profile;
+        setPublicProfile(profile: Profile) {
+            this.publicProfile = profile;
+        },
+        getMyProfile() {
+            return this.myProfile;
+        },
+        getPublicProfile() {
+            return this.publicProfile;
         },
 
         // update profile field
-        updateProfileField<K extends keyof Profile>(
+        updateMyProfileField<K extends keyof Profile>(
             field: K,
             value: Profile[K]
         ) {
-            if (this.profile) {
-                this.profile[field] = value;
+            if (this.myProfile) {
+                this.myProfile[field] = value;
+            }
+        },
+        updatePublicProfileField<K extends keyof Profile>(
+            field: K,
+            value: Profile[K]
+        ) {
+            if (this.publicProfile) {
+                this.publicProfile[field] = value;
             }
         },
 
@@ -93,10 +109,10 @@ export const useProfileStore = defineStore("profile", {
                     .eq("username", username)
                     .single();
                 if (error) throw error;
-                this.profile = data;
+                this.publicProfile = data;
             } catch (err: any) {
                 this.error = err.message || "Failed to fetch profile";
-                this.profile = null;
+                this.publicProfile = null;
             } finally {
                 this.loading = false;
             }
