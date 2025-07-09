@@ -1,21 +1,39 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 const router = useRouter();
-const user = useSupabaseUser();
 const email = ref("");
+const username = ref("");
 const password = ref("");
 
 const signup = async () => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value,
     });
     if (error) {
         alert(error.message);
-    } else {
-        alert("Check your email for the confirmation link.");
-        router.push("/auth/login");
+        return;
     }
+
+    // Create profile if sign up was successful and user exists
+    const user = data.user;
+    if (user) {
+        // Create profile in the "profiles" table
+        // Note: The "profiles" table should have a "user_id" column that matches
+        const { error: profileError } = await supabase.from("profiles").insert([
+            {
+                user_id: user.id,
+                username: username.value,
+            },
+        ]);
+        if (profileError) {
+            alert(profileError.message);
+            return;
+        }
+    }
+
+    alert("Check your email for the confirmation link.");
+    router.push("/auth/login");
 };
 </script>
 
@@ -27,15 +45,22 @@ const signup = async () => {
             type="email"
             placeholder="Email"
             required
-            class=""
-        />
+            class="">
+        </input>
+        <input
+            v-model="username"
+            type="text"
+            placeholder="Username"
+            required
+            class="">
+        </input>
         <input
             v-model="password"
             type="password"
             placeholder="Password"
             required
-            class=""
-        />
+            class="">
+        </input>
         <button type="submit" class="">Sign Up</button>
     </form>
 </template>
