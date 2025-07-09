@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 interface Profile {
     user_id: string;
     username: string;
@@ -17,7 +15,8 @@ export const useProfileStore = defineStore("profile", {
         error: null as string | null,
     }),
     actions: {
-        async fetchProfile(userId: string) {
+        // Fetch profile by user ID
+        async fetchProfileById(userId: string) {
             this.loading = true;
             this.error = null;
             try {
@@ -37,6 +36,7 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
+        // Create a new profile
         async createProfile(userId: string, username: string) {
             this.loading = true;
             this.error = null;
@@ -56,24 +56,49 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
+        // Clear the profile state
         clearProfile() {
             this.profile = null;
             this.error = null;
             this.loading = false;
         },
 
+        // Set and get profile
         setProfile(profile: Profile) {
             this.profile = profile;
         },
         getProfile() {
             return this.profile;
         },
+
+        // update profile field
         updateProfileField<K extends keyof Profile>(
             field: K,
             value: Profile[K]
         ) {
             if (this.profile) {
                 this.profile[field] = value;
+            }
+        },
+
+        // Fetch profile by username
+        async fetchProfileByUsername(username: string) {
+            this.loading = true;
+            this.error = null;
+            try {
+                const supabase = useSupabaseClient();
+                const { data, error } = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("username", username)
+                    .single();
+                if (error) throw error;
+                this.profile = data;
+            } catch (err: any) {
+                this.error = err.message || "Failed to fetch profile";
+                this.profile = null;
+            } finally {
+                this.loading = false;
             }
         },
     },

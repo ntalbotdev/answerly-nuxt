@@ -11,7 +11,7 @@ watchEffect(async () => {
             !profileStore.profile ||
             profileStore.profile.user_id !== user.value.id
         ) {
-            await profileStore.fetchProfile(user.value.id);
+            await profileStore.fetchProfileById(user.value.id);
         }
     } else {
         profileStore.clearProfile();
