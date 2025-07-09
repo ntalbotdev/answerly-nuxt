@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useProfileStore } from '~/stores/profile';
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
+const profileStore = useProfileStore();
 
 const login = async () => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -13,6 +15,10 @@ const login = async () => {
     if (error) {
         alert(error.message);
     } else {
+        // Fetch profile after login
+        if (user.value) {
+            await profileStore.fetchProfile(user.value.id);
+        }
         router.push("/");
     }
 };
