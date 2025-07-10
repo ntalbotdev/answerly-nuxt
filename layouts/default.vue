@@ -30,32 +30,24 @@ const logout = async () => {
     <div>
         <nav>
             <NuxtLink to="/">Answerly</NuxtLink>
-            <div>
-                <template v-if="user">
-                    <span v-if="profileStore.loading">Loading...</span>
-                    <span v-else-if="profileStore.error" style="color: red">
-                        {{ profileStore.error }}
-                    </span>
-                    <span v-else>{{ profileStore.myProfile?.username }}</span>
-                    <NuxtLink to="/my/profile">My profile</NuxtLink>
-                    <NuxtLink to="/my/inbox">Inbox</NuxtLink>
-                    <NuxtLink to="/my/asked">Asked</NuxtLink>
-                    <NuxtLink to="/profile/spell">spell's profile</NuxtLink>
-                    <button @click="logout">Sign Out</button>
-                </template>
-                <template v-else>
-                    <NuxtLink to="/auth/login">Log In</NuxtLink>
-                    <NuxtLink to="/auth/signup">Sign Up</NuxtLink>
-                    <NuxtLink to="/profile/spell">spell's profile</NuxtLink>
-                </template>
-            </div>
+            <template v-if="user">
+                <NuxtLink to="/my/profile">My Profile</NuxtLink>
+                <NuxtLink to="/my/inbox">My Inbox</NuxtLink>
+                <NuxtLink to="/my/asked">My Asked Questions</NuxtLink>
+                <NuxtLink to="/profile/spell">spell's profile</NuxtLink>
+                <span v-if="profileStore.loading">Loading...</span>
+                <span v-else-if="profileStore.error" style="color: red">
+                    {{ profileStore.error }}
+                </span>
+                <span v-else>{{ profileStore.myProfile?.username }}</span>
+                <button @click="logout">Sign Out</button>
+            </template>
+            <template v-else>
+                <NuxtLink to="/auth/login">Log In</NuxtLink>
+                <NuxtLink to="/auth/signup">Sign Up</NuxtLink>
+                <NuxtLink to="/profile/spell">spell's profile</NuxtLink>
+            </template>
         </nav>
         <NuxtPage />
     </div>
 </template>
-
-<style scoped>
-a {
-    display: table;
-}
-</style>

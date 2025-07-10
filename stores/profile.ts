@@ -89,6 +89,7 @@ export const useProfileStore = defineStore("profile", {
                 this.myProfile[field] = value;
             }
         },
+
         // update public profile field
         updatePublicProfileField<K extends keyof Profile>(
             field: K,
@@ -99,7 +100,7 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // Persist profile changes to Supabase
+        // Save the current user's profile
         async saveMyProfile() {
             if (!this.myProfile) return;
             this.loading = true;
@@ -143,6 +144,72 @@ export const useProfileStore = defineStore("profile", {
             } finally {
                 this.loading = false;
             }
+        },
+        // Follow a user
+        async followUser(targetUserId: string) {
+            const user = useSupabaseUser();
+            if (!user.value) return;
+            const supabase = useSupabaseClient();
+            const { error } = await supabase.from("follows").insert([
+                {
+                    follower_id: user.value.id,
+                    following_id: targetUserId,
+                },
+            ]);
+            if (error) this.error = error.message;
+        },
+
+        // Unfollow a user
+        async unfollowUser(targetUserId: string) {
+            const user = useSupabaseUser();
+            if (!user.value) return;
+            const supabase = useSupabaseClient();
+            const { error } = await supabase
+                .from("follows")
+                .delete()
+                .eq("follower_id", user.value.id)
+                .eq("following_id", targetUserId);
+            if (error) this.error = error.message;
+        },
+
+        // Check if current user follows target user
+        async isFollowing(targetUserId: string): Promise<boolean> {
+            const user = useSupabaseUser();
+            if (!user.value) return false;
+            const supabase = useSupabaseClient();
+            const { data, error } = await supabase
+                .from("follows")
+                .select("follower_id")
+                .eq("follower_id", user.value.id)
+                .eq("following_id", targetUserId)
+                .single();
+            return !!data && !error;
+        },
+
+        // Fetch followers of a user
+        async fetchFollowers(userId: string) {
+            const supabase = useSupabaseClient();
+            const { data, error } = await supabase
+                .from("follows")
+                .select(
+                    "follower_id, profiles:follower_id(username, avatar_url, bio)"
+                )
+                .eq("following_id", userId);
+            if (error) throw new Error(error.message);
+            return data || [];
+        },
+
+        // Fetch users this user is following
+        async fetchFollows(userId: string) {
+            const supabase = useSupabaseClient();
+            const { data, error } = await supabase
+                .from("follows")
+                .select(
+                    "following_id, profiles:following_id(username, avatar_url, bio)"
+                )
+                .eq("follower_id", userId);
+            if (error) throw new Error(error.message);
+            return data || [];
         },
     },
 });

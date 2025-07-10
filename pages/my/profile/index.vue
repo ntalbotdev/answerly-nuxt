@@ -36,8 +36,18 @@ onMounted(async () => {
                 alt="Avatar"
                 style="display: block"
             />
+            <NuxtLink
+                :to="`/profile/${profileStore.myProfile.username}/following`"
+            >
+                <FollowingCount :user-id="profileStore.myProfile.user_id" />
+            </NuxtLink>
+            <NuxtLink
+                :to="`/profile/${profileStore.myProfile.username}/followers`"
+            >
+                <FollowerCount :user-id="profileStore.myProfile.user_id" />
+            </NuxtLink>
             <NuxtLink to="/my/profile/edit">
-                <button>Edit Profile</button>
+                Edit Profile
             </NuxtLink>
         </div>
         <div v-else>
