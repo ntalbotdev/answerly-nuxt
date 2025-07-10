@@ -52,20 +52,23 @@ function goToQuestion() {
                 v-if="profileStore.publicProfile.avatar_url"
                 :src="profileStore.publicProfile.avatar_url"
                 alt="Avatar"
-                style="max-width: 100px; max-height: 100px"
             />
-            <div
-                v-if="user && user.id !== profileStore.publicProfile.user_id"
-                style="margin-top: 1em"
-            >
+            <div v-if="user && user.id !== profileStore.publicProfile.user_id">
                 <button @click="goToAsk">
                     Ask {{ profileStore.publicProfile.username }} a question
                 </button>
-                <button @click="goToQuestion">View Questions</button>
             </div>
+            <button @click="goToQuestion">View Questions</button>
         </div>
         <div v-else>
             <p>User not found.</p>
         </div>
     </div>
 </template>
+
+<style scoped>
+img {
+    max-width: 100px;
+    max-height: 100px;
+}
+</style>
