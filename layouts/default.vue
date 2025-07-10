@@ -46,6 +46,7 @@ const logout = async () => {
                 <template v-else>
                     <NuxtLink to="/auth/login">Log In</NuxtLink>
                     <NuxtLink to="/auth/signup">Sign Up</NuxtLink>
+                    <NuxtLink to="/profile/spell">spell's profile</NuxtLink>
                 </template>
             </div>
         </nav>
