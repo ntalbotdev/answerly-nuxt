@@ -28,11 +28,21 @@ onMounted(async () => {
                 v-if="profileStore.myProfile.avatar_url"
                 :src="profileStore.myProfile.avatar_url"
                 alt="Avatar"
-                style="max-width: 100px; max-height: 100px"
             />
+            <NuxtLink to="/my/profile/edit">
+                <button>Edit Profile</button>
+            </NuxtLink>
         </div>
         <div v-else>
             <p>User not found.</p>
         </div>
     </div>
 </template>
+
+<style scoped>
+img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+</style>
