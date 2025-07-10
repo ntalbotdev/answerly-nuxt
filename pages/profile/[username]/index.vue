@@ -13,14 +13,14 @@ const fetchAndCheckProfile = async (username: string) => {
 };
 
 onMounted(() => {
-    fetchAndCheckProfile(route.params.slug as string);
+    fetchAndCheckProfile(route.params.username as string);
 });
 
 watch(
-    () => route.params.slug,
-    (newSlug) => {
-        if (typeof newSlug === "string") {
-            fetchAndCheckProfile(newSlug);
+    () => route.params.username,
+    (newUsername) => {
+        if (typeof newUsername === "string") {
+            fetchAndCheckProfile(newUsername);
         }
     }
 );
@@ -28,7 +28,7 @@ watch(
 
 <template>
     <div>
-        <h1>Profile: {{ route.params.slug }}</h1>
+        <h1>Profile: {{ route.params.username }}</h1>
         <div v-if="profileStore.loading">Loading...</div>
         <div v-else-if="profileStore.error" style="color: red">
             {{ profileStore.error }}
