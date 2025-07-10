@@ -7,14 +7,17 @@ const router = useRouter();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 const questionsStore = useQuestionsStore();
-
 const username = route.params.username as string;
 const loading = ref(true);
 const error = ref("");
-
 const form = ref({
     question: "",
     is_anonymous: false,
+});
+
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
 });
 
 onMounted(async () => {

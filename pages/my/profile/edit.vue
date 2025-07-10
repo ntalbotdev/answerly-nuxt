@@ -6,16 +6,19 @@ const profileStore = useProfileStore();
 const user = useSupabaseUser();
 const router = useRouter();
 const supabase = useSupabaseClient();
-
 const form = ref({
     username: "",
     bio: "",
     avatar_url: "",
 });
-
 const loading = ref(false);
 const error = ref("");
 const uploading = ref(false);
+
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
+});
 
 onMounted(async () => {
     if (user.value) {
@@ -113,10 +116,7 @@ async function saveProfile() {
                     @change="handleAvatarUpload"
                 />
                 <div v-if="form.avatar_url">
-                    <img
-                        :src="form.avatar_url"
-                        alt="Avatar Preview"
-                    />
+                    <img :src="form.avatar_url" alt="Avatar Preview" />
                 </div>
             </div>
             <div v-if="uploading">Uploading avatar...</div>

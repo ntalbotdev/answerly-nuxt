@@ -6,17 +6,23 @@ const questionsStore = useQuestionsStore();
 const questions = ref<(Question & { to_username?: string })[]>([]);
 const loading = ref(true);
 
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
+});
+
+// Format date to a readable string
 function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleString();
 }
 
+// Fetch the questions asked by the user
 async function fetchAskedQuestions() {
     loading.value = true;
     const res = await questionsStore.fetchAskedQuestions();
     questions.value = res;
     loading.value = false;
 }
-
 onMounted(fetchAskedQuestions);
 </script>
 

@@ -6,10 +6,17 @@ const questionsStore = useQuestionsStore();
 const questions = ref<(Question & { _answer: string; _saving: boolean })[]>([]);
 const loading = ref(true);
 
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
+});
+
+// Format date to a readable string
 function formatDate(dateStr: string) {
     return new Date(dateStr).toLocaleString();
 }
 
+// Fetch the questions that need answering
 async function fetchMyQuestions() {
     loading.value = true;
     const res = await questionsStore.fetchIncomingQuestions();
@@ -17,6 +24,7 @@ async function fetchMyQuestions() {
     loading.value = false;
 }
 
+// Function to answer a question
 async function answerQuestion(
     q: Question & { _answer: string; _saving: boolean }
 ) {
@@ -25,7 +33,6 @@ async function answerQuestion(
     q.answer = q._answer;
     q._saving = false;
 }
-
 onMounted(fetchMyQuestions);
 </script>
 
