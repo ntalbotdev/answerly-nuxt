@@ -1,6 +1,6 @@
 # Answerly Nuxt App
 
-A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and avatar storage, with Pinia for state management.
+A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and avatar storage. It uses Pinia for state management and Tailwind CSS for styling.
 
 ## Features
 
@@ -28,19 +28,19 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 ## Environment Setup
 
 1. **Environment Variables**
-    - Create a `.env` file in the project root with:
-        ```
-        SUPABASE_URL=your-supabase-url
-        SUPABASE_ANON_KEY=your-supabase-anon-key
-        ```
+   - Create a `.env` file in the project root with:
+     ```
+     SUPABASE_URL=your-supabase-url
+     SUPABASE_ANON_KEY=your-supabase-anon-key
+     ```
 2. **Nuxt Modules**
-    - `@nuxtjs/supabase`
-    - `@pinia/nuxt`
+   - `@nuxtjs/supabase`
+   - `@pinia/nuxt`
 
 3. **Install dependencies**
-    ```
-    npm install
-    ```
+   ```
+   npm install
+   ```
 
 ## Supabase Setup
 
@@ -125,15 +125,15 @@ create table questions (
 - The `avatar_url` field in the profile points to the public URL of the uploaded image.
 - Make the bucket public for public avatar URLs, or use signed URLs for private avatars.
 - **RLS Policy Example:**
-    ```sql
-    create policy "Users can manage their own avatar files"
-    on storage.objects
-    for all
-    using (
-      bucket_id = 'avatars'
-      and auth.uid()::text = split_part(name, '/', 1)
-    );
-    ```
+  ```sql
+  create policy "Users can manage their own avatar files"
+  on storage.objects
+  for all
+  using (
+    bucket_id = 'avatars'
+    and auth.uid()::text = split_part(name, '/', 1)
+  );
+  ```
 
 ## Row Level Security (RLS)
 
