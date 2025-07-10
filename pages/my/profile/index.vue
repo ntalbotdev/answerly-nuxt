@@ -47,7 +47,7 @@ onMounted(async () => {
                 <FollowerCount :user-id="profileStore.myProfile.user_id" />
             </NuxtLink>
             <NuxtLink to="/my/profile/edit">
-                <button>Edit Profile</button>
+                Edit Profile
             </NuxtLink>
         </div>
         <div v-else>

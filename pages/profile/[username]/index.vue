@@ -30,7 +30,6 @@ const fetchAndCheckProfile = async (username: string) => {
         }
     }
 };
-
 onMounted(() => {
     fetchAndCheckProfile(route.params.username as string);
 });
@@ -43,13 +42,6 @@ watch(
         }
     }
 );
-
-function goToAsk() {
-    router.push(`/ask/${route.params.username}`);
-}
-function goToQuestion() {
-    router.push(`/profile/${route.params.username}/questions`);
-}
 
 async function handleFollow() {
     if (!profileStore.publicProfile) return;
@@ -91,9 +83,9 @@ async function handleUnfollow() {
             <template
                 v-if="user && user.id !== profileStore.publicProfile.user_id"
             >
-                <button @click="goToAsk">
+                <NuxtLink :to="`/ask/${profileStore.publicProfile.username}`">
                     Ask {{ profileStore.publicProfile.username }} a question
-                </button>
+                </NuxtLink>
                 <MutualFollowStatus
                     :target-user-id="profileStore.publicProfile.user_id"
                 />
@@ -117,7 +109,11 @@ async function handleUnfollow() {
                     />
                 </NuxtLink>
             </template>
-            <button @click="goToQuestion">View Questions</button>
+            <NuxtLink
+                :to="`/profile/${profileStore.publicProfile.username}/questions`"
+            >
+                View Questions
+            </NuxtLink>
         </div>
         <div v-else>
             <p>User not found.</p>
