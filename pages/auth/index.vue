@@ -1,3 +1,3 @@
 <template>
-  <p>auth/index</p>
+  <p>Redirecting...</p>
 </template>

@@ -3,7 +3,13 @@ import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
 const user = useSupabaseUser();
 
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
+});
+
 onMounted(async () => {
+    // Fetch the user's profile, if it exists, when the component is mounted
     if (user.value) {
         await profileStore.fetchProfileById(user.value.id);
     }

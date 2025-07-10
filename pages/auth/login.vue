@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProfileStore } from '~/stores/profile';
+import { useProfileStore } from "~/stores/profile";
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const router = useRouter();

@@ -1,22 +1,12 @@
 <script setup lang="ts">
-const user = useSupabaseUser();
+const session = useSupabaseSession();
 
-// If not logged in, redirect to /auth/login
-if (!user.value) {
-  navigateTo("/auth/login");
-} else {
-  // If logged in, redirect to /
-  navigateTo("/");
-}
-
-// Also watch for changes (reactivity)
-watchEffect(() => {
-  if (!user.value) {
+// watch for session and redirect when present
+if (!session.value) {
     navigateTo("/auth/login");
-  } else {
+} else {
     navigateTo("/");
-  }
-});
+}
 </script>
 
 <template>

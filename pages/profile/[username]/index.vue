@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-
 const profileStore = useProfileStore();
-const route = useRoute();
 const router = useRouter();
+const route = useRoute();
+const user = useSupabaseUser();
 
 const fetchAndCheckProfile = async (username: string) => {
     await profileStore.fetchProfileByUsername(username);
@@ -13,22 +13,29 @@ const fetchAndCheckProfile = async (username: string) => {
 };
 
 onMounted(() => {
-    fetchAndCheckProfile(route.params.slug as string);
+    fetchAndCheckProfile(route.params.username as string);
 });
 
 watch(
-    () => route.params.slug,
-    (newSlug) => {
-        if (typeof newSlug === "string") {
-            fetchAndCheckProfile(newSlug);
+    () => route.params.username,
+    (newUsername) => {
+        if (typeof newUsername === "string") {
+            fetchAndCheckProfile(newUsername);
         }
     }
 );
+
+function goToAsk() {
+    router.push(`/ask/${route.params.username}`);
+}
+function goToQuestion() {
+    router.push(`/profile/${route.params.username}/questions`);
+}
 </script>
 
 <template>
     <div>
-        <h1>Profile: {{ route.params.slug }}</h1>
+        <h1>Profile: {{ route.params.username }}</h1>
         <div v-if="profileStore.loading">Loading...</div>
         <div v-else-if="profileStore.error" style="color: red">
             {{ profileStore.error }}
@@ -45,11 +52,23 @@ watch(
                 v-if="profileStore.publicProfile.avatar_url"
                 :src="profileStore.publicProfile.avatar_url"
                 alt="Avatar"
-                style="max-width: 100px; max-height: 100px"
             />
+            <div v-if="user && user.id !== profileStore.publicProfile.user_id">
+                <button @click="goToAsk">
+                    Ask {{ profileStore.publicProfile.username }} a question
+                </button>
+            </div>
+            <button @click="goToQuestion">View Questions</button>
         </div>
         <div v-else>
             <p>User not found.</p>
         </div>
     </div>
 </template>
+
+<style scoped>
+img {
+    max-width: 100px;
+    max-height: 100px;
+}
+</style>
