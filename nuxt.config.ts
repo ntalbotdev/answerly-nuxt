@@ -13,6 +13,9 @@ export default defineNuxtConfig({
         "@nuxtjs/supabase",
         "@pinia/nuxt",
     ],
+    css: [
+        '~/assets/global.css',
+    ],
     supabase: {
         url: process.env.SUPABASE_URL,
         key: process.env.SUPABASE_ANON_KEY,
