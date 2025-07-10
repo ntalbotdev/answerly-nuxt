@@ -3,6 +3,7 @@ import { useProfileStore } from "~/stores/profile";
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
+const router = useRouter();
 
 // Fetch profile on login, clear on logout
 watchEffect(async () => {
@@ -21,7 +22,7 @@ watchEffect(async () => {
 const logout = async () => {
     await supabase.auth.signOut();
     profileStore.clearProfile();
-    navigateTo("/auth/login");
+    router.push("/auth/login");
 };
 </script>
 

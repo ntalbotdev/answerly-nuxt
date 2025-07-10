@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
-const route = useRoute();
 const router = useRouter();
+const route = useRoute();
 const user = useSupabaseUser();
 
 const fetchAndCheckProfile = async (username: string) => {
@@ -29,7 +29,7 @@ function goToAsk() {
     router.push(`/ask/${route.params.username}`);
 }
 function goToQuestion() {
-    navigateTo(`/profile/${route.params.username}/questions`);
+    router.push(`/profile/${route.params.username}/questions`);
 }
 </script>
 

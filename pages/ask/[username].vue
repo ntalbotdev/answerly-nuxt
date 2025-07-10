@@ -24,6 +24,10 @@ onMounted(async () => {
         loading.value = false;
         return;
     }
+    // Only prevent asking yourself
+    if (user.value && profileStore.publicProfile.user_id === user.value.id) {
+        return router.push("/my/inbox");
+    }
     loading.value = false;
 });
 

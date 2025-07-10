@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-const route = useRoute();
 const profileStore = useProfileStore();
+const router = useRouter();
+const route = useRoute();
 const username = route.params.username as string;
 const loading = ref(true);
 const error = ref("");
@@ -39,7 +40,7 @@ async function fetchQuestions() {
 }
 
 function goToAsk() {
-    navigateTo(`/ask/${username}`);
+    router.push(`/ask/${username}`);
 }
 </script>
 
