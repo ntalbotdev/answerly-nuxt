@@ -6,6 +6,11 @@ const following = ref<any[]>([]);
 const loading = ref(true);
 const error = ref("");
 
+definePageMeta({
+    // This page requires authentication
+    middleware: "auth",
+});
+
 onMounted(async () => {
     loading.value = true;
     // Get the user_id for this username
