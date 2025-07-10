@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-
 const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
+const user = useSupabaseUser();
 
 const fetchAndCheckProfile = async (username: string) => {
     await profileStore.fetchProfileByUsername(username);
@@ -24,6 +24,13 @@ watch(
         }
     }
 );
+
+function goToAsk() {
+    router.push(`/ask/${route.params.username}`);
+}
+function goToQuestion() {
+    navigateTo(`/profile/${route.params.username}/questions`);
+}
 </script>
 
 <template>
@@ -47,6 +54,15 @@ watch(
                 alt="Avatar"
                 style="max-width: 100px; max-height: 100px"
             />
+            <div
+                v-if="user && user.id !== profileStore.publicProfile.user_id"
+                style="margin-top: 1em"
+            >
+                <button @click="goToAsk">
+                    Ask {{ profileStore.publicProfile.username }} a question
+                </button>
+                <button @click="goToQuestion">View Questions</button>
+            </div>
         </div>
         <div v-else>
             <p>User not found.</p>

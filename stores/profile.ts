@@ -1,4 +1,4 @@
-interface Profile {
+export interface Profile {
     user_id: string;
     username: string;
     display_name?: string;
@@ -94,8 +94,8 @@ export const useProfileStore = defineStore("profile", {
             field: K,
             value: Profile[K]
         ) {
-            if (this.publicProfile) {
-                this.publicProfile[field] = value;
+            if (this.$state.publicProfile) {
+                this.$state.publicProfile[field] = value;
             }
         },
 
