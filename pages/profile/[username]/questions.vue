@@ -81,7 +81,7 @@ function goToAsk() {
                                         margin-right: 4px;
                                     "
                                 />
-                                {{ q.profiles.username }}
+                                <NuxtLink :to="`/profile/${q.profiles.username}`">{{ q.profiles.username }}</NuxtLink>
                             </span>
                             <span v-else>Unknown</span>
                         </template>
