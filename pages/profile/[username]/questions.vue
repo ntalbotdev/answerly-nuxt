@@ -59,9 +59,7 @@ function goToAsk() {
             <div v-if="questions.length === 0">No questions yet.</div>
             <ul v-else>
                 <li v-for="q in questions" :key="q.id">
-                    <div>
-                        {{ q.question }}
-                    </div>
+                    <div><strong>Q:</strong> {{ q.question }}</div>
                     <div>
                         Asked by
                         <template v-if="q.is_anonymous">
@@ -73,22 +71,40 @@ function goToAsk() {
                                     v-if="q.profiles.avatar_url"
                                     :src="q.profiles.avatar_url"
                                     alt="avatar"
-                                    style="
-                                        width: 24px;
-                                        height: 24px;
-                                        border-radius: 50%;
-                                        vertical-align: middle;
-                                        margin-right: 4px;
-                                    "
                                 />
-                                <NuxtLink :to="`/profile/${q.profiles.username}`">{{ q.profiles.username }}</NuxtLink>
+                                <NuxtLink
+                                    :to="`/profile/${q.profiles.username}`"
+                                    >{{ q.profiles.username }}</NuxtLink
+                                >
                             </span>
                             <span v-else>Unknown</span>
                         </template>
                         on {{ new Date(q.created_at).toLocaleString() }}
+                    </div>
+                    <div
+                        v-if="q.answer && q.answer.trim() !== ''"
+                        style="margin-top: 0.5em"
+                    >
+                        <strong>A:</strong> {{ q.answer }}
+                    </div>
+                    <div v-else style="margin-top: 0.5em; color: #888">
+                        <em>No answer yet.</em>
                     </div>
                 </li>
             </ul>
         </div>
     </div>
 </template>
+
+<style scoped>
+img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 0.5em;
+}
+a {
+    display: inline-block;
+}
+</style>
