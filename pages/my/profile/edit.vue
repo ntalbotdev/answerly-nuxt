@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
+import imageCompression from "browser-image-compression";
+
 const profileStore = useProfileStore();
 const user = useSupabaseUser();
 const router = useRouter();
@@ -29,13 +31,30 @@ onMounted(async () => {
 async function handleAvatarUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files || !target.files[0] || !user.value) return;
-    const file = target.files[0];
-    const fileExt = file.name.split(".").pop();
-    // Store in a folder named after the user's UUID
-    const filePath = `${user.value.id}/avatar.${fileExt}`;
+    let file = target.files[0];
+    const options = {
+        maxSizeMB: 10, // Large enough to always trigger processing
+        maxWidthOrHeight: 400,
+        useWebWorker: true,
+        fileType: "image/webp",
+    };
+    file = await imageCompression(file, options);
+    // Always use webp extension
+    const filePath = `${user.value.id}/avatar.webp`;
     uploading.value = true;
     error.value = "";
     try {
+        // Remove ALL files in the user's folder before uploading new avatar
+        const userId = user.value?.id;
+        const { data: listData, error: listError } = await supabase.storage
+            .from("avatars")
+            .list(userId + "/");
+        if (listError) throw listError;
+        if (listData && listData.length > 0 && userId) {
+            const filesToDelete = listData.map((f) => `${userId}/${f.name}`);
+            await supabase.storage.from("avatars").remove(filesToDelete);
+        }
+        // Upload new avatar.webp (no old files remain, so no cache/collision)
         const { error: uploadError } = await supabase.storage
             .from("avatars")
             .upload(filePath, file, { upsert: true });
@@ -45,7 +64,8 @@ async function handleAvatarUpload(event: Event) {
             .from("avatars")
             .getPublicUrl(filePath);
         if (!data.publicUrl) throw new Error("Failed to get public URL");
-        form.value.avatar_url = data.publicUrl;
+        // Add cache-busting query param to force browser refresh
+        form.value.avatar_url = data.publicUrl + "?t=" + Date.now();
     } catch (e) {
         error.value = (e as Error).message || "Failed to upload avatar.";
     } finally {
@@ -89,17 +109,14 @@ async function saveProfile() {
                 <input
                     type="file"
                     accept="image/*"
-                    @change="handleAvatarUpload"
                     :disabled="uploading"
+                    @change="handleAvatarUpload"
                 />
                 <div v-if="form.avatar_url">
                     <img
                         :src="form.avatar_url"
                         alt="Avatar Preview"
-                        style="
-                            max-width: 200px;
-                            max-height: 200px;
-                        "
+                        style="max-width: 200px; max-height: 200px"
                     />
                 </div>
             </div>
