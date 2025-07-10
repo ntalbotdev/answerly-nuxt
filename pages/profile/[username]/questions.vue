@@ -81,13 +81,10 @@ function goToAsk() {
                         </template>
                         on {{ new Date(q.created_at).toLocaleString() }}
                     </div>
-                    <div
-                        v-if="q.answer && q.answer.trim() !== ''"
-                        style="margin-top: 0.5em"
-                    >
+                    <div v-if="q.answer && q.answer.trim() !== ''">
                         <strong>A:</strong> {{ q.answer }}
                     </div>
-                    <div v-else style="margin-top: 0.5em; color: #888">
+                    <div v-else>
                         <em>No answer yet.</em>
                     </div>
                 </li>
