@@ -34,8 +34,10 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
         SUPABASE_ANON_KEY=your-supabase-anon-key
         ```
 2. **Nuxt Modules**
+    - `@nuxt/eslint`
     - `@nuxtjs/supabase`
     - `@pinia/nuxt`
+    - `@nuxtjs/tailwindcss`
 
 3. **Install dependencies**
     ```
@@ -161,4 +163,4 @@ npm run dev
 
 ---
 
-**Built with Nuxt 3, Supabase, and Pinia.**
+**Built with Nuxt 3, Supabase, Pinia, and Tailwind CSS.**
