@@ -9,6 +9,7 @@ interface Profile {
 }
 
 export const useProfileStore = defineStore("profile", {
+    // Define the store's state
     state: () => ({
         myProfile: null as Profile | null,
         publicProfile: null as Profile | null,
@@ -88,12 +89,38 @@ export const useProfileStore = defineStore("profile", {
                 this.myProfile[field] = value;
             }
         },
+        // update public profile field
         updatePublicProfileField<K extends keyof Profile>(
             field: K,
             value: Profile[K]
         ) {
             if (this.publicProfile) {
                 this.publicProfile[field] = value;
+            }
+        },
+
+        // Persist profile changes to Supabase
+        async saveMyProfile() {
+            if (!this.myProfile) return;
+            this.loading = true;
+            this.error = null;
+            try {
+                const supabase = useSupabaseClient();
+                const { error } = await supabase
+                    .from("profiles")
+                    .update({
+                        username: this.myProfile.username,
+                        bio: this.myProfile.bio,
+                        avatar_url: this.myProfile.avatar_url,
+                        updated_at: new Date().toISOString(),
+                    } as any)
+                    .eq("user_id", this.myProfile.user_id);
+                if (error) throw error;
+            } catch (err) {
+                this.error =
+                    (err as Error).message || "Failed to update profile";
+            } finally {
+                this.loading = false;
             }
         },
 
