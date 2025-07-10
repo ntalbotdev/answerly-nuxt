@@ -12,6 +12,9 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 - Ask questions to any user (optionally anonymously)
 - Users can answer questions they receive
 - Questions are only published after being answered
+- Follow/unfollow users (social feature)
+- View followers and following lists for any user
+- See mutual follow status on profiles
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -68,6 +71,23 @@ create table profiles (
   bio text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
+);
+```
+
+#### `follows` Table
+
+| Column       | Type        | Description                               |
+| ------------ | ----------- | ----------------------------------------- |
+| follower_id  | uuid        | Primary key, references profiles(user_id) |
+| following_id | uuid        | Primary key, references profiles(user_id) |
+| created_at   | timestamptz | Default: now()                            |
+
+```sql
+create table follows (
+  follower_id uuid references profiles(user_id) on delete cascade,
+  following_id uuid references profiles(user_id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (follower_id, following_id)
 );
 ```
 
@@ -130,6 +150,8 @@ create table questions (
 - Visit `/my/profile/edit` to edit your profile and upload an avatar
 - Visit `/profile/:username` to view any public profile
 - Visit `/profile/:username/questions` to see questions asked to a user
+- Visit `/profile/:username/followers` to see a user's followers
+- Visit `/profile/:username/following` to see who a user is following
 
 ## Development
 
