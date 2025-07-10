@@ -34,7 +34,7 @@ async function handleAvatarUpload(event: Event) {
     let file = target.files[0];
     const options = {
         maxSizeMB: 10, // Large enough to always trigger processing
-        maxWidthOrHeight: 400,
+        maxWidthOrHeight: 200,
         useWebWorker: true,
         fileType: "image/webp",
     };
@@ -116,7 +116,6 @@ async function saveProfile() {
                     <img
                         :src="form.avatar_url"
                         alt="Avatar Preview"
-                        style="max-width: 200px; max-height: 200px"
                     />
                 </div>
             </div>
