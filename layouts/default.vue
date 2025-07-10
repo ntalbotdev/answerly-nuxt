@@ -37,11 +37,7 @@ const logout = async () => {
                     </span>
                     <span v-else>{{ profileStore.myProfile?.username }}</span>
                     <NuxtLink to="/my/profile">My profile</NuxtLink>
-                    <NuxtLink
-                        :to="`/profile/${profileStore.myProfile?.username}`"
-                    >
-                        {{ profileStore.myProfile?.username }}'s Profile
-                    </NuxtLink>
+                    <NuxtLink to="/profile/axile">axile's Profile</NuxtLink>
                     <button @click="logout">Sign Out</button>
                 </template>
                 <template v-else>
