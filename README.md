@@ -1,44 +1,50 @@
+
 # Answerly Nuxt App
 
-A modern Nuxt 3 application using Supabase for authentication and database (Postgres) for user profiles and all data storage. Pinia is used for state management throughout the app.
+A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and storage (avatars), with Pinia for state management.
 
 ## Features
 - Supabase Auth (email/password)
 - User profile creation and management
 - Public profile pages (`/profile/:username`)
 - Personal profile page (`/my/profile`)
+- Profile editing and avatar upload (`/my/profile/edit`)
 - Pinia for state management
 - Middleware for route protection and redirects
 
+## Project Structure
+
+- `pages/` — Nuxt 3 pages (routes)
+- `stores/` — Pinia stores (profile state)
+- `middleware/` — Route guards and redirects
+- `components/` — Vue components
+
 ## Environment Setup
 
-### 1. Environment Variables
-Create a `.env` file in the project root with:
-```
-SUPABASE_URL=your-supabase-url
-SUPABASE_ANON_KEY=your-supabase-anon-key
-```
+1. **Environment Variables**
+   - Create a `.env` file in the project root with:
+     ```
+     SUPABASE_URL=your-supabase-url
+     SUPABASE_ANON_KEY=your-supabase-anon-key
+     ```
+2. **Nuxt Modules**
+   - `@nuxtjs/supabase`
+   - `@pinia/nuxt`
+3. **Install dependencies**
+   ```
+   npm install
+   ```
 
-### 2. Nuxt Modules
-- `@nuxtjs/supabase`
-- `@pinia/nuxt`
+## Supabase Setup
 
-Install dependencies:
-```
-npm install
-```
+1. **Enable Auth & Database**
+   - Go to [Supabase](https://app.supabase.com/)
+   - Create a new project (Supabase Database/PostgreSQL)
+   - Enable email/password authentication in the Auth settings
 
+## Database Schema
 
-## Supabase Database Setup
-
-### 1. Enable Auth & Database
-- Go to [Supabase](https://app.supabase.com/)
-- Create a new project (Supabase Database/Postgres)
-- Enable email/password authentication in the Auth settings
-
-### 2. Database Tables
-
-#### `profiles` Table
+### `profiles` Table
 | Column      | Type    | Description                        |
 |-------------|---------|------------------------------------|
 | user_id     | uuid    | Primary key, references auth.users |
@@ -48,7 +54,6 @@ npm install
 | created_at  | timestamptz | Default: now()                 |
 | updated_at  | timestamptz | Auto-updated on change         |
 
-**SQL Example:**
 ```sql
 create table profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -60,40 +65,37 @@ create table profiles (
 );
 ```
 
-### 3. Row Level Security (RLS)
-**RLS is not yet enabled.**
+## Storage & Avatars
+
+- Each user can upload an avatar image to their own folder: `avatars/<user_id>/avatar.<ext>`
+- The `avatar_url` field in the profile points to the public URL of the uploaded image.
+- Make the bucket public for public avatar URLs, or use signed URLs for private avatars.
+- **RLS Policy Example:**
+    ```sql
+    create policy "Users can manage their own avatar files"
+    on storage.objects
+    for all
+    using (
+      bucket_id = 'avatars'
+      and auth.uid()::text = split_part(name, '/', 1)
+    );
+    ```
+
+## Row Level Security (RLS)
 
 > ⚠️ **Important:** Row Level Security (RLS) is currently **not enabled** on the `profiles` table. You should set up RLS policies before going to production to protect user data and ensure only authorized access.
 
-When ready, enable RLS and add policies such as:
-
-- Allow users to insert their own profile:
-```sql
-create policy "Users can insert their own profile" on profiles
-for insert with check (auth.uid() = user_id);
-```
-- Allow users to select/update their own profile:
-```sql
-create policy "Users can view their own profile" on profiles
-for select using (auth.uid() = user_id);
-
-create policy "Users can update their own profile" on profiles
-for update using (auth.uid() = user_id);
-```
-- Allow public select for public profiles (optional):
-```sql
-create policy "Public can view profiles by username" on profiles
-for select using (true);
-```
-
 ## Usage
+
 - Sign up and log in with email/password
 - After signup, a profile is created in the `profiles` table
 - Visit `/my/profile` to view your profile
+- Visit `/my/profile/edit` to edit your profile and upload an avatar
 - Visit `/profile/:username` to view any public profile
 
 ## Development
-```
+
+```bash
 npm run dev
 ```
 
