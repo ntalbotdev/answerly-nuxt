@@ -37,20 +37,25 @@ onMounted(fetchMyQuestions);
 </script>
 
 <template>
-    <div class="my-questions-page">
+    <div>
         <h1>My Inbox</h1>
         <div v-if="loading">Loading...</div>
         <div v-else>
             <div v-if="questions.length === 0">No questions to answer.</div>
-            <div v-for="q in questions" :key="q.id" class="question-item">
-                <div class="question-meta">
-                    <span
-                        >From: <span v-if="q.is_anonymous">Anonymous</span
-                        ><span v-else>{{ q.asker_username }}</span></span
-                    >
-                    <span class="date">{{ formatDate(q.created_at) }}</span>
+            <div v-for="q in questions" :key="q.id">
+                <div>
+                    <span>
+                        From:
+                        <span v-if="q.is_anonymous">Anonymous</span>
+                        <template v-else>
+                            <NuxtLink to="`/profile/${q.asker_username}`">
+                                {{ q.asker_username }}
+                            </NuxtLink>
+                        </template>
+                    </span>
+                    <span>{{ formatDate(q.created_at) }}</span>
                 </div>
-                <div class="question-body">{{ q.question }}</div>
+                <div>{{ q.question }}</div>
                 <div v-if="!q.answer">
                     <textarea
                         v-model="q._answer"
@@ -64,9 +69,7 @@ onMounted(fetchMyQuestions);
                         Answer & Publish
                     </button>
                 </div>
-                <div v-else class="answered">
-                    <strong>Answered:</strong> {{ q.answer }}
-                </div>
+                <div v-else><strong>Answered:</strong> {{ q.answer }}</div>
             </div>
         </div>
     </div>

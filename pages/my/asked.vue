@@ -36,7 +36,10 @@ onMounted(fetchAskedQuestions);
             </div>
             <div v-for="q in questions" :key="q.id">
                 <div>
-                    <span>To: {{ q.to_username || q.to_user_id }}</span>
+                    <span>
+                        To:
+                        <NuxtLink :to="`/profile/${q.to_username}`">{{ q.to_username || q.to_user_id }}</NuxtLink>
+                    </span>
                     <span>{{ formatDate(q.created_at) }}</span>
                 </div>
                 <div>{{ q.question }}</div>
