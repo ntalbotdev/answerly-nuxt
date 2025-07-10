@@ -47,7 +47,7 @@ export const useProfileStore = defineStore("profile", {
                 const { error } = await supabase.from("profiles").insert([
                     {
                         user_id: userId,
-                        username: username,
+                        username: username.toLowerCase(),
                     },
                 ] as any);
                 if (error) throw error;
@@ -110,7 +110,7 @@ export const useProfileStore = defineStore("profile", {
                 const { error } = await supabase
                     .from("profiles")
                     .update({
-                        username: this.myProfile.username,
+                        username: this.myProfile.username?.toLowerCase(),
                         bio: this.myProfile.bio,
                         avatar_url: this.myProfile.avatar_url,
                         updated_at: new Date().toISOString(),
