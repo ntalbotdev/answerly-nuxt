@@ -15,4 +15,18 @@ export default defineNuxtRouteMiddleware((to) => {
             return navigateTo("/");
         }
     }
+
+    // Redirect /my/profile to /profile if not logged in
+    if (to.path === "/my/profile" || to.path === "/my/profile/") {
+        if (!user.value) {
+            return navigateTo("/");
+        }
+    }
+
+    // Redirect /my/profile/edit to / if not logged in
+    if (to.path === "/my/profile/edit" || to.path === "/my/profile/edit/") {
+        if (!user.value) {
+            return navigateTo("/");
+        }
+    }
 });
