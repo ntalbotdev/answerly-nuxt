@@ -1,73 +1,107 @@
-
 # Answerly Nuxt App
 
-A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and storage (avatars), with Pinia for state management.
+A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and avatar storage, with Pinia for state management.
 
 ## Features
+
 - Supabase Auth (email/password)
 - User profile creation and management
-- Public profile pages (`/profile/:username`)
-- Personal profile page (`/my/profile`)
-- Profile editing and avatar upload (`/my/profile/edit`)
+- Public profile pages
+- Personal profile page
+- Profile editing and avatar upload
+- Ask questions to any user (optionally anonymously)
+- Users can answer questions they receive
+- Questions are only published after being answered
 - Pinia for state management
 - Middleware for route protection and redirects
 
 ## Project Structure
 
 - `pages/` — Nuxt 3 pages (routes)
-- `stores/` — Pinia stores (profile state)
+- `stores/` — Pinia stores (profile, questions)
 - `middleware/` — Route guards and redirects
 - `components/` — Vue components
 
 ## Environment Setup
 
 1. **Environment Variables**
-   - Create a `.env` file in the project root with:
-     ```
-     SUPABASE_URL=your-supabase-url
-     SUPABASE_ANON_KEY=your-supabase-anon-key
-     ```
+    - Create a `.env` file in the project root with:
+        ```
+        SUPABASE_URL=your-supabase-url
+        SUPABASE_ANON_KEY=your-supabase-anon-key
+        ```
 2. **Nuxt Modules**
-   - `@nuxtjs/supabase`
-   - `@pinia/nuxt`
+    - `@nuxtjs/supabase`
+    - `@pinia/nuxt`
+
 3. **Install dependencies**
-   ```
-   npm install
-   ```
+    ```
+    npm install
+    ```
 
 ## Supabase Setup
 
-1. **Enable Auth & Database**
-   - Go to [Supabase](https://app.supabase.com/)
-   - Create a new project (Supabase Database/PostgreSQL)
-   - Enable email/password authentication in the Auth settings
+### Enable Auth & Database
 
-## Database Schema
+- Go to [Supabase](https://app.supabase.com/)
+- Create a new project (Supabase Database/Postgres)
+- Enable email/password authentication in the Auth settings
 
-### `profiles` Table
-| Column      | Type    | Description                        |
-|-------------|---------|------------------------------------|
-| user_id     | uuid    | Primary key, references auth.users |
-| username    | text    | Unique, required                   |
-| avatar_url  | text    | Optional, profile picture URL      |
-| bio         | text    | Optional, user bio                 |
-| created_at  | timestamptz | Default: now()                 |
-| updated_at  | timestamptz | Auto-updated on change         |
+### Database Schema
+
+#### `profiles` Table
+
+| Column     | Type        | Description                      |
+| ---------- | ----------- | -------------------------------- |
+| user_id    | uuid        | Primary key, Default: auth.uid() |
+| username   | text        | Unique, required                 |
+| avatar_url | text        | Nullable, profile picture URL    |
+| bio        | text        | Nullable, user bio               |
+| created_at | timestamptz | Default: now()                   |
+| updated_at | timestamptz | Default: now()                   |
 
 ```sql
 create table profiles (
-  user_id uuid primary key references auth.users(id) on delete cascade,
+  user_id uuid primary key default auth.uid() on delete cascade,
   username text unique not null,
   avatar_url text,
   bio text,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+```
+
+#### `questions` Table
+
+| Column       | Type        | Description         |
+| ------------ | ----------- | ------------------- |
+| id           | uuid        | Primary key         |
+| from_user_id | uuid        | From user, required |
+| to_user_id   | uuid        | To user, required   |
+| question     | text        | Required            |
+| is_anonymous | boolean     | Default: false      |
+| answer       | text        | Nullable            |
+| published    | boolean     | Default: false      |
+| created_at   | timestamptz | Default: now()      |
+| answered_at  | timestamptz | Nullable            |
+
+```sql
+create table questions (
+  id uuid primary key default gen_random_uuid(),
+  from_user_id uuid not null references profiles(user_id) on delete cascade,
+  to_user_id uuid not null references profiles(user_id) on delete cascade,
+  question text not null,
+  is_anonymous boolean not null default false,
+  answer text,
+  published boolean not null default false,
+  created_at timestamptz not null default now(),
+  answered_at timestamptz
 );
 ```
 
 ## Storage & Avatars
 
-- Each user can upload an avatar image to their own folder: `avatars/<user_id>/avatar.<ext>`
+- Each user can upload an avatar image to their own folder: `avatars/<user_id>/avatar.webp`
 - The `avatar_url` field in the profile points to the public URL of the uploaded image.
 - Make the bucket public for public avatar URLs, or use signed URLs for private avatars.
 - **RLS Policy Example:**
@@ -83,15 +117,19 @@ create table profiles (
 
 ## Row Level Security (RLS)
 
-> ⚠️ **Important:** Row Level Security (RLS) is currently **not enabled** on the `profiles` table. You should set up RLS policies before going to production to protect user data and ensure only authorized access.
+> ⚠️ **Important:** Row Level Security (RLS) is currently **not enabled** on any of the tables. You should set up RLS policies before going to production to protect user data and ensure only authorized access.
 
 ## Usage
 
 - Sign up and log in with email/password
 - After signup, a profile is created in the `profiles` table
+- Visit `/ask/:username` to ask a question
+- Visit `/my/inbox` to answer questions sent to you (only published after answering)
+- Visit `/my/asked` to see questions you have asked others
 - Visit `/my/profile` to view your profile
 - Visit `/my/profile/edit` to edit your profile and upload an avatar
 - Visit `/profile/:username` to view any public profile
+- Visit `/profile/:username/questions` to see questions asked to a user
 
 ## Development
 
