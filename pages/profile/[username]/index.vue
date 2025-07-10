@@ -80,6 +80,17 @@ async function handleUnfollow() {
                 :src="profileStore.publicProfile.avatar_url"
                 alt="Avatar"
             />
+            <NuxtLink
+                :to="`/profile/${profileStore.publicProfile.username}/followers`"
+            >
+                <FollowerCount :user-id="profileStore.publicProfile.user_id" />
+            </NuxtLink>
+            <NuxtLink
+                :to="`/profile/${profileStore.publicProfile.username}/following`"
+            >
+                <FollowingCount :user-id="profileStore.publicProfile.user_id" />
+            </NuxtLink>
+
             <template
                 v-if="user && user.id !== profileStore.publicProfile.user_id"
             >
