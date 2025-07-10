@@ -7,6 +7,7 @@ export default defineNuxtConfig({
       "@nuxtjs/supabase",
       "@pinia/nuxt",
       "@nuxtjs/tailwindcss",
+      "@nuxt/icon",
     ],
     supabase: {
         url: process.env.SUPABASE_URL,
