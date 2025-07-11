@@ -39,17 +39,22 @@ export const useProfileStore = defineStore("profile", {
         },
 
         // Create a new profile
-        async createProfile(userId: string, username: string) {
+        async createProfile(userId: string, username: string, displayName?: string) {
             this.loading = true;
             this.error = null;
             try {
                 const supabase = useSupabaseClient();
-                const { error } = await supabase.from("profiles").insert([
-                    {
-                        user_id: userId,
-                        username: username.toLowerCase(),
-                    },
-                ] as any);
+                const profileData: any = {
+                    user_id: userId,
+                    username: username.toLowerCase(),
+                };
+                // If displayName is provided, use it; otherwise, default to username
+                if (displayName) {
+                    profileData.display_name = displayName;
+                } else {
+                    profileData.display_name = username;
+                }
+                const { error } = await supabase.from("profiles").insert([profileData]);
                 if (error) throw error;
             } catch (err: any) {
                 this.error = err.message || "Failed to create profile";
@@ -111,6 +116,7 @@ export const useProfileStore = defineStore("profile", {
                     .from("profiles")
                     .update({
                         username: this.myProfile.username?.toLowerCase(),
+                        display_name: this.myProfile.display_name,
                         bio: this.myProfile.bio,
                         avatar_url: this.myProfile.avatar_url,
                         updated_at: new Date().toISOString(),
