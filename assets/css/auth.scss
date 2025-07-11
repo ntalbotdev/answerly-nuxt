@@ -1,0 +1,71 @@
+@use "./variables" as *;
+
+.auth-form {
+	background: $color-bg;
+}
+
+.auth-form__title {
+	color: $color-text;
+}
+
+.auth-form__field {
+	background-color: $color-surface;
+	border-radius: $radius-xs;
+}
+
+.auth-form__input {
+	background: none;
+	border: none;
+	outline: none;
+	color: $color-muted;
+
+	&:focus::placeholder {
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+	&-icon {
+		height: 20px;
+		width: 20px;
+		color: $color-muted;
+	}
+}
+
+.auth-form__forgot-password {
+	color: $color-text;
+	transition: color 0.3s ease-out;
+	text-decoration: underline;
+	&:hover,
+	&:focus {
+		color: $color-accent;
+	}
+}
+
+.auth-form__button {
+	border: none;
+	border-radius: $radius-lg;
+	background-color: $color-button;
+	color: $color-accent-text;
+	box-shadow: 0 8px 24px 0 rgb(255 205 105 / 20%);
+	transition: all 0.3s ease-in-out;
+	&:hover,
+	&:focus {
+		background-color: $color-accent-hover;
+		color: $color-accent-text-hover;
+		box-shadow: 0 8px 24px 0 rgb(16 39 112 / 20%);
+	}
+}
+
+.auth-form__message {
+	color: $color-muted;
+	transition: color 0.3s ease-out;
+}
+
+.auth-form__signup {
+	color: $color-text;
+	transition: color 0.3s ease-out;
+
+	& a:hover,
+	& a:focus {
+		color: $color-accent;
+	}
+}
