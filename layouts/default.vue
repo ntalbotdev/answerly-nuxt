@@ -81,18 +81,20 @@ const logout = async () => {
 									<template v-else>
 										<Icon name="heroicons:user-20-solid" class="h-5 w-5" />
 									</template>
-									<span class="font-semibold">{{ profileStore.myProfile?.username }}</span>
+									<span class="font-semibold">{{ profileStore.myProfile?.display_name || profileStore.myProfile?.username }}</span>
 									<Icon name="heroicons:chevron-down-16-solid" class="h-4 w-4 text-gray-400" />
 								</button>
 								<div v-if="isDropdownOpen" class="absolute right-0 z-10 mt-2 w-48 rounded border border-gray-200 bg-white shadow-lg">
 									<NuxtLink to="/my/profile" class="block px-4 py-2 hover:bg-gray-100" @click="isDropdownOpen = false">My Profile</NuxtLink>
 									<NuxtLink to="/my/inbox" class="block px-4 py-2 hover:bg-gray-100" @click="isDropdownOpen = false">My Inbox</NuxtLink>
 									<NuxtLink to="/my/asked" class="block px-4 py-2 hover:bg-gray-100" @click="isDropdownOpen = false">My Asked Questions</NuxtLink>
+                                    <NuxtLink to="/my/settings" class="block px-4 py-2 hover:bg-gray-100" @click="isDropdownOpen = false">My Settings</NuxtLink>
+									<button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500 flex items-center gap-2" @click="async () => { await logout(); isDropdownOpen = false; }">
+										<Icon name="heroicons:arrow-right-on-rectangle-20-solid" class="h-5 w-5" />
+										Logout
+									</button>
 								</div>
 							</div>
-							<button class="flex items-center gap-2 rounded bg-blue-500 px-3 py-1 text-white transition hover:bg-blue-600" @click="logout">
-								<Icon name="heroicons:arrow-right-on-rectangle-20-solid" class="h-5 w-5" />
-							</button>
 						</template>
 						<template v-else-if="!user">
 							<NuxtLink to="/auth/login" class="hover:text-blue-500">Log In</NuxtLink>

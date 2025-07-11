@@ -1,3 +1,4 @@
+import UserProfileCard from '~/components/UserProfileCard.vue';
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
@@ -18,34 +19,12 @@ onMounted(async () => {
 
 <template>
     <div>
-        <h1>My Profile</h1>
         <div v-if="profileStore.loading">Loading...</div>
         <div v-else-if="profileStore.error" style="color: red">
             {{ profileStore.error }}
         </div>
         <div v-else-if="profileStore.myProfile">
-            <p>
-                <strong>Username:</strong> {{ profileStore.myProfile.username }}
-            </p>
-            <p v-if="profileStore.myProfile.bio">
-                <strong>Bio:</strong> {{ profileStore.myProfile.bio }}
-            </p>
-            <img
-                v-if="profileStore.myProfile.avatar_url"
-                :src="profileStore.myProfile.avatar_url"
-                alt="Avatar"
-                style="display: block"
-            />
-            <NuxtLink
-                :to="`/profile/${profileStore.myProfile.username}/following`"
-            >
-                <FollowingCount :user-id="profileStore.myProfile.user_id" />
-            </NuxtLink>
-            <NuxtLink
-                :to="`/profile/${profileStore.myProfile.username}/followers`"
-            >
-                <FollowerCount :user-id="profileStore.myProfile.user_id" />
-            </NuxtLink>
+            <UserProfileCard :profile="profileStore.myProfile" />
             <NuxtLink to="/my/profile/edit">
                 Edit Profile
             </NuxtLink>

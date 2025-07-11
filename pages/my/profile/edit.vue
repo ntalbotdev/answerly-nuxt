@@ -8,6 +8,7 @@ const router = useRouter();
 const supabase = useSupabaseClient();
 const form = ref({
     username: "",
+    displayName: "",
     bio: "",
     avatar_url: "",
 });
@@ -25,6 +26,7 @@ onMounted(async () => {
         await profileStore.fetchProfileById(user.value.id);
         if (profileStore.myProfile) {
             form.value.username = profileStore.myProfile.username || "";
+            form.value.displayName = profileStore.myProfile.display_name || "";
             form.value.bio = profileStore.myProfile.bio || "";
             form.value.avatar_url = profileStore.myProfile.avatar_url || "";
         }
@@ -82,6 +84,7 @@ async function saveProfile() {
     try {
         // Update local state
         profileStore.updateMyProfileField("username", form.value.username);
+        profileStore.updateMyProfileField("display_name", form.value.displayName);
         profileStore.updateMyProfileField("bio", form.value.bio);
         profileStore.updateMyProfileField("avatar_url", form.value.avatar_url);
         // Persist to Supabase
@@ -101,7 +104,11 @@ async function saveProfile() {
         <form @submit.prevent="saveProfile">
             <div>
                 <label>Username</label>
-                <input v-model="form.username" required />
+                <input v-model="form.username" disabled />
+            </div>
+            <div>
+                <label>Display Name</label>
+                <input v-model="form.displayName" required />
             </div>
             <div>
                 <label>Bio</label>
