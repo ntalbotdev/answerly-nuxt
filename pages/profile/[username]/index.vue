@@ -61,9 +61,7 @@ async function handleUnfollow() {
 </script>
 
 <template>
-	<div
-		class="relative flex min-h-screen w-full items-center py-10"
-	>
+	<div class="relative flex min-h-screen w-full items-center py-10">
 		<div
 			class="relative mx-auto w-full max-w-xl rounded-3xl border border-gray-100 bg-white/90 p-8 shadow-2xl ring-1 ring-blue-100 backdrop-blur-lg dark:border-indigo-200 dark:bg-white/70 dark:ring-indigo-100"
 		>
@@ -96,46 +94,53 @@ async function handleUnfollow() {
 						class="flex w-full flex-col items-center gap-4 sm:flex-row"
 					>
 						<button
-						  :class="[
-							'flex items-center justify-center gap-2 rounded-2xl px-7 py-2 text-base font-semibold border border-blue-100 bg-white/40 backdrop-blur-md shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:bg-white/70 hover:shadow-xl',
-							isFollowing
-							  ? 'text-blue-700 hover:text-blue-800'
-							  : 'text-indigo-700 hover:text-indigo-800',
-						  ]"
-						  :aria-pressed="isFollowing"
-						  @click="isFollowing ? handleUnfollow() : handleFollow()"
+							:class="[
+								'flex items-center justify-center gap-2 rounded-2xl px-7 py-2 text-base font-semibold',
+								isFollowing ? 'text-red-700' : 'text-blue-700',
+							]"
+							:aria-pressed="isFollowing"
+							@click="
+								isFollowing ? handleUnfollow() : handleFollow()
+							"
 						>
-						  <Icon
-							:name="isFollowing ? 'heroicons:user-minus-20-solid' : 'heroicons:user-plus-20-solid'"
-							class="h-5 w-5 text-inherit"
-						  />
-						  <span class="font-semibold">{{ isFollowing ? 'Unfollow' : 'Follow' }}</span>
+							<Icon
+								:name="
+									isFollowing
+										? 'bx:user-minus'
+										: 'bx:user-plus'
+								"
+								class="h-5 w-5 text-inherit"
+							/>
+							<span class="font-semibold">{{
+								isFollowing ? "Unfollow" : "Follow"
+							}}</span>
 						</button>
 						<NuxtLink
-						  :to="`/ask/${profileStore.publicProfile.username}`"
-						  class="flex-1 rounded-2xl border border-indigo-200 bg-white/40 backdrop-blur-md px-7 py-2 text-center text-base font-semibold text-indigo-700 shadow-lg transition-all duration-200 hover:bg-white/70 hover:text-indigo-900 hover:shadow-xl"
+							:to="`/ask/${profileStore.publicProfile.username}`"
+							class="flex-1 items-center px-7 py-2 text-center text-base font-semibold"
 						>
-						  <Icon
-							name="heroicons:chat-bubble-left-20-solid"
-							class="mr-1 inline-block h-5 w-5 align-text-bottom text-indigo-400"
-						  />
-						  Ask {{ profileStore.publicProfile.username }} a question
+							<Icon
+								name="bx:question-mark"
+								class="mr-1 h-5 w-5 align-text-bottom"
+							/>
+							Ask {{ profileStore.publicProfile.username }} a
+							question
 						</NuxtLink>
 					</div>
 				</div>
 				<NuxtLink
 					:to="`/profile/${profileStore.publicProfile.username}/questions`"
-					class="mt-2 block rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-center font-medium text-blue-700 transition hover:bg-indigo-50 dark:border-indigo-200 dark:bg-blue-100 dark:text-indigo-700 hover:dark:bg-indigo-100"
+					class="mt-2 block px-4 py-2 text-center font-medium"
 				>
 					<Icon
-						name="heroicons:question-mark-circle-20-solid"
-						class="mr-1 inline-block h-5 w-5 align-text-bottom text-blue-400"
+						name="bx:question-mark"
+						class="mr-1 h-5 w-5 align-text-bottom"
 					/>
 					View Questions
 				</NuxtLink>
 			</template>
 			<template v-else>
-				<div class="py-12 text-center text-gray-500 dark:text-gray-500">
+				<div class="py-12 text-center text-gray-500">
 					<p>User not found.</p>
 				</div>
 			</template>

@@ -93,7 +93,7 @@ const logout = async () => {
 									</template>
 									<template v-else>
 										<Icon
-											name="heroicons:user-20-solid"
+											name="bx:user"
 											class="h-5 w-5"
 										/>
 									</template>
@@ -102,8 +102,8 @@ const logout = async () => {
 										profileStore.myProfile?.username
 									}}</span>
 									<Icon
-										name="heroicons:chevron-down-16-solid"
-										class="h-4 w-4"
+										name="bx:chevron-down"
+										class="h-4 w-4 text-gray-600"
 									/>
 								</button>
 								<div
@@ -145,7 +145,7 @@ const logout = async () => {
 										"
 									>
 										<Icon
-											name="heroicons:arrow-right-on-rectangle-20-solid"
+											name="bx:log-out"
 											class="h-5 w-5"
 										/>
 										Logout
