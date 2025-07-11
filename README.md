@@ -28,11 +28,11 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 ## Environment Setup
 
 1. **Environment Variables**
-   - Create a `.env` file in the project root with:
-     ```
-     SUPABASE_URL=your-supabase-url
-     SUPABASE_ANON_KEY=your-supabase-anon-key
-     ```
+    - Create a `.env` file in the project root with:
+        ```
+        SUPABASE_URL=your-supabase-url
+        SUPABASE_ANON_KEY=your-supabase-anon-key
+        ```
 2. **Nuxt Modules**
     - `@nuxt/eslint`
     - `@nuxtjs/supabase`
@@ -40,9 +40,9 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
     - `@nuxtjs/tailwindcss`
 
 3. **Install dependencies**
-   ```
-   npm install
-   ```
+    ```
+    npm install
+    ```
 
 ## Supabase Setup
 
@@ -56,19 +56,21 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 
 #### `profiles` Table
 
-| Column     | Type        | Description                      |
-| ---------- | ----------- | -------------------------------- |
-| user_id    | uuid        | Primary key, Default: auth.uid() |
-| username   | text        | Unique, required                 |
-| avatar_url | text        | Nullable, profile picture URL    |
-| bio        | text        | Nullable, user bio               |
-| created_at | timestamptz | Default: now()                   |
-| updated_at | timestamptz | Default: now()                   |
+| Column       | Type        | Description                      |
+| ------------ | ----------- | -------------------------------- |
+| user_id      | uuid        | Primary key, Default: auth.uid() |
+| username     | text        | Unique, required                 |
+| display_name | text        | Nullable, user display name      |
+| avatar_url   | text        | Nullable, profile picture URL    |
+| bio          | text        | Nullable, user bio               |
+| created_at   | timestamptz | Default: now()                   |
+| updated_at   | timestamptz | Default: now()                   |
 
 ```sql
 create table profiles (
   user_id uuid primary key default auth.uid() on delete cascade,
   username text unique not null,
+  display_name text,
   avatar_url text,
   bio text,
   created_at timestamptz not null default now(),
@@ -127,15 +129,15 @@ create table questions (
 - The `avatar_url` field in the profile points to the public URL of the uploaded image.
 - Make the bucket public for public avatar URLs, or use signed URLs for private avatars.
 - **RLS Policy Example:**
-  ```sql
-  create policy "Users can manage their own avatar files"
-  on storage.objects
-  for all
-  using (
-    bucket_id = 'avatars'
-    and auth.uid()::text = split_part(name, '/', 1)
-  );
-  ```
+    ```sql
+    create policy "Users can manage their own avatar files"
+    on storage.objects
+    for all
+    using (
+      bucket_id = 'avatars'
+      and auth.uid()::text = split_part(name, '/', 1)
+    );
+    ```
 
 ## Row Level Security (RLS)
 
