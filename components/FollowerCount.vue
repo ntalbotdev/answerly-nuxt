@@ -37,6 +37,6 @@ onUnmounted(() => {
 
 <template>
   <span v-if="!loading">
-    {{ followerCount }} follower{{ followerCount === 1 ? '' : 's' }}
+    {{ followerCount }} Follower{{ followerCount === 1 ? '' : 's' }}
   </span>
 </template>
