@@ -1,11 +1,10 @@
 // This middleware redirects logged-in users away from /auth pages
 export default defineNuxtRouteMiddleware((to, _from) => {
     const user = useSupabaseUser();
-    // If logged in, redirect from any auth page to / except /auth/confirm
+    // If logged in, redirect from any auth page to home
     if (
         user.value &&
-        to.path.startsWith("/auth") &&
-        to.path !== "/auth/confirm"
+        to.path.startsWith("/auth")
     ) {
         return navigateTo("/");
     }
