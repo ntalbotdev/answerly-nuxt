@@ -7,10 +7,10 @@ const user = useSupabaseUser();
 	<nav class="header__nav">
 		<template v-if="user">
 			<NuxtLink
-				to="/feed"
+				to="/"
 				:class="[
 					'header__nav-link',
-					$route.path === '/feed' ? 'header__nav-link--active' : '',
+					$route.path === '/' ? 'header__nav-link--active' : '',
 				]"
 			>
 				<Icon name="bx:globe" class="header__nav-link-icon" />
@@ -29,7 +29,7 @@ const user = useSupabaseUser();
 				Discover
 			</NuxtLink>
 			<NuxtLink
-				to="/discover"
+				to="/notifications"
 				:class="[
 					'header__nav-link',
 					$route.path === '/notifications'
