@@ -1,8 +1,8 @@
 <template>
-	<div class="mb-8 flex flex-col items-center gap-6 p-8">
+	<div class="profile">
 		<NuxtLink
 			:to="`/profile/${profile.username}`"
-			class="text-xl font-bold tracking-wide hover:underline"
+			class="profile__user-url"
 		>
 			{{ profile.username }}
 		</NuxtLink>

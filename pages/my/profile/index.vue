@@ -1,5 +1,5 @@
-import UserProfileCard from '~/components/UserProfileCard.vue';
 <script setup lang="ts">
+import UserProfile from '~/components/UserProfile.vue';
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
 const user = useSupabaseUser();
@@ -24,7 +24,7 @@ onMounted(async () => {
             {{ profileStore.error }}
         </div>
         <div v-else-if="profileStore.myProfile">
-            <UserProfileCard :profile="profileStore.myProfile" />
+            <UserProfile :profile="profileStore.myProfile" />
             <NuxtLink to="/my/profile/edit">
                 Edit Profile
             </NuxtLink>

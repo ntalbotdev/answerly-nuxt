@@ -1,1 +1,11 @@
 @use "./variables" as *;
+
+.profile {
+	@apply mb-8 flex flex-col items-center gap-6 p-8;
+	background: $color-surface;
+}
+
+.profile__user-url {
+	@apply text-xl font-bold tracking-wide hover:underline;
+	color: $color-text;
+}
