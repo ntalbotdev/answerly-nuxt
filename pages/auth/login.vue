@@ -27,27 +27,29 @@ const login = async () => {
 
 <template>
 	<form class="auth-form" @submit.prevent="login">
-		<h2 class="auth-form__title">Login</h2>
+		<h2 class="auth-form__title">Log in</h2>
 		<label for="email" class="sr-only">Email</label>
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
+				id="email"
 				v-model="email"
 				type="email"
 				placeholder="Email"
-				required
 				class="auth-form__input"
+				required
 			/>
 		</div>
-		<label for="email" class="sr-only">Email</label>
+		<label for="password" class="sr-only">Password</label>
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
+				id="password"
 				v-model="password"
 				type="password"
 				placeholder="Password"
-				required
 				class="auth-form__input"
+				required
 			/>
 		</div>
 		<NuxtLink to="/auth/forgot-password" class="auth-form__forgot-password">
