@@ -62,8 +62,8 @@
 }
 
 .auth-form__message {
+	@apply mt-2 text-center text-sm;
 	color: $color-muted;
-	transition: color 0.3s ease-out;
 }
 
 .auth-form__footer {
