@@ -4,13 +4,13 @@
 
 body {
 	/* Background pattern */
-	background: $color-bg
+	background: $color-bg;
 	// 	radial-gradient(rgba(98, 152, 214, 0.712) 10%, transparent 1%);
 	// background-size: 11px 11px;
 }
 
 .main {
-	@apply mx-auto max-w-4xl p-4;
+	@apply mx-auto max-w-4xl p-4 pt-20;
 }
 
 .loading-text {
