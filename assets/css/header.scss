@@ -81,9 +81,7 @@
 }
 
 .header__user-dropdown-avatar img {
-	@apply h-5 w-5;
-
-	border-radius: $radius-full;
+	@apply h-5 w-5 rounded-full;
 }
 
 .header__user-dropdown-name {
