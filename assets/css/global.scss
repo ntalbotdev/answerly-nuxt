@@ -1,9 +1,22 @@
 @use "./variables" as *;
 @use "./auth";
+@use "./header";
 
 body {
 	/* Background pattern */
-	background: rgba(16, 15, 20, 0.904)
+	background: $color-bg;
 	// 	radial-gradient(rgba(98, 152, 214, 0.712) 10%, transparent 1%);
 	// background-size: 11px 11px;
+}
+
+.main {
+	@apply mx-auto max-w-4xl p-4 pt-20;
+}
+
+.loading-text {
+	@apply text-gray-400;
+}
+
+.error-text {
+	@apply text-red-500;
 }
