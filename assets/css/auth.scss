@@ -1,19 +1,23 @@
 @use "./variables" as *;
 
 .auth-form {
+	@apply mx-auto mt-16 flex max-w-xs flex-col gap-4 p-4;
 	background: $color-bg;
 }
 
 .auth-form__title {
+	@apply mb-2 text-center text-3xl font-semibold;
 	color: $color-text;
 }
 
 .auth-form__field {
+	@apply flex items-center px-3 py-1;
 	background-color: $color-surface;
 	border-radius: $radius-xs;
 }
 
 .auth-form__input {
+	@apply block w-full px-3 py-2;
 	background: none;
 	border: none;
 	outline: none;
@@ -31,9 +35,10 @@
 }
 
 .auth-form__forgot-password {
+	@apply mr-auto text-sm transition-colors;
 	color: $color-text;
-	transition: color 0.3s ease-out;
-	text-decoration: underline;
+	text-decoration: none;
+
 	&:hover,
 	&:focus {
 		color: $color-accent;
@@ -41,15 +46,16 @@
 }
 
 .auth-form__button {
+	@apply mt-2 block w-full px-3 py-2 font-bold;
 	border: none;
 	border-radius: $radius-lg;
-	background-color: $color-button;
+	background: $color-button;
 	color: $color-accent-text;
 	box-shadow: 0 8px 24px 0 rgb(255 205 105 / 20%);
 	transition: all 0.3s ease-in-out;
 	&:hover,
 	&:focus {
-		background-color: $color-accent-hover;
+		background: $color-accent-hover;
 		color: $color-accent-text-hover;
 		box-shadow: 0 8px 24px 0 rgb(16 39 112 / 20%);
 	}
@@ -60,12 +66,17 @@
 	transition: color 0.3s ease-out;
 }
 
-.auth-form__signup {
+.auth-form__footer {
+	@apply mt-2 p-2 text-center text-sm;
 	color: $color-text;
-	transition: color 0.3s ease-out;
 
-	& a:hover,
-	& a:focus {
+	&-link {
+		@apply ml-1 font-medium underline underline-offset-2 transition-colors;
+	}
+
+	&-link:hover,
+	&-link:focus {
+		@apply transition-colors;
 		color: $color-accent;
 	}
 }

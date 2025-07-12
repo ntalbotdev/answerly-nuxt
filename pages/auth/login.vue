@@ -20,57 +20,44 @@ const login = async () => {
 			await profileStore.fetchProfileById(user.value.id);
 		}
 		// Redirect to profile page
-		router.push("/my/profile");
+		router.push("/");
 	}
 };
 </script>
 
 <template>
-	<form
-		class="auth-form mx-auto mt-16 flex max-w-xs flex-col gap-4 p-4"
-		@submit.prevent="login"
-	>
-		<h2 class="auth-form__title mb-2 text-center text-3xl font-semibold">
-			Welcome back, friend!
-		</h2>
+	<form class="auth-form" @submit.prevent="login">
+		<h2 class="auth-form__title">Login</h2>
 		<label for="email" class="sr-only">Email</label>
-		<div class="auth-form__field flex items-center px-3 py-1">
+		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
 				v-model="email"
 				type="email"
 				placeholder="Email"
 				required
-				class="auth-form__input block w-full px-3 py-2"
+				class="auth-form__input"
 			/>
 		</div>
 		<label for="email" class="sr-only">Email</label>
-		<div class="auth-form__field flex items-center px-3 py-1">
+		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
 				v-model="password"
 				type="password"
 				placeholder="Password"
 				required
-				class="auth-form__input block w-full px-3 py-2"
+				class="auth-form__input"
 			/>
 		</div>
-		<NuxtLink
-			to="/auth/forgot-password"
-			class="auth-form__forgot-password mr-auto text-sm"
-		>
+		<NuxtLink to="/auth/forgot-password" class="auth-form__forgot-password">
 			Forgot password?
 		</NuxtLink>
-		<button
-			type="submit"
-			class="auth-form__button mt-2 block w-full px-3 py-2 font-bold"
-		>
-			Log in
-		</button>
+		<button type="submit" class="auth-form__button">Log in</button>
 
-		<div class="auth-form__signup mt-2 p-2 text-center text-sm">
+		<div class="auth-form__footer">
 			Not a member?
-			<NuxtLink to="/auth/signup" class="ml-1 font-medium underline">
+			<NuxtLink to="/auth/signup" class="auth-form__footer-link">
 				Sign up
 			</NuxtLink>
 		</div>
