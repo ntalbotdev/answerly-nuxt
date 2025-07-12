@@ -1,6 +1,7 @@
 @use "./variables" as *;
 @use "./auth";
 @use "./header";
+@use "./profile";
 
 body {
 	background: $color-bg;
