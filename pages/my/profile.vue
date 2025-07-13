@@ -1,4 +1,3 @@
-import UserProfileCard from '~/components/UserProfileCard.vue';
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
@@ -19,15 +18,12 @@ onMounted(async () => {
 
 <template>
     <div>
-        <div v-if="profileStore.loading">Loading...</div>
-        <div v-else-if="profileStore.error" style="color: red">
+        <div v-if="profileStore.loading" class="loading-text">Loading...</div>
+        <div v-else-if="profileStore.error" class="error-text">
             {{ profileStore.error }}
         </div>
         <div v-else-if="profileStore.myProfile">
-            <UserProfileCard :profile="profileStore.myProfile" />
-            <NuxtLink to="/my/profile/edit">
-                Edit Profile
-            </NuxtLink>
+            <UserProfile :profile="profileStore.myProfile" />
         </div>
         <div v-else>
             <p>User not found.</p>

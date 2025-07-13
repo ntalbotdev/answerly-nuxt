@@ -1,9 +1,14 @@
 @use "./variables" as *;
 @use "./auth";
 @use "./header";
+@use "./profile";
 
 body {
 	background: $color-bg;
+}
+
+.layout {
+	@apply min-h-screen;
 }
 
 .main {

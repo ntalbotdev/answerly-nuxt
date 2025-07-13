@@ -1,0 +1,255 @@
+@use "./variables" as *;
+
+.profile {
+	@apply relative z-0 flex flex-col items-center;
+
+	&:before {
+		@apply absolute inset-0 drop-shadow-lg;
+		content: "";
+		margin: auto;
+		background: $color-text;
+		width: 300px;
+		border-radius: $radius-lg;
+		z-index: -1;
+	}
+}
+
+.profile__header {
+	@apply flex w-full flex-col items-center text-center;
+	border-radius: $radius-sm;
+}
+
+.profile__banner {
+	@apply relative flex h-44 w-full items-center justify-center overflow-hidden drop-shadow-lg;
+	width: 100%;
+	height: 240px;
+	overflow: hidden;
+	border-radius: $radius-sm;
+	position: relative;
+	background: $color-surface;
+	margin-bottom: -72px; // Pull avatar up over banner
+}
+
+.profile__banner-img {
+	@apply h-full w-full object-cover;
+}
+
+.profile__actions {
+	@apply absolute bottom-3 right-3 flex items-center justify-end gap-2;
+	z-index: 1;
+}
+
+.profile__action {
+	@apply flex items-center justify-center rounded-full bg-white py-2 shadow-md transition-all;
+	min-width: 40px;
+	max-width: 40px;
+
+	&:hover {
+		@apply max-w-full bg-blue-50 px-4;
+	}
+
+	&:hover .profile__action-text {
+		@apply max-w-full pl-1;
+	}
+
+	&--ask {
+		@apply bg-blue-500;
+		color: $color-text;
+
+		&:hover {
+			@apply bg-blue-600;
+		}
+	}
+
+	&--report {
+		color: $color-text;
+		background: $color-accent;
+
+		&:hover {
+			background: $color-accent-hover;
+		}
+	}
+
+	&--block {
+		@apply bg-red-500;
+		color: $color-text;
+
+		&:hover {
+			@apply bg-red-600;
+		}
+	}
+}
+
+.profile__action-icon {
+	@apply h-5 w-5;
+}
+
+.profile__action-text {
+	@apply max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all;
+}
+
+.profile__avatar {
+	@apply h-36 w-36 rounded-full object-cover;
+	z-index: 0;
+	background: $color-text;
+	outline: 6px solid $color-text;
+	outline-offset: -1px;
+
+	&--placeholder {
+		@apply flex items-center justify-center text-5xl font-bold;
+		background: $color-muted-light;
+		color: $color-surface;
+	}
+}
+
+.profile__name-wrapper {
+	@apply my-4 flex flex-col items-center;
+}
+
+.profile__name {
+	@apply text-3xl font-semibold;
+	color: $color-bg;
+}
+
+.profile__user-url {
+	color: $color-muted;
+}
+
+.profile__bio {
+	@apply mx-auto mb-4 px-4 text-center italic;
+	max-width: 300px;
+	color: $color-muted;
+}
+
+.profile__stats {
+	@apply flex flex-col items-center justify-center gap-4 pb-4;
+
+	&-icon {
+		@apply mr-1 h-5 w-5;
+	}
+
+	&-mutual-status {
+		@apply text-sm;
+		color: $color-muted;
+	}
+
+	&-follow-count-wrapper {
+		@apply flex items-center gap-2 overflow-hidden;
+	}
+
+	&-follow-count {
+		@apply flex items-center gap-1 rounded-full px-3 py-1 text-sm transition-all;
+		background: $color-muted-light;
+
+		&:hover {
+			background: $color-accent;
+		}
+	}
+}
+
+.edit-profile,
+.ask-form {
+	@apply flex flex-col gap-6;
+}
+
+.edit-profile__label,
+.ask-form__label {
+	@apply text-sm font-semibold;
+	color: $color-bg;
+}
+
+.edit-profile__input,
+.ask-form__input {
+	@apply mt-1 block w-full border border-gray-300 bg-white p-2 drop-shadow-sm focus:outline-none;
+	border-radius: $radius-xs;
+	border: 1px solid $color-muted-light;
+
+	&:focus {
+		border-color: $color-accent;
+		box-shadow: 0 0 0 1px $color-accent;
+	}
+}
+
+.edit-profile__upload {
+	@apply flex items-center gap-4;
+}
+
+.edit-profile__image-preview {
+	@apply object-cover shadow;
+
+	&--avatar {
+		@apply h-16 w-16 flex-shrink-0 rounded-full;
+	}
+
+	&--banner {
+		@apply h-14 w-full;
+		border-radius: $radius-sm;
+	}
+}
+
+.edit-profile__upload-button {
+	@apply whitespace-nowrap py-2 text-sm shadow-sm transition-all;
+	background-color: $color-muted-light;
+	color: $color-bg;
+	border-radius: $radius-xs;
+
+	&:hover {
+		background: $color-muted-hover;
+	}
+
+	&--avatar {
+		@apply w-full;
+	}
+
+	&--banner {
+		@apply w-full;
+		max-width: 40%;
+	}
+}
+
+.edit-profile__button-wrapper,
+.ask-form__button-wrapper {
+	@apply flex items-center justify-end gap-2 ml-auto;
+}
+
+.edit-profile__button,
+.ask-form__button {
+	@apply mt-4 w-full px-4 py-2 font-bold shadow-sm transition-all whitespace-nowrap;
+	border-radius: $radius-xs;
+
+	&:disabled {
+		@apply cursor-not-allowed opacity-50;
+	}
+	
+	&--cancel {
+		background: $color-muted-light;
+		color: $color-surface;
+		
+		&:hover:not(:disabled) {
+			background: $color-muted-hover;
+		}
+	}
+	
+	&--submit {
+		background: $color-accent;
+		color: $color-accent-text;
+		
+		&:hover:not(:disabled) {
+			background: $color-accent-hover;
+			color: $color-accent-text-hover;
+		}
+	}
+}
+
+.ask-form__checkbox-label {
+	@apply flex cursor-pointer items-center gap-2;
+}
+
+.ask-form__checkbox {
+	@apply h-4 w-4;
+}
+
+.ask-form__checkbox-text {
+	@apply text-sm;
+	color: $color-bg;
+}

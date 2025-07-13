@@ -22,35 +22,36 @@ const sendReset = async () => {
 
 <template>
 	<form
-		class="auth-form mx-auto mt-16 flex max-w-xs flex-col gap-4 p-4"
+		class="auth-form"
 		@submit.prevent="sendReset"
 	>
-		<h2 class="auth-form__title mb-2 text-center text-3xl font-semibold">
+		<h2 class="auth-form__title">
 			Forgot your password?
 		</h2>
 		<label for="email" class="sr-only">Email</label>
-		<div class="auth-form__field flex items-center px-3 py-1">
+		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
+				id="email"
 				v-model="email"
 				type="email"
 				placeholder="Enter your email"
+				class="auth-form__input"
 				required
-				class="auth-form__input block w-full px-3 py-2"
 			/>
 		</div>
 		<button
 			type="submit"
-			class="auth-form__button mt-2 block w-full px-3 py-2 font-bold"
+			class="auth-form__button"
 		>
 			Send reset link
 		</button>
-		<div v-if="message" class="auth-form__message mt-2 text-center text-sm">
+		<div v-if="message" class="auth-form__message">
 			{{ message }}
 		</div>
-		<div class="auth-form__signup mt-2 p-2 text-center text-sm">
+		<div class="auth-form__footer">
 			Remembered?
-			<NuxtLink to="/auth/login" class="ml-1 font-medium underline">
+			<NuxtLink to="/auth/login" class="auth-form__footer-link">
 				Log in
 			</NuxtLink>
 		</div>

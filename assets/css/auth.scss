@@ -55,15 +55,15 @@
 	transition: all 0.3s ease-in-out;
 	&:hover,
 	&:focus {
-		background: $color-accent-hover;
+		background: $color-accent;
 		color: $color-accent-text-hover;
 		box-shadow: 0 8px 24px 0 rgb(16 39 112 / 20%);
 	}
 }
 
 .auth-form__message {
+	@apply mt-2 text-center text-sm;
 	color: $color-muted;
-	transition: color 0.3s ease-out;
 }
 
 .auth-form__footer {

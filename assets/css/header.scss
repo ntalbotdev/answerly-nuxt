@@ -9,7 +9,7 @@
 }
 
 .header__inner {
-	@apply mx-auto max-w-4xl px-4 w-full;
+	@apply mx-auto w-full max-w-4xl px-4;
 }
 
 .header__content {
@@ -21,12 +21,7 @@
 	color: $color-bg;
 
 	& a {
-		@apply flex items-center gap-2 text-xl font-bold transition-all;
-
-		&:hover {
-			@apply transition-all;
-			opacity: 0.8;
-		}
+		@apply flex items-center gap-2 text-xl font-bold;
 	}
 
 	.header__logo-icon {
@@ -75,15 +70,12 @@
 }
 
 .header__user-dropdown-button {
-	@apply flex items-center gap-2 px-3 py-1 transition hover:bg-gray-200;
-
+	@apply flex items-center gap-2 px-3 py-1 transition-all hover:bg-gray-200;
 	border-radius: $radius-xs;
 }
 
 .header__user-dropdown-avatar img {
-	@apply h-5 w-5;
-
-	border-radius: $radius-full;
+	@apply h-5 w-5 min-w-5 rounded-full object-cover;
 }
 
 .header__user-dropdown-name {
@@ -99,10 +91,10 @@
 }
 
 .header__user-dropdown-link {
-	@apply block flex items-center gap-2 px-4 py-2 hover:bg-gray-100;
+	@apply block flex items-center gap-2 px-4 py-2 transition-all hover:bg-gray-100;
 
 	&--active {
-		@apply bg-gray-100;
+		@apply bg-gray-100 font-bold;
 		color: $color-accent-text-hover;
 	}
 

@@ -43,44 +43,48 @@ const signup = async () => {
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
+                id="email"
 				v-model="email"
 				type="email"
 				placeholder="Email"
-				required
 				class="auth-form__input"
+                required
 			/>
 		</div>
 		<label for="username" class="sr-only">Username</label>
 		<div class="auth-form__field">
 			<Icon name="bx:user" class="auth-form__input-icon" />
 			<input
+                id="username"
 				v-model="username"
 				type="text"
 				placeholder="Username"
-				required
 				class="auth-form__input"
+                required
 			/>
 		</div>
 		<label for="password" class="sr-only">Password</label>
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
+				id="password"
 				v-model="password"
 				type="password"
 				placeholder="Password"
-				required
 				class="auth-form__input"
+                required
 			/>
 		</div>
-		<label for="confirmPassword" class="sr-only">Confirm Password</label>
+		<label for="confirm-password" class="sr-only">Confirm Password</label>
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
+				id="confirm-password"
 				v-model="confirmPassword"
 				type="password"
 				placeholder="Confirm Password"
-				required
 				class="auth-form__input"
+                required
 			/>
 		</div>
 		<button type="submit" class="auth-form__button">Sign up</button>

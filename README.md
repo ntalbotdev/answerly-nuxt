@@ -1,6 +1,6 @@
 # Answerly Nuxt App
 
-A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and avatar storage. It uses Pinia for state management and Tailwind CSS for styling.
+A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and profile assets storage. It uses Pinia for state management and Tailwind CSS for styling.
 
 ## Features
 
@@ -8,7 +8,7 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 - User profile creation and management
 - Public profile pages
 - Personal profile page
-- Profile editing and avatar upload
+- Profile editing and assets upload
 - Ask questions to any user (optionally anonymously)
 - Users can answer questions they receive
 - Questions are only published after being answered
@@ -62,6 +62,7 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 | username     | text        | Unique, required                 |
 | display_name | text        | Nullable, user display name      |
 | avatar_url   | text        | Nullable, profile picture URL    |
+| banner_url   | text        | Nullable, profile banner URL     |
 | bio          | text        | Nullable, user bio               |
 | created_at   | timestamptz | Default: now()                   |
 | updated_at   | timestamptz | Default: now()                   |
@@ -72,6 +73,7 @@ create table profiles (
   username text unique not null,
   display_name text,
   avatar_url text,
+  banner_url text,
   bio text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -123,18 +125,19 @@ create table questions (
 );
 ```
 
-## Storage & Avatars
+## Storage & Profile Assets
 
-- Each user can upload an avatar image to their own folder: `avatars/<user_id>/avatar.webp`
-- The `avatar_url` field in the profile points to the public URL of the uploaded image.
-- Make the bucket public for public avatar URLs, or use signed URLs for private avatars.
+- Each user can upload an avatar and a banner image to their own folder: `profile-assets/<user_id>/avatar.webp` and `profile-assets/<user_id>/banner.webp`
+- The `avatar_url` and `banner_url` fields in the profile point to the public URLs of the uploaded images
+- Make the bucket public for public URLs, or use signed URLs for private assets.
 - **RLS Policy Example:**
     ```sql
-    create policy "Users can manage their own avatar files"
+    create policy "Users can manage their own profile assets"
     on storage.objects
     for all
+    to authenticated
     using (
-      bucket_id = 'avatars'
+      bucket_id = 'profile-assets'
       and auth.uid()::text = split_part(name, '/', 1)
     );
     ```

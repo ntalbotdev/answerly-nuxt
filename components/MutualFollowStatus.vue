@@ -56,3 +56,11 @@ onUnmounted(() => {
         <span v-else>You do not follow each other</span>
     </div>
 </template>
+
+<style scoped lang="scss">
+@import "@/assets/css/variables.scss";
+
+div {
+    color: $color-muted;
+}
+</style>
