@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import HeaderUserDropdown from "~/components/HeaderUserDropdown.vue";
 const user = useSupabaseUser();
 </script>
 
