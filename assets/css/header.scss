@@ -21,12 +21,7 @@
 	color: $color-bg;
 
 	& a {
-		@apply flex items-center gap-2 text-xl font-bold transition-all;
-
-		&:hover {
-			@apply transition-all;
-			opacity: 0.8;
-		}
+		@apply flex items-center gap-2 text-xl font-bold;
 	}
 
 	.header__logo-icon {
