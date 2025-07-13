@@ -72,7 +72,7 @@ async function handleUnfollow() {
 				<div class="mb-2 text-red-500">{{ profileStore.error }}</div>
 			</template>
 			<template v-else-if="profileStore.publicProfile">
-				<UserProfileCard :profile="profileStore.publicProfile">
+				<UserProfile :profile="profileStore.publicProfile">
 					<template #mutual-status>
 						<MutualFollowStatus
 							v-if="
@@ -83,7 +83,7 @@ async function handleUnfollow() {
 							class="block"
 						/>
 					</template>
-				</UserProfileCard>
+				</UserProfile>
 				<div
 					v-if="
 						user && user.id !== profileStore.publicProfile.user_id
