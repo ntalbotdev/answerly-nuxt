@@ -81,7 +81,7 @@
 }
 
 .header__user-dropdown-avatar img {
-	@apply h-5 w-5 rounded-full;
+	@apply h-5 w-5 rounded-full min-w-5;
 }
 
 .header__user-dropdown-name {
@@ -100,7 +100,7 @@
 	@apply block flex items-center gap-2 px-4 py-2 hover:bg-gray-100;
 
 	&--active {
-		@apply bg-gray-100;
+		@apply bg-gray-100 font-bold;
 		color: $color-accent-text-hover;
 	}
 
