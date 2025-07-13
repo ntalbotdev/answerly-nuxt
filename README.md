@@ -148,14 +148,12 @@ create table questions (
 
 ## Usage
 
-- Sign up and log in with email/password
+- Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
-- Visit `/ask/:username` to ask a question
 - Visit `/my/inbox` to answer questions sent to you (only published after answering)
-- Visit `/my/asked` to see questions you have asked others
-- Visit `/my/profile` to view your profile
-- Visit `/my/profile/edit` to edit your profile and upload an avatar
-- Visit `/profile/:username` to view any public profile
+- Visit `/my/questions` to see questions you have asked others
+- Visit `/my/profile` to view/edit your profile
+- Visit `/profile/:username` to view any public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
 - Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following
