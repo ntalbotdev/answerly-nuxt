@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-import imageCompression from "browser-image-compression";
 
 const profileStore = useProfileStore();
 const user = useSupabaseUser();
@@ -11,6 +10,7 @@ const form = ref({
     displayName: "",
     bio: "",
     avatar_url: "",
+    banner_url: "",
 });
 const loading = ref(false);
 const error = ref("");
@@ -29,50 +29,79 @@ onMounted(async () => {
             form.value.displayName = profileStore.myProfile.display_name || "";
             form.value.bio = profileStore.myProfile.bio || "";
             form.value.avatar_url = profileStore.myProfile.avatar_url || "";
+            form.value.banner_url = profileStore.myProfile.banner_url || "";
         }
     }
 });
 
-async function handleAvatarUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (!target.files || !target.files[0] || !user.value) return;
-    let file = target.files[0];
-    const options = {
-        maxSizeMB: 10, // Large enough to always trigger processing
-        maxWidthOrHeight: 200,
-        useWebWorker: true,
-        fileType: "image/webp",
-    };
-    file = await imageCompression(file, options);
-    // Always use webp extension
+async function handleAvatarUpload(file: File) {
+    if (!user.value) return;
     const filePath = `${user.value.id}/avatar.webp`;
     uploading.value = true;
     error.value = "";
     try {
-        // Remove ALL files in the user's folder before uploading new avatar
+        // Remove avatar.webp before uploading new avatar
         const userId = user.value?.id;
         const { data: listData, error: listError } = await supabase.storage
-            .from("avatars")
+            .from("profile-assets")
             .list(userId + "/");
         if (listError) throw listError;
-        if (listData && listData.length > 0 && userId) {
-            const filesToDelete = listData.map((f) => `${userId}/${f.name}`);
-            await supabase.storage.from("avatars").remove(filesToDelete);
+        if (listData && userId) {
+            const avatarFile = listData.find(f => f.name === "avatar.webp");
+            if (avatarFile) {
+                await supabase.storage.from("profile-assets").remove([`${userId}/avatar.webp`]);
+            }
         }
-        // Upload new avatar.webp (no old files remain, so no cache/collision)
+        // Upload new avatar.webp
         const { error: uploadError } = await supabase.storage
-            .from("avatars")
+            .from("profile-assets")
             .upload(filePath, file, { upsert: true });
         if (uploadError) throw uploadError;
         // Get public URL
         const { data } = supabase.storage
-            .from("avatars")
+            .from("profile-assets")
             .getPublicUrl(filePath);
         if (!data.publicUrl) throw new Error("Failed to get public URL");
         // Add cache-busting query param to force browser refresh
         form.value.avatar_url = data.publicUrl + "?t=" + Date.now();
     } catch (e) {
         error.value = (e as Error).message || "Failed to upload avatar.";
+    } finally {
+        uploading.value = false;
+    }
+}
+
+async function handleBannerUpload(file: File) {
+    if (!user.value) return;
+    const filePath = `${user.value.id}/banner.webp`;
+    uploading.value = true;
+    error.value = "";
+    try {
+        // Remove old banner if exists
+        const userId = user.value?.id;
+        const { data: listData, error: listError } = await supabase.storage
+            .from("profile-assets")
+            .list(userId + "/");
+        if (listError) throw listError;
+        if (listData && userId) {
+            const bannerFile = listData.find(f => f.name === "banner.webp");
+            if (bannerFile) {
+                await supabase.storage.from("profile-assets").remove([`${userId}/banner.webp`]);
+            }
+        }
+        // Upload new banner.webp
+        const { error: uploadError } = await supabase.storage
+            .from("profile-assets")
+            .upload(filePath, file, { upsert: true });
+        if (uploadError) throw uploadError;
+        // Get public URL
+        const { data } = supabase.storage
+            .from("profile-assets")
+            .getPublicUrl(filePath);
+        if (!data.publicUrl) throw new Error("Failed to get public URL");
+        form.value.banner_url = data.publicUrl + "?t=" + Date.now();
+    } catch (e) {
+        error.value = (e as Error).message || "Failed to upload banner.";
     } finally {
         uploading.value = false;
     }
@@ -87,6 +116,7 @@ async function saveProfile() {
         profileStore.updateMyProfileField("display_name", form.value.displayName);
         profileStore.updateMyProfileField("bio", form.value.bio);
         profileStore.updateMyProfileField("avatar_url", form.value.avatar_url);
+        profileStore.updateMyProfileField("banner_url", form.value.banner_url);
         // Persist to Supabase
         await profileStore.saveMyProfile();
         router.push("/my/profile");
@@ -116,17 +146,29 @@ async function saveProfile() {
             </div>
             <div>
                 <label>Avatar</label>
-                <input
-                    type="file"
-                    accept="image/*"
+                <ImageCompressor
                     :disabled="uploading"
-                    @change="handleAvatarUpload"
+                    :max-width-or-height="200"
+                    file-type="image/webp"
+                    @compressed="handleAvatarUpload"
                 />
                 <div v-if="form.avatar_url">
                     <img :src="form.avatar_url" alt="Avatar Preview" />
                 </div>
             </div>
-            <div v-if="uploading">Uploading avatar...</div>
+            <div>
+                <label>Banner</label>
+                <ImageCompressor
+                    :disabled="uploading"
+                    :max-width-or-height="600"
+                    file-type="image/webp"
+                    @compressed="handleBannerUpload"
+                />
+                <div v-if="form.banner_url">
+                    <img :src="form.banner_url" alt="Banner Preview" />
+                </div>
+            </div>
+            <div v-if="uploading">Uploading...</div>
             <div v-if="error" style="color: red">{{ error }}</div>
             <button type="submit" :disabled="loading">Save</button>
             <button type="button" @click="router.push('/my/profile')">
