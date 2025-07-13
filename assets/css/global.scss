@@ -12,7 +12,8 @@ body {
 }
 
 .main {
-	@apply mx-auto max-w-4xl p-4 pt-20;
+	@apply mx-auto max-w-4xl p-4 mt-3;
+	margin-top: 3rem; // Adjust for fixed header
 }
 
 .loading-text {

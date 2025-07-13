@@ -123,7 +123,9 @@ function handleCloseAskModal() {
 									name="bx:question-mark"
 									class="profile__action-icon"
 								/>
-								<span class="profile__action-text">Ask a Question</span>
+								<span class="profile__action-text">
+									Ask a Question
+								</span>
 							</button>
 
 							<button
@@ -176,12 +178,14 @@ function handleCloseAskModal() {
 					</template>
 				</div>
 
-				<img
-					v-if="profile.banner_url"
-					:src="profile.banner_url"
-					alt="Banner"
-					class="profile__banner-img"
-				/>
+				<div class="profile__banner-img-wrapper">
+					<img
+						v-if="profile.banner_url"
+						:src="profile.banner_url"
+						alt="Banner"
+						class="profile__banner-img"
+					/>
+				</div>
 			</div>
 
 			<img
