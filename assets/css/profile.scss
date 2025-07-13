@@ -26,6 +26,26 @@
 	@apply w-full h-full object-cover;
 }
 
+.profile__actions {
+	@apply absolute bottom-2 right-4;
+}
+
+.profile__action {
+	@apply px-4 py-2 rounded-full text-sm font-semibold bg-white;
+
+	&:hover .profile__action-text {
+		@apply w-full;
+	}
+}
+
+.profile__action-icon {
+	@apply mr-2 h-5 w-5 inline-block;
+}
+
+.profile__action-text {
+	@apply overflow-hidden whitespace-nowrap;
+}
+
 .profile__avatar {
 	@apply h-36 w-36 rounded-full shadow-lg;
 	&--placeholder {

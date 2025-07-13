@@ -24,9 +24,6 @@ onMounted(async () => {
         </div>
         <div v-else-if="profileStore.myProfile">
             <UserProfile :profile="profileStore.myProfile" />
-            <NuxtLink to="/my/profile/edit">
-                Edit Profile
-            </NuxtLink>
         </div>
         <div v-else>
             <p>User not found.</p>

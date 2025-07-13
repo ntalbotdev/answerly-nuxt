@@ -1,8 +1,23 @@
+<script setup lang="ts">
+defineProps<{ profile: any}>();
+</script>
 
 <template>
 	<div class="profile">
 	<div class="profile__header">
 		<div v-if="profile.banner_url" class="profile__banner">
+			<div class="profile__actions">
+				<div class="profile__action">
+					<NuxtLink
+						:to="`/my/profile/edit`"
+						class="btn"
+					>
+						<Icon name="bx:edit" />
+						<span class="profile__action-text">Edit Profile</span>
+					</NuxtLink>
+				</div>
+			</div>
+
 			<img
 				:src="profile.banner_url"
 				alt="Banner"
@@ -22,6 +37,7 @@
 				{{ profile.username?.charAt(0).toUpperCase() }}
 			</span>
 		</div>
+
 		<div class="profile__name-wrapper">
 			<h2 class="profile__name">
 				{{ profile.display_name || profile.username }}
@@ -30,6 +46,7 @@
 				@{{ profile.username }}
 			</span>
 		</div>
+
 		<div v-if="profile.bio" class="profile__bio">
 			{{ profile.bio }}
 		</div>
@@ -51,7 +68,6 @@
 				<NuxtLink
 					:to="`/profile/${profile.username}/following`"
 					class="profile__stats-follow-count"
-
 				>
 					<Icon
 						name="bx:user"
@@ -63,7 +79,3 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-defineProps<{ profile: any}>();
-</script>
