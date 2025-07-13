@@ -1,11 +1,73 @@
 @use "./variables" as *;
 
 .profile {
-	@apply mb-8 flex flex-col items-center gap-6 p-8;
+	@apply flex flex-col items-center;
+}
+
+.profile__header {
+	@apply flex flex-col items-center text-center w-full;
+	border-radius: $radius-sm;
+
+}
+
+.profile__banner {
+	@apply w-full h-44 overflow-hidden relative flex items-center justify-center;
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	border-radius: $radius-sm;
+	position: relative;
 	background: $color-surface;
+	margin-bottom: -72px; // Pull avatar up over banner
+	z-index: -1;
+}
+
+.profile__banner-img {
+	@apply w-full h-full object-cover;
+}
+
+.profile__avatar {
+	@apply h-36 w-36 rounded-full shadow-lg;
+	&--placeholder {
+		@apply bg-gray-300 text-gray-700 flex items-center justify-center text-5xl font-bold;
+	}
+}
+
+.profile__name-wrapper {
+	@apply my-4 flex flex-col items-center;
+}
+
+.profile__name {
+	@apply text-3xl font-semibold drop-shadow-sm;
+	color: $color-text;
 }
 
 .profile__user-url {
-	@apply text-xl font-bold tracking-wide hover:underline;
-	color: $color-text;
+	color: $color-muted;
+}
+
+.profile__bio {
+	@apply mx-auto max-w-xs text-base italic;
+	color: $color-muted;
+}
+
+.profile__stats {
+	@apply flex flex-col items-center justify-center gap-4 mt-2;
+
+	&-icon {
+		@apply mr-1 h-5 w-5;
+	}
+
+	&-mutual-status {
+		@apply text-sm;
+		color: $color-muted;
+	}
+
+	&-follow-count-wrapper {
+		@apply flex items-center gap-2;
+	}
+
+	&-follow-count {
+		@apply flex items-center gap-1 text-sm px-4 py-1.5 rounded-full;
+	}
 }

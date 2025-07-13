@@ -1,60 +1,61 @@
+
 <template>
 	<div class="profile">
-		<NuxtLink
-			:to="`/profile/${profile.username}`"
-			class="profile__user-url"
-		>
-			{{ profile.username }}
-		</NuxtLink>
-		<div class="relative">
+	<div class="profile__header">
+		<div v-if="profile.banner_url" class="profile__banner">
+			<img
+				:src="profile.banner_url"
+				alt="Banner"
+				class="profile__banner-img"
+			>
+		</div>
 			<img
 				v-if="profile.avatar_url"
 				:src="profile.avatar_url"
 				alt="Avatar"
-				class="h-36 w-36 rounded-full object-cover shadow-lg transition-transform duration-300 hover:scale-105"
-			/>
+				class="profile__avatar"
+			>
 			<span
 				v-else
-				class="flex h-36 w-36 items-center justify-center rounded-full text-5xl font-bold shadow-lg"
+				class="profile__avatar profile__avatar--placeholder"
 			>
 				{{ profile.username?.charAt(0).toUpperCase() }}
 			</span>
 		</div>
-		<div class="text-center">
-			<h2
-				class="mb-2 text-3xl font-extrabold tracking-tight drop-shadow-sm"
-			>
+		<div class="profile__name-wrapper">
+			<h2 class="profile__name">
 				{{ profile.display_name || profile.username }}
 			</h2>
-			<div
-				v-if="profile.bio"
-				class="mx-auto mt-1 max-w-xs text-base italic"
-			>
-				{{ profile.bio }}
-			</div>
+			<span class="profile__user-url">
+				@{{ profile.username }}
+			</span>
 		</div>
-		<div class="mt-2 flex flex-col gap-4">
-			<div class="flex items-center justify-center text-sm">
+		<div v-if="profile.bio" class="profile__bio">
+			{{ profile.bio }}
+		</div>
+		<div class="profile__stats">
+			<div class="profile__stats-mutual-status">
 				<slot name="mutual-status" />
 			</div>
-			<div class="flex items-center gap-2">
+			<div class="profile__stats-follow-count-wrapper">
 				<NuxtLink
 					:to="`/profile/${profile.username}/followers`"
-					class="flex items-center gap-1 px-4 py-1.5 text-sm"
+					class="profile__stats-follow-count"
 				>
 					<Icon
 						name="bx:group"
-						class="mr-1 h-5 w-5"
+						class="profile__stats-icon"
 					/>
 					<FollowerCount :user-id="profile.user_id" />
 				</NuxtLink>
 				<NuxtLink
 					:to="`/profile/${profile.username}/following`"
-					class="flex items-center gap-1 px-4 py-1.5 text-sm"
+					class="profile__stats-follow-count"
+
 				>
 					<Icon
 						name="bx:user"
-						class="mr-1 h-5 w-5"
+						class="profile__stats-icon"
 					/>
 					<FollowingCount :user-id="profile.user_id" />
 				</NuxtLink>
@@ -64,5 +65,5 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ profile: any }>();
+defineProps<{ profile: any}>();
 </script>
