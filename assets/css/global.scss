@@ -7,6 +7,10 @@ body {
 	background: $color-bg;
 }
 
+.layout {
+	@apply min-h-screen;
+}
+
 .main {
 	@apply mx-auto max-w-4xl p-4 pt-20;
 }
