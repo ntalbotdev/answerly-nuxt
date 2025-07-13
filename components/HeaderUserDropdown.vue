@@ -80,10 +80,10 @@ const logout = async () => {
 				My Profile
 			</NuxtLink>
 			<NuxtLink
-				to="/my/asked"
+				to="/my/questions"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/asked'
+					$route.path === '/my/questions'
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
