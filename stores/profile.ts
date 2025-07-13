@@ -3,6 +3,7 @@ export interface Profile {
     username: string;
     display_name?: string;
     avatar_url?: string;
+    banner_url?: string;
     bio?: string;
     created_at?: string;
     updated_at?: string;
@@ -119,6 +120,7 @@ export const useProfileStore = defineStore("profile", {
                         display_name: this.myProfile.display_name,
                         bio: this.myProfile.bio,
                         avatar_url: this.myProfile.avatar_url,
+                        banner_url: this.myProfile.banner_url,
                         updated_at: new Date().toISOString(),
                     } as any)
                     .eq("user_id", this.myProfile.user_id);
