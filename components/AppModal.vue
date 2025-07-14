@@ -44,6 +44,7 @@ function close() {
 	@apply relative rounded-md shadow-lg;
 	min-width: 20vw;
 	max-width: 90vw;
+	margin-top: 65px; // Adjusted for header height
 	background: $color-text;
 
 	&:before {
@@ -65,14 +66,10 @@ function close() {
 
 .modal__content {
 	@apply relative z-10 flex flex-col gap-4 px-6 pb-6 pt-2;
-	max-height: 80vh;
+	max-height: calc(85vh - 65px); // Adjusted for header height
 	overflow-y: auto;
-
-	@media (min-width: 768px) {
-		max-height: 80vh;
-		overflow-y: auto;
-	}
 }
+
 .modal__close {
 	@apply absolute right-2 top-2 cursor-pointer text-3xl;
 	background: transparent;
@@ -85,7 +82,7 @@ function close() {
 }
 
 .modal__title {
-	@apply mb-6 text-xl font-semibold;
+	@apply text-xl font-semibold;
 	color: $color-bg;
 }
 </style>
