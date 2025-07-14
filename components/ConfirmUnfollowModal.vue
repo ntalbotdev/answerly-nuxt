@@ -29,7 +29,7 @@ function confirm() {
 </template>
 
 <style scoped lang="scss">
-@import "~/assets/css/variables.scss";
+@use "~/assets/css/variables.scss" as *;
 
 .confirm-unfollow-modal__content {
 	@apply flex flex-col gap-4;

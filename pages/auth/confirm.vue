@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ROUTES } from "~/utils/routes";
+
 const session = useSupabaseSession();
 
 // watch for session and redirect when present
 if (!session.value) {
-    navigateTo("/auth/login");
+    navigateTo(ROUTES.LOGIN);
 } else {
-    navigateTo("/");
+    navigateTo(ROUTES.HOME);
 }
 </script>
 

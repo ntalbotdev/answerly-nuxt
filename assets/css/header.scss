@@ -82,6 +82,23 @@
 	}
 }
 
+.header__logout-link {
+	@apply flex h-12 w-full items-center whitespace-nowrap rounded-full px-4 py-2 text-2xl font-bold hover:bg-gray-200 text-red-500 transition-colors;
+
+	@media (min-width: 768px) {
+		@apply mt-0 px-4 py-2 text-base font-normal hover:bg-gray-100;
+		border-radius: 0;
+	}
+
+	&-icon {
+		@apply mr-1 h-6 w-6 min-w-6;
+
+		@media (min-width: 768px) {
+			@apply h-5 w-5;
+		}
+	}
+}
+
 /* User dropdown styles */
 .header__user-dropdown {
 	@apply relative;
@@ -141,10 +158,6 @@
 		@apply bg-gray-100 font-bold;
 		color: $color-bg;
 	}
-
-	&--logout {
-		@apply flex w-full items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100;
-	}
 }
 
 /* Hamburger menu styles */
@@ -152,7 +165,7 @@
 	@apply flex items-center md:hidden;
 }
 .header__nav-hamburger-button {
-	@apply rounded p-2 focus:outline-none;
+	@apply flex rounded;
 	background: transparent;
 }
 
@@ -161,13 +174,20 @@
 }
 
 .header__nav-hamburger-menu {
-	@apply fixed inset-0 z-50 flex flex-col bg-white bg-opacity-95 p-6;
+	@apply fixed inset-0 z-50 flex flex-col bg-white bg-opacity-95 p-4;
 }
+
 .header__nav-hamburger-close {
-	@apply mb-4 self-end rounded p-2 focus:outline-none;
+	@apply flex mb-4 self-end mt-1;
 	background: transparent;
+
+	&-icon {
+		@apply h-6 w-6 p-2;
+		color: $color-bg;
+	}
 }
+
 .header__nav-hamburger-links {
-	@apply flex flex-col gap-4;
+	@apply flex flex-col gap-4 px-2;
 	max-width: 300px;
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
+import { ROUTES } from "~/utils/routes";
 const profileStore = useProfileStore();
-const router = useRouter();
 const dropdownRef = ref<HTMLElement | null>(null);
 const isDropdownOpen = ref(false);
 const emit = defineEmits(["close"]);
@@ -26,12 +26,6 @@ function handleDropdownLinkClick() {
 	emit("close");
 }
 
-const logout = async () => {
-	const supabase = useSupabaseClient();
-	await supabase.auth.signOut();
-	profileStore.clearProfile();
-	router.push("/auth/login");
-};
 </script>
 
 <template>
@@ -65,8 +59,8 @@ const logout = async () => {
 		</button>
 
 		<div v-if="isDropdownOpen" class="header__user-dropdown-menu">
-			<NuxtLink
-				to="/my/inbox"
+<NuxtLink
+				:to="ROUTES.INBOX"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/inbox'
@@ -78,8 +72,8 @@ const logout = async () => {
 				Inbox
 			</NuxtLink>
 
-			<NuxtLink
-				to="/my/profile"
+<NuxtLink
+				:to="ROUTES.PROFILE"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/profile'
@@ -91,8 +85,8 @@ const logout = async () => {
 				My Profile
 			</NuxtLink>
 
-			<NuxtLink
-				to="/my/questions"
+<NuxtLink
+				:to="ROUTES.QUESTIONS"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/questions'
@@ -104,11 +98,11 @@ const logout = async () => {
 				My Questions
 			</NuxtLink>
 
-			<NuxtLink
-				to="/my/settings"
+<NuxtLink
+				:to="ROUTES.SETTINGS"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/settings'
+					$route.path === '/settings'
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
@@ -116,20 +110,10 @@ const logout = async () => {
 			>
 				Settings
 			</NuxtLink>
-			
-			<button
-				class="header__user-dropdown-link--logout"
-				type="button"
-				@click="
-					async () => {
-						await logout();
-						handleDropdownLinkClick();
-					}
-				"
-			>
-				<Icon name="bx:log-out" class="header__icon" />
-				Logout
-			</button>
+
+			<LogoutButton
+				@click="handleDropdownLinkClick"
+			/>
 		</div>
 	</div>
 </template>
