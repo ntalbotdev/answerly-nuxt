@@ -38,7 +38,7 @@ onUnmounted(() => {
 					aria-label="Close navigation menu"
 					@click="closeMenu"
 				>
-					<Icon name="bx:x" class="text-2xl" />
+					<Icon name="bx:x" class="header__nav-hamburger-close-icon" />
 				</button>
 
 				<nav class="header__nav-hamburger-links">
