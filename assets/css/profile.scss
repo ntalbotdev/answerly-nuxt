@@ -231,7 +231,11 @@
 }
 
 .edit-profile__upload {
-	@apply flex items-center gap-4;
+	@apply flex flex-col items-center gap-4;
+
+	@media (min-width: 380px) {
+		@apply flex-row;
+	}
 }
 
 .edit-profile__image-preview {
@@ -242,8 +246,12 @@
 	}
 
 	&--banner {
-		@apply h-14 w-full;
+		@apply h-16 w-full;
 		border-radius: $radius-sm;
+
+		@media (min-width: 380px) {
+			@apply h-14 w-full;
+		}
 	}
 }
 
@@ -263,7 +271,10 @@
 
 	&--banner {
 		@apply w-full;
-		max-width: 40%;
+
+		@media (min-width: 380px) {
+			max-width: 40%;
+		}
 	}
 }
 
