@@ -276,14 +276,14 @@ async function saveProfile() {
 
 		<div class="edit-profile__button-wrapper">
 			<button
-				class="edit-profile__button edit-profile__button--cancel"
+				class="btn btn--secondary"
 				@click="$emit('close')"
 			>
 				Cancel
 			</button>
 			<button
 				type="submit"
-				class="edit-profile__button edit-profile__button--submit"
+				class="btn btn--primary"
 				:disabled="loading || !form.username.trim()"
 			>
 				{{ loading ? "Saving..." : "Save Profile" }}

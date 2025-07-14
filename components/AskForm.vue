@@ -98,14 +98,14 @@ async function submitQuestion() {
 		<div class="ask-form__button-wrapper">
 			<button
 				type="button"
-				class="ask-form__button ask-form__button--cancel"
+				class="btn btn--secondary"
 				@click="$emit('close')"
 			>
 				Cancel
 			</button>
 			<button
 				type="submit"
-				class="ask-form__button ask-form__button--submit"
+				class="btn btn--primary"
 				:disabled="loading || !form.question.trim()"
 			>
 				{{ loading ? "Sending..." : "Send Question" }}

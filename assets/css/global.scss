@@ -23,3 +23,34 @@ body {
 .error-text {
 	@apply text-red-500;
 }
+
+.btn {
+	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow-sm transition-all;
+	border-radius: $radius-xs;
+
+	&:disabled {
+		@apply cursor-not-allowed opacity-50;
+	}
+
+	&--primary {
+		background: $color-accent;
+		color: $color-accent-text;
+
+		&:hover:not(:disabled) {
+			background: $color-accent-hover;
+			color: $color-accent-text-hover;
+		}
+	}
+
+	&--secondary {
+		@apply bg-gray-300 text-gray-700 hover:bg-gray-300;
+
+		&:hover:not(:disabled) {
+			background: $color-muted-hover;
+		}
+	}
+
+	&--danger {
+		@apply bg-red-600 text-white hover:bg-red-700;
+	}
+}

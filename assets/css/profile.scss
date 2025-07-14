@@ -272,35 +272,6 @@
 	@apply ml-auto flex items-center justify-end gap-2;
 }
 
-.edit-profile__button,
-.ask-form__button {
-	@apply mt-4 w-full whitespace-nowrap px-4 py-2 font-bold shadow-sm transition-all;
-	border-radius: $radius-xs;
-
-	&:disabled {
-		@apply cursor-not-allowed opacity-50;
-	}
-
-	&--cancel {
-		background: $color-muted-light;
-		color: $color-surface;
-
-		&:hover:not(:disabled) {
-			background: $color-muted-hover;
-		}
-	}
-
-	&--submit {
-		background: $color-accent;
-		color: $color-accent-text;
-
-		&:hover:not(:disabled) {
-			background: $color-accent-hover;
-			color: $color-accent-text-hover;
-		}
-	}
-}
-
 .ask-form__checkbox-label {
 	@apply flex cursor-pointer items-center gap-2;
 }
