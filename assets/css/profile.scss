@@ -4,13 +4,17 @@
 	@apply relative z-0 flex flex-col items-center;
 
 	&:before {
-		@apply absolute inset-0 drop-shadow-lg;
+		@apply absolute inset-0 w-full drop-shadow-lg;
 		content: "";
 		margin: auto;
 		background: $color-text;
-		width: 300px;
-		border-radius: $radius-lg;
+
 		z-index: -1;
+
+		@media (min-width: 380px) {
+			border-radius: 0 0 $radius-lg $radius-lg;
+			width: 360px;
+		}
 	}
 }
 
@@ -23,9 +27,20 @@
 	@apply relative flex w-full items-center justify-center overflow-hidden drop-shadow-lg;
 	width: 100%;
 	height: auto;
-	border-radius: 0 0 $radius-sm $radius-sm;
 	background: $color-surface;
-	margin-bottom: -72px; // Pull avatar up over banner
+	margin-bottom: -8%; // Responsive pull avatar up over banner
+
+	@media (min-width: 380px) {
+		margin-bottom: -6%;
+	}
+
+	@media (min-width: 640px) {
+		margin-bottom: -7%;
+	}
+
+	@media (min-width: 768px) {
+		border-radius: 0 0 $radius-lg $radius-lg;
+	}
 }
 
 .profile__banner-img-wrapper {
@@ -41,12 +56,27 @@
 .profile__actions {
 	@apply absolute bottom-3 right-3 flex items-center justify-end gap-2;
 	z-index: 1;
+
+	@media (max-width: 800px) {
+		@apply left-3;
+
+		.profile__action:nth-child(2) {
+			margin-right: auto;
+		}
+	}
 }
 
 .profile__action {
-	@apply flex items-center justify-center rounded-full bg-white py-2 shadow-md transition-all;
-	min-width: 40px;
-	max-width: 40px;
+	@apply flex items-center justify-center rounded-full bg-white shadow-md transition-all;
+	min-width: 34px;
+	max-width: 34px;
+	height: 34px;
+
+	@media (min-width: 768px) {
+		min-width: 36px;
+		max-width: 36px;
+		height: 36px;
+	}
 
 	&:hover {
 		@apply max-w-full bg-blue-50 px-4;
@@ -89,15 +119,33 @@
 }
 
 .profile__action-text {
-	@apply max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all;
+	@apply max-w-0 overflow-hidden whitespace-nowrap text-xs font-semibold transition-all;
+
+	@media (max-width: 520px) {
+		&--hide {
+			@apply hidden;
+		}
+	}
+
+	@media (min-width: 640px) {
+		@apply text-sm;
+	}
 }
 
 .profile__avatar {
-	@apply h-36 w-36 rounded-full object-cover;
+	@apply h-28 w-28 rounded-full object-cover;
 	z-index: 0;
 	background: $color-text;
 	outline: 6px solid $color-text;
 	outline-offset: -1px;
+
+	@media (min-width: 640px) {
+		@apply h-32 w-32;
+	}
+
+	@media (min-width: 768px) {
+		@apply h-36 w-36;
+	}
 
 	&--placeholder {
 		@apply flex items-center justify-center text-5xl font-bold;
@@ -142,11 +190,15 @@
 	}
 
 	&-follow-count {
-		@apply flex items-center gap-1 rounded-full px-3 py-1 text-sm transition-all;
+		@apply flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-1 text-sm transition-all;
 		background: $color-muted-light;
 
 		&:hover {
 			background: $color-accent;
+		}
+
+		@media (min-width: 300px) {
+			@apply max-w-40;
 		}
 	}
 }
@@ -167,6 +219,10 @@
 	@apply mt-1 block w-full border border-gray-300 bg-white p-2 drop-shadow-sm focus:outline-none;
 	border-radius: $radius-xs;
 	border: 1px solid $color-muted-light;
+
+	@media (min-width: 380px) {
+		min-width: 300px;
+	}
 
 	&:focus {
 		border-color: $color-accent;

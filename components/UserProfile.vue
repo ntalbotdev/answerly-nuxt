@@ -124,7 +124,7 @@ function handleCloseAskModal() {
 									class="profile__action-icon"
 								/>
 								<span class="profile__action-text">
-									Ask a Question
+									Ask <span class="profile__action-text--hide">a Question</span>
 								</span>
 							</button>
 
