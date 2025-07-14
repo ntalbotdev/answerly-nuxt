@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
+import { ROUTES } from "~/utils/routes";
 const profileStore = useProfileStore();
 const dropdownRef = ref<HTMLElement | null>(null);
 const isDropdownOpen = ref(false);
@@ -58,8 +59,8 @@ function handleDropdownLinkClick() {
 		</button>
 
 		<div v-if="isDropdownOpen" class="header__user-dropdown-menu">
-			<NuxtLink
-				to="/my/inbox"
+<NuxtLink
+				:to="ROUTES.INBOX"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/inbox'
@@ -71,8 +72,8 @@ function handleDropdownLinkClick() {
 				Inbox
 			</NuxtLink>
 
-			<NuxtLink
-				to="/my/profile"
+<NuxtLink
+				:to="ROUTES.PROFILE"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/profile'
@@ -84,8 +85,8 @@ function handleDropdownLinkClick() {
 				My Profile
 			</NuxtLink>
 
-			<NuxtLink
-				to="/my/questions"
+<NuxtLink
+				:to="ROUTES.QUESTIONS"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/my/questions'
@@ -97,8 +98,8 @@ function handleDropdownLinkClick() {
 				My Questions
 			</NuxtLink>
 
-			<NuxtLink
-				to="/settings"
+<NuxtLink
+				:to="ROUTES.SETTINGS"
 				:class="[
 					'header__user-dropdown-link',
 					$route.path === '/settings'

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ROUTES } from "~/utils/routes";
 const showMenu = ref(false);
 const user = useSupabaseUser();
 const route = useRoute();
@@ -60,8 +61,8 @@ onUnmounted(() => {
 							Feed
 						</NuxtLink>
 
-						<NuxtLink
-							to="/discover"
+<NuxtLink
+							:to="ROUTES.DISCOVER"
 							:class="[
 								'header__nav-link',
 								route.path === '/discover'
@@ -77,8 +78,8 @@ onUnmounted(() => {
 							Discover
 						</NuxtLink>
 
-						<NuxtLink
-							to="/notifications"
+<NuxtLink
+							:to="ROUTES.NOTIFICATIONS"
 							:class="[
 								'header__nav-link',
 								route.path === '/notifications'
@@ -94,8 +95,8 @@ onUnmounted(() => {
 							Notifications
 						</NuxtLink>
 
-						<NuxtLink
-							to="/my/inbox"
+<NuxtLink
+							:to="ROUTES.INBOX"
 							:class="[
 								'header__nav-link mt-6',
 								route.path === '/my/inbox'
@@ -111,8 +112,8 @@ onUnmounted(() => {
 							Inbox
 						</NuxtLink>
 
-						<NuxtLink
-							to="/my/profile"
+<NuxtLink
+							:to="ROUTES.PROFILE"
 							:class="[
 								'header__nav-link',
 								route.path === '/my/profile'
@@ -128,8 +129,8 @@ onUnmounted(() => {
 							My Profile
 						</NuxtLink>
 
-						<NuxtLink
-							to="/my/questions"
+<NuxtLink
+							:to="ROUTES.QUESTIONS"
 							:class="[
 								'header__nav-link',
 								route.path === '/my/questions'
@@ -145,8 +146,8 @@ onUnmounted(() => {
 							My Questions
 						</NuxtLink>
 
-						<NuxtLink
-							to="/settings"
+<NuxtLink
+							:to="ROUTES.SETTINGS"
 							:class="[
 								'header__nav-link',
 								route.path === '/settings'
@@ -163,8 +164,8 @@ onUnmounted(() => {
 					</template>
 
 					<template v-else>
-						<NuxtLink
-							to="/auth/login"
+<NuxtLink
+							:to="ROUTES.LOGIN"
 							:class="[
 								'header__nav-link',
 								route.path === '/auth/login'
@@ -176,8 +177,8 @@ onUnmounted(() => {
 							Log in
 						</NuxtLink>
 
-						<NuxtLink
-							to="/auth/signup"
+<NuxtLink
+							:to="ROUTES.SIGNUP"
 							:class="[
 								'header__nav-link',
 								route.path === '/auth/signup'

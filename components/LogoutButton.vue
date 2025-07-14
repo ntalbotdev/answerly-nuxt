@@ -1,5 +1,6 @@
 <script setup>
 import { useProfileStore } from "~/stores/profile";
+import { ROUTES } from "~/utils/routes";
 
 const profileStore = useProfileStore();
 const router = useRouter();
@@ -8,7 +9,7 @@ const logout = async () => {
 	const supabase = useSupabaseClient();
 	await supabase.auth.signOut();
 	profileStore.clearProfile();
-	router.push("/auth/login");
+	router.push(ROUTES.LOGIN);
 };
 </script>
 

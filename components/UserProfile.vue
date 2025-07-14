@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { ROUTES } from "~/utils/routes";
 const router = useRouter();
 const props = defineProps<{ profile: any }>();
 const route = useRoute();
-const canEdit = computed(() => route.path === "/my/profile");
+const canEdit = computed(() => route.path === ROUTES.PROFILE);
 const profileStore = useProfileStore();
 const user = useSupabaseUser();
 const isFollowing = ref(false);
@@ -13,7 +14,7 @@ const showConfirmUnfollowModal = ref(false);
 
 // Show edit modal if the user is on their own profile and has the query parameter: ?edit=1
 onMounted(() => {
-	if (route.path === "/my/profile" && route.query.edit === "1") {
+	if (route.path === ROUTES.PROFILE && route.query.edit === "true") {
 		showEditModal.value = true;
 	}
 });
@@ -21,7 +22,7 @@ onMounted(() => {
 // Watch for changes in the profile prop to update the edit modal visibility
 function handleCloseEditModal() {
 	showEditModal.value = false;
-	if (route.path === "/my/profile" && route.query.edit === "1") {
+	if (route.path === ROUTES.PROFILE && route.query.edit === "true") {
 		const { edit, ...rest } = route.query;
 		router.replace({ path: route.path, query: rest });
 	}
@@ -114,8 +115,8 @@ function closeConfirmUnfollowModal() {
 							class="profile__action profile__action--edit-profile"
 							@click="
 								$router.push({
-									path: '/my/profile',
-									query: { edit: '1' },
+									path: ROUTES.PROFILE,
+									query: { edit: 'true' },
 								})
 							"
 						>

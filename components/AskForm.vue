@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuestionsStore } from "~/stores/questions";
+import { ROUTES } from "~/utils/routes";
 
 interface Profile {
 	user_id: string;
@@ -57,7 +58,7 @@ async function submitQuestion() {
 		emit("submitted");
 		emit("close");
 		
-		router.push(`/profile/${props.profile.username}`);
+	router.push(`${ROUTES.PROFILE}/${props.profile.username}`);
 	} catch {
 		error.value = "Failed to send question. Please try again.";
 	} finally {
