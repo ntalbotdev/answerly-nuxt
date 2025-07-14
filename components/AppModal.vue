@@ -71,7 +71,7 @@ function close() {
 }
 
 .modal__close {
-	@apply absolute right-2 top-2 cursor-pointer text-3xl;
+	@apply absolute right-2 top-2 cursor-pointer text-3xl transition-colors;
 	background: transparent;
 	border: none;
 	color: $color-surface;
