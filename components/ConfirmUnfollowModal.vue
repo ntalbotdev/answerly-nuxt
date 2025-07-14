@@ -13,7 +13,7 @@ function confirm() {
 	<AppModal :open="props.open" title="Confirm" @close="close">
 		<div class="confirm-unfollow-modal__content">
 			<p>
-				Are you sure you want to unfollow
+				Are you sure you want to stop following
 				<strong>{{ props.username }}</strong>?
 			</p>
 			<div class="confirm-unfollow-modal__actions">
