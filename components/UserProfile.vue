@@ -12,21 +12,21 @@ const showEditModal = ref(false);
 const showAskModal = ref(false);
 const showConfirmUnfollowModal = ref(false);
 
-// Show edit modal if the user is on their own profile and has the query parameter: ?edit=1
-onMounted(() => {
-	if (route.path === ROUTES.PROFILE && route.query.edit === "true") {
-		showEditModal.value = true;
-	}
-});
+// Watch for query ?edit=1 and open modal only when it appears
+watch(
+	() => route.query.edit,
+	(edit) => {
+		// Open modal when ?edit=1 is present
+		showEditModal.value = edit === "1";
+	},
+	{ immediate: true },
+);
 
-// Watch for changes in the profile prop to update the edit modal visibility
+
 function handleCloseEditModal() {
-	showEditModal.value = false;
-	if (route.path === ROUTES.PROFILE && route.query.edit === "true") {
-		const { edit, ...rest } = route.query;
-		router.replace({ path: route.path, query: rest });
-	}
+	navigateTo({ path: route.path, query: {} });
 }
+
 function handleCloseAskModal() {
 	showAskModal.value = false;
 }
@@ -62,6 +62,7 @@ async function handleFollow() {
 function requestUnfollow() {
 	showConfirmUnfollowModal.value = true;
 }
+
 async function confirmUnfollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.unfollowUser(props.profile.user_id);
@@ -70,6 +71,7 @@ async function confirmUnfollow() {
 	window.dispatchEvent(new Event("follow-status-changed"));
 	showConfirmUnfollowModal.value = false;
 }
+
 function closeConfirmUnfollowModal() {
 	showConfirmUnfollowModal.value = false;
 }
@@ -77,16 +79,18 @@ function closeConfirmUnfollowModal() {
 
 <template>
 	<div class="profile">
-		<AppModal v-model:open="showEditModal" title="Edit Profile">
-			<EditProfileForm
-				:profile="props.profile"
-				@close="handleCloseEditModal"
-			/>
+		<AppModal
+			v-model:open="showEditModal"
+			title="Edit Profile"
+			@close="handleCloseEditModal"
+		>
+			<EditProfileForm :profile="props.profile" @close="handleCloseAskModal" />
 		</AppModal>
 
 		<AppModal v-model:open="showAskModal" title="Ask a Question">
 			<AskForm :profile="props.profile" @close="handleCloseAskModal" />
 		</AppModal>
+
 		<ConfirmUnfollowModal
 			:open="showConfirmUnfollowModal"
 			:username="props.profile?.username"
@@ -116,7 +120,7 @@ function closeConfirmUnfollowModal() {
 							@click="
 								$router.push({
 									path: ROUTES.PROFILE,
-									query: { edit: 'true' },
+									query: { edit: '1' },
 								})
 							"
 						>
@@ -138,7 +142,10 @@ function closeConfirmUnfollowModal() {
 									class="profile__action-icon"
 								/>
 								<span class="profile__action-text">
-									Ask <span class="profile__action-text--hide">a Question</span>
+									Ask
+									<span class="profile__action-text--hide">
+										a Question
+									</span>
 								</span>
 							</button>
 
@@ -198,7 +205,7 @@ function closeConfirmUnfollowModal() {
 						:src="profile.banner_url"
 						alt="Banner"
 						class="profile__banner-img"
-					>
+					/>
 				</div>
 			</div>
 
@@ -207,7 +214,7 @@ function closeConfirmUnfollowModal() {
 				:src="profile.avatar_url"
 				alt="Avatar"
 				class="profile__avatar"
-			>
+			/>
 			<!-- Placeholder for avatar if not set -->
 			<span v-else class="profile__avatar profile__avatar--placeholder">
 				{{ profile.username?.charAt(0).toUpperCase() }}

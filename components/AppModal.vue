@@ -3,7 +3,7 @@ const props = defineProps<{
 	open: boolean;
 	title?: string;
 }>();
-const emit = defineEmits(["close", "update:open"]);
+const emit = defineEmits(["close", "update:open", "updated"]);
 const modelValue = computed({
 	get: () => props.open,
 	set: (val: boolean) => emit("update:open", val),
@@ -26,7 +26,7 @@ function close() {
 					<Icon name="bx:x" />
 				</button>
 				<h3 v-if="title" class="modal__title">{{ title }}</h3>
-				<slot />
+				<slot  />
 			</div>
 		</div>
 	</div>

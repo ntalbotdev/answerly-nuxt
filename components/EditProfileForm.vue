@@ -14,7 +14,6 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 const props = defineProps<{ profile: Profile }>();
-const emit = defineEmits(["close", "updated"]);
 const avatarFileInput = ref<HTMLInputElement>();
 const bannerFileInput = ref<HTMLInputElement>();
 
@@ -160,6 +159,7 @@ async function saveProfile() {
 	loading.value = true;
 	error.value = "";
 
+
 	if (!user.value) {
 		error.value = "You must be logged in to edit your profile.";
 		loading.value = false;
@@ -173,8 +173,9 @@ async function saveProfile() {
 		profileStore.updateMyProfileField("avatar_url", form.avatar_url);
 		profileStore.updateMyProfileField("banner_url", form.banner_url);
 		await profileStore.saveMyProfile();
-		emit("updated");
-		emit("close");
+		
+		const router = useRouter();
+		router.replace({ path: useRoute().path });
 	} catch {
 		error.value = "Failed to update profile";
 	} finally {
@@ -275,9 +276,10 @@ async function saveProfile() {
 		</div>
 
 		<div class="edit-profile__button-wrapper">
-			<button
-				class="btn btn--secondary"
-				@click="$emit('close')"
+			<button 
+				type="button" 
+				class="btn btn--secondary" 
+				@click="useRouter().replace({ path: useRoute().path })"
 			>
 				Cancel
 			</button>
