@@ -39,7 +39,10 @@ onUnmounted(() => {
 					aria-label="Close navigation menu"
 					@click="closeMenu"
 				>
-					<Icon name="bx:x" class="header__nav-hamburger-close-icon" />
+					<Icon
+						name="bx:x"
+						class="header__nav-hamburger-close-icon"
+					/>
 				</button>
 
 				<nav class="header__nav-hamburger-links">
@@ -61,7 +64,7 @@ onUnmounted(() => {
 							Feed
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.DISCOVER"
 							:class="[
 								'header__nav-link',
@@ -78,7 +81,7 @@ onUnmounted(() => {
 							Discover
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.NOTIFICATIONS"
 							:class="[
 								'header__nav-link',
@@ -95,7 +98,7 @@ onUnmounted(() => {
 							Notifications
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.INBOX"
 							:class="[
 								'header__nav-link mt-6',
@@ -112,7 +115,7 @@ onUnmounted(() => {
 							Inbox
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.PROFILE"
 							:class="[
 								'header__nav-link',
@@ -129,7 +132,7 @@ onUnmounted(() => {
 							My Profile
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.QUESTIONS"
 							:class="[
 								'header__nav-link',
@@ -146,7 +149,7 @@ onUnmounted(() => {
 							My Questions
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.SETTINGS"
 							:class="[
 								'header__nav-link',
@@ -164,7 +167,7 @@ onUnmounted(() => {
 					</template>
 
 					<template v-else>
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.LOGIN"
 							:class="[
 								'header__nav-link',
@@ -177,7 +180,7 @@ onUnmounted(() => {
 							Log in
 						</NuxtLink>
 
-<NuxtLink
+						<NuxtLink
 							:to="ROUTES.SIGNUP"
 							:class="[
 								'header__nav-link',
