@@ -9,6 +9,7 @@ const isFollowing = ref(false);
 const followerCount = ref(0);
 const showEditModal = ref(false);
 const showAskModal = ref(false);
+const showConfirmUnfollowModal = ref(false);
 
 // Show edit modal if the user is on their own profile and has the query parameter: ?edit=1
 onMounted(() => {
@@ -24,6 +25,9 @@ function handleCloseEditModal() {
 		const { edit, ...rest } = route.query;
 		router.replace({ path: route.path, query: rest });
 	}
+}
+function handleCloseAskModal() {
+	showAskModal.value = false;
 }
 
 // Fetch follow status and follower count when mounted or when the profile changes
@@ -54,16 +58,19 @@ async function handleFollow() {
 	window.dispatchEvent(new Event("follow-status-changed"));
 }
 
-async function handleUnfollow() {
+function requestUnfollow() {
+	showConfirmUnfollowModal.value = true;
+}
+async function confirmUnfollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.unfollowUser(props.profile.user_id);
 	isFollowing.value = false;
 	followerCount.value = Math.max(0, followerCount.value - 1);
 	window.dispatchEvent(new Event("follow-status-changed"));
+	showConfirmUnfollowModal.value = false;
 }
-
-function handleCloseAskModal() {
-	showAskModal.value = false;
+function closeConfirmUnfollowModal() {
+	showConfirmUnfollowModal.value = false;
 }
 </script>
 
@@ -79,6 +86,12 @@ function handleCloseAskModal() {
 		<AppModal v-model:open="showAskModal" title="Ask a Question">
 			<AskForm :profile="props.profile" @close="handleCloseAskModal" />
 		</AppModal>
+		<ConfirmUnfollowModal
+			:open="showConfirmUnfollowModal"
+			:username="props.profile?.username"
+			@close="closeConfirmUnfollowModal"
+			@confirm="confirmUnfollow"
+		/>
 
 		<div class="profile__header">
 			<div class="profile__banner">
@@ -138,7 +151,7 @@ function handleCloseAskModal() {
 								:aria-pressed="isFollowing"
 								@click="
 									isFollowing
-										? handleUnfollow()
+										? requestUnfollow()
 										: handleFollow()
 								"
 							>
@@ -184,7 +197,7 @@ function handleCloseAskModal() {
 						:src="profile.banner_url"
 						alt="Banner"
 						class="profile__banner-img"
-					/>
+					>
 				</div>
 			</div>
 
@@ -193,7 +206,7 @@ function handleCloseAskModal() {
 				:src="profile.avatar_url"
 				alt="Avatar"
 				class="profile__avatar"
-			/>
+			>
 			<!-- Placeholder for avatar if not set -->
 			<span v-else class="profile__avatar profile__avatar--placeholder">
 				{{ profile.username?.charAt(0).toUpperCase() }}
