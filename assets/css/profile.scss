@@ -8,12 +8,12 @@
 		content: "";
 		margin: auto;
 		background: $color-text;
-
 		z-index: -1;
 
-		@media (min-width: 380px) {
+		@media (min-width: 640px) {
+			@apply w-full;
 			border-radius: 0 0 $radius-lg $radius-lg;
-			width: 360px;
+			width: 400px;
 		}
 	}
 }
@@ -169,7 +169,7 @@
 
 .profile__bio {
 	@apply mx-auto mb-4 px-4 text-center italic;
-	max-width: 300px;
+	max-width: 380px;
 	color: $color-muted;
 }
 
@@ -256,7 +256,7 @@
 }
 
 .edit-profile__upload-button {
-	@apply whitespace-nowrap py-2 text-sm shadow-sm transition-all;
+	@apply whitespace-nowrap py-2 text-sm shadow transition-all;
 	background-color: $color-muted-light;
 	color: $color-bg;
 	border-radius: $radius-xs;
@@ -288,7 +288,8 @@
 }
 
 .ask-form__checkbox {
-	@apply h-4 w-4;
+	@apply h-4 w-4 shadow;
+	accent-color: $color-accent;
 }
 
 .ask-form__checkbox-text {
