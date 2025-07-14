@@ -89,7 +89,7 @@ async function handleBannerFileChange(event: Event) {
 		.default;
 	const options = {
 		maxSizeMB: 10,
-		maxWidthOrHeight: 1000, // Larger for banners
+		maxWidthOrHeight: 1000, // Larger for banner
 		useWebWorker: true,
 		fileType: "image/webp",
 	};

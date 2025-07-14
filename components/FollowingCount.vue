@@ -36,7 +36,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <span v-if="!loading">
-    {{ followingCount }} Following
-  </span>
+  <span>{{ followingCount }} Following</span>
 </template>

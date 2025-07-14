@@ -4,6 +4,7 @@ const profileStore = useProfileStore();
 const router = useRouter();
 const dropdownRef = ref<HTMLElement | null>(null);
 const isDropdownOpen = ref(false);
+const emit = defineEmits(["close"]);
 
 const handleClickOutside = (event: MouseEvent) => {
 	if (
@@ -19,6 +20,11 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	window.removeEventListener("click", handleClickOutside);
 });
+
+function handleDropdownLinkClick() {
+	isDropdownOpen.value = false;
+	emit("close");
+}
 
 const logout = async () => {
 	const supabase = useSupabaseClient();
@@ -42,18 +48,22 @@ const logout = async () => {
 						alt="Avatar"
 					/>
 				</template>
+
 				<template v-else>
 					<Icon name="bx:user" class="header__icon" />
 				</template>
 			</div>
+
 			<span class="header__user-dropdown-name">
 				{{
 					profileStore.myProfile?.display_name ||
 					profileStore.myProfile?.username
 				}}
 			</span>
+
 			<Icon name="bx:chevron-down" class="header__user-dropdown-icon" />
 		</button>
+
 		<div v-if="isDropdownOpen" class="header__user-dropdown-menu">
 			<NuxtLink
 				to="/my/inbox"
@@ -63,10 +73,11 @@ const logout = async () => {
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
-				@click="isDropdownOpen = false"
+				@click="handleDropdownLinkClick"
 			>
 				Inbox
 			</NuxtLink>
+
 			<NuxtLink
 				to="/my/profile"
 				:class="[
@@ -75,10 +86,11 @@ const logout = async () => {
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
-				@click="isDropdownOpen = false"
+				@click="handleDropdownLinkClick"
 			>
 				My Profile
 			</NuxtLink>
+
 			<NuxtLink
 				to="/my/questions"
 				:class="[
@@ -87,10 +99,11 @@ const logout = async () => {
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
-				@click="isDropdownOpen = false"
+				@click="handleDropdownLinkClick"
 			>
 				My Questions
 			</NuxtLink>
+
 			<NuxtLink
 				to="/my/settings"
 				:class="[
@@ -99,17 +112,18 @@ const logout = async () => {
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
-				@click="isDropdownOpen = false"
+				@click="handleDropdownLinkClick"
 			>
 				Settings
 			</NuxtLink>
+			
 			<button
 				class="header__user-dropdown-link--logout"
 				type="button"
 				@click="
 					async () => {
 						await logout();
-						isDropdownOpen = false;
+						handleDropdownLinkClick();
 					}
 				"
 			>

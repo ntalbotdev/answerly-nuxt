@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ 
+const props = defineProps<{
 	open: boolean;
 	title?: string;
 }>();
@@ -16,16 +16,18 @@ function close() {
 
 <template>
 	<div v-if="open" class="modal__overlay" @click.self="close">
-		<div class="modal__content">
-			<button
-				class="modal__close"
-				aria-label="Close modal"
-				@click="close"
-			>
-				<Icon name="bx:x" />
-			</button>
-			<h3 v-if="title" class="modal__title">{{ title }}</h3>
-			<slot />
+		<div class="modal__content-wrapper">
+			<div class="modal__content">
+				<button
+					class="modal__close"
+					aria-label="Close modal"
+					@click="close"
+				>
+					<Icon name="bx:x" />
+				</button>
+				<h3 v-if="title" class="modal__title">{{ title }}</h3>
+				<slot />
+			</div>
 		</div>
 	</div>
 </template>
@@ -38,8 +40,8 @@ function close() {
 	backdrop-filter: blur(2px);
 }
 
-.modal__content {
-	@apply relative rounded-md px-8 pt-2 pb-8 shadow-lg;
+.modal__content-wrapper {
+	@apply relative rounded-md shadow-lg;
 	min-width: 20vw;
 	max-width: 90vw;
 	background: $color-text;
@@ -58,6 +60,17 @@ function close() {
 		inset: -6px;
 		background: $color-text;
 		z-index: -2;
+	}
+}
+
+.modal__content {
+	@apply relative z-10 flex flex-col gap-4 px-6 pb-6 pt-2;
+	max-height: 80vh;
+	overflow-y: auto;
+
+	@media (min-width: 768px) {
+		max-height: 80vh;
+		overflow-y: auto;
 	}
 }
 .modal__close {

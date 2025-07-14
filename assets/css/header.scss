@@ -2,6 +2,7 @@
 
 .header {
 	@apply fixed left-0 right-0 top-0 z-10 flex items-center bg-white shadow-md;
+	height: 65px; // Set fixed height for header
 }
 
 .header__icon {
@@ -31,14 +32,22 @@
 }
 
 .header__nav {
-	@apply flex items-center gap-4;
+	@apply hidden items-center gap-4;
+
+	@media (min-width: 768px) {
+		@apply flex;
+	}
 }
 
 .header__nav-link {
-	@apply relative flex items-center whitespace-nowrap px-4 py-2 font-bold transition-colors;
+	@apply relative flex items-center whitespace-nowrap px-4 py-2 text-2xl font-bold transition-colors;
 
 	color: $color-bg;
 	z-index: 1;
+
+	@media (min-width: 768px) {
+		@apply text-base;
+	}
 
 	&:hover,
 	&--active {
@@ -55,50 +64,110 @@
 
 	&:hover:before,
 	&--active:before {
-		@apply h-8 transition-all;
+		@apply h-12 transition-all;
 		width: 100%;
-	}
 
-	&-icon {
-		color: $color-bg;
-		@apply mr-1 h-4 w-4;
+		@media (min-width: 768px) {
+			@apply h-8;
+		}
 	}
 }
 
+.header__nav-link-icon {
+	@apply mr-1 h-6 w-6 min-w-6;
+	color: $color-bg;
+
+	@media (min-width: 768px) {
+		@apply h-4 w-4;
+	}
+}
+
+/* User dropdown styles */
 .header__user-dropdown {
 	@apply relative;
 }
 
 .header__user-dropdown-button {
-	@apply flex items-center gap-2 px-3 py-1 transition-all hover:bg-gray-200;
-	border-radius: $radius-xs;
+	@apply flex h-12 w-full items-center gap-2 rounded-full px-3 text-2xl transition-all hover:bg-gray-200;
+
+	@media (min-width: 768px) {
+		@apply h-8 py-2 text-base;
+	}
+
+	@media (min-width: 768px) {
+		@apply w-auto;
+		border-radius: $radius-xs;
+	}
 }
 
 .header__user-dropdown-avatar img {
-	@apply h-5 w-5 min-w-5 rounded-full object-cover;
+	@apply h-8 w-8 min-w-8 rounded-full object-cover;
+
+	@media (min-width: 768px) {
+		@apply h-5 w-5 min-w-5;
+	}
 }
 
 .header__user-dropdown-name {
 	@apply font-semibold;
+	color: $color-bg;
 }
 
 .header__user-dropdown-icon {
-	@apply h-4 w-4 text-gray-500;
+	@apply h-6 w-6;
+	color: $color-muted;
+
+	@media (min-width: 768px) {
+		@apply h-4 w-4;
+	}
 }
 
 .header__user-dropdown-menu {
-	@apply absolute right-0 z-10 mt-2 w-48 rounded border border-gray-200 bg-white shadow-lg;
+	@apply absolute left-0 z-10 mt-2 w-48 rounded border border-gray-200 bg-white shadow-lg;
+
+	@media (min-width: 768px) {
+		@apply left-auto right-0;
+	}
+
+	@media (min-width: 1024px) {
+		@apply left-0;
+	}
 }
 
 .header__user-dropdown-link {
-	@apply block flex items-center gap-2 px-4 py-2 transition-all hover:bg-gray-100;
+	@apply flex gap-2 px-4 py-2 transition-all hover:bg-gray-100;
 
 	&--active {
 		@apply bg-gray-100 font-bold;
-		color: $color-accent-text-hover;
+		color: $color-bg;
 	}
 
 	&--logout {
-		@apply block flex w-full items-center gap-2 px-4 py-2 text-left text-red-500 hover:bg-gray-100;
+		@apply flex w-full items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100;
 	}
+}
+
+/* Hamburger menu styles */
+.header__nav-hamburger {
+	@apply flex items-center md:hidden;
+}
+.header__nav-hamburger-button {
+	@apply rounded p-2 focus:outline-none;
+	background: transparent;
+}
+
+.header__nav-hamburger-icon {
+	@apply text-2xl;
+}
+
+.header__nav-hamburger-menu {
+	@apply fixed inset-0 z-50 flex flex-col bg-white bg-opacity-95 p-6;
+}
+.header__nav-hamburger-close {
+	@apply mb-4 self-end rounded p-2 focus:outline-none;
+	background: transparent;
+}
+.header__nav-hamburger-links {
+	@apply flex flex-col gap-4;
+	max-width: 300px;
 }

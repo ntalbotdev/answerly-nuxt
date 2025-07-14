@@ -34,6 +34,7 @@ watchEffect(async () => {
 				</div>
 
 				<HeaderNavbar />
+				<HeaderNavHamburger />
 			</div>
 		</div>
 	</header>
