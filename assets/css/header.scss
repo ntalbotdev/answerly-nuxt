@@ -82,6 +82,23 @@
 	}
 }
 
+.header__logout-link {
+	@apply flex h-12 w-full items-center whitespace-nowrap rounded-full px-4 py-2 text-2xl font-bold hover:bg-gray-200 text-red-500 transition-colors;
+
+	@media (min-width: 768px) {
+		@apply mt-0 px-4 py-2 text-base font-normal hover:bg-gray-100;
+		border-radius: 0;
+	}
+
+	&-icon {
+		@apply mr-1 h-6 w-6 min-w-6;
+
+		@media (min-width: 768px) {
+			@apply h-5 w-5;
+		}
+	}
+}
+
 /* User dropdown styles */
 .header__user-dropdown {
 	@apply relative;
@@ -140,10 +157,6 @@
 	&--active {
 		@apply bg-gray-100 font-bold;
 		color: $color-bg;
-	}
-
-	&--logout {
-		@apply flex w-full items-center gap-2 px-4 py-2 text-red-500 hover:bg-gray-100;
 	}
 }
 

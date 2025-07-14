@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
-const router = useRouter();
 const dropdownRef = ref<HTMLElement | null>(null);
 const isDropdownOpen = ref(false);
 const emit = defineEmits(["close"]);
@@ -26,12 +25,6 @@ function handleDropdownLinkClick() {
 	emit("close");
 }
 
-const logout = async () => {
-	const supabase = useSupabaseClient();
-	await supabase.auth.signOut();
-	profileStore.clearProfile();
-	router.push("/auth/login");
-};
 </script>
 
 <template>
@@ -105,10 +98,10 @@ const logout = async () => {
 			</NuxtLink>
 
 			<NuxtLink
-				to="/my/settings"
+				to="/settings"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/settings'
+					$route.path === '/settings'
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
@@ -116,20 +109,10 @@ const logout = async () => {
 			>
 				Settings
 			</NuxtLink>
-			
-			<button
-				class="header__user-dropdown-link--logout"
-				type="button"
-				@click="
-					async () => {
-						await logout();
-						handleDropdownLinkClick();
-					}
-				"
-			>
-				<Icon name="bx:log-out" class="header__icon" />
-				Logout
-			</button>
+
+			<LogoutButton
+				@click="handleDropdownLinkClick"
+			/>
 		</div>
 	</div>
 </template>
