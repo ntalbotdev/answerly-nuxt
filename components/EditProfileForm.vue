@@ -16,6 +16,7 @@ const profileStore = useProfileStore();
 const props = defineProps<{ profile: Profile }>();
 const avatarFileInput = ref<HTMLInputElement>();
 const bannerFileInput = ref<HTMLInputElement>();
+const emit = defineEmits(["close"]);
 
 const form = reactive({
 	username: props.profile.username || "",
@@ -182,6 +183,13 @@ async function saveProfile() {
 		loading.value = false;
 	}
 }
+
+function handleCancel() {
+	const router = useRouter();
+	const route = useRoute();
+	router.replace({ path: route.path, query: {} });
+	emit('close');
+}
 </script>
 
 <template>
@@ -202,9 +210,9 @@ async function saveProfile() {
 		</div>
 
 		<div class="edit-profile__field">
-			<label for="display-name" class="edit-profile__label"
-				>Display Name</label
-			>
+			<label for="display-name" class="edit-profile__label">
+				Display Name
+			</label>
 			<input
 				id="display-name"
 				v-model="form.display_name"
@@ -277,9 +285,9 @@ async function saveProfile() {
 
 		<div class="edit-profile__button-wrapper">
 			<button 
-				type="button" 
+				type="button"
 				class="btn btn--secondary" 
-				@click="useRouter().replace({ path: useRoute().path })"
+				@click="handleCancel"
 			>
 				Cancel
 			</button>

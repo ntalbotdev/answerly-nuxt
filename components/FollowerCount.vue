@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
 const props = defineProps<{ userId: string }>();
 const followerCount = ref(0);
 const loading = ref(true);

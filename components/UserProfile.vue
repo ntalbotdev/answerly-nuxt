@@ -23,6 +23,7 @@ watch(
 
 
 function handleCloseEditModal() {
+	showEditModal.value = false;
 	navigateTo({ path: route.path, query: {} });
 }
 
@@ -83,7 +84,7 @@ function closeConfirmUnfollowModal() {
 			title="Edit Profile"
 			@close="handleCloseEditModal"
 		>
-			<EditProfileForm :profile="props.profile" @close="handleCloseAskModal" />
+			<EditProfileForm :profile="props.profile" @close="handleCloseEditModal" />
 		</AppModal>
 
 		<AppModal v-model:open="showAskModal" title="Ask a Question">
