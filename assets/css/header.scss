@@ -41,7 +41,6 @@
 
 .header__nav-link {
 	@apply relative flex items-center whitespace-nowrap px-4 py-2 text-2xl font-bold transition-colors;
-
 	color: $color-bg;
 	z-index: 1;
 
@@ -55,17 +54,15 @@
 	}
 
 	&:before {
-		@apply absolute mr-2 flex h-1.5 w-2.5 rounded-full transition-all;
+		@apply absolute left-0 mr-2 flex h-1.5 w-2.5 rounded-full transition-all;
 		content: "";
-		left: 0;
 		background-color: $color-accent;
 		z-index: -1;
 	}
 
 	&:hover:before,
 	&--active:before {
-		@apply h-12 transition-all;
-		width: 100%;
+		@apply h-12 w-full transition-all;
 
 		@media (min-width: 768px) {
 			@apply h-8;
@@ -74,27 +71,42 @@
 }
 
 .header__nav-link-icon {
-	@apply mr-1 h-6 w-6 min-w-6;
+	@apply mr-2 h-6 w-6 min-w-6;
 	color: $color-bg;
 
 	@media (min-width: 768px) {
-		@apply h-4 w-4;
+		@apply mr-1 h-4 w-4;
 	}
 }
 
 .header__logout-link {
-	@apply flex h-12 w-full items-center whitespace-nowrap rounded-full px-4 py-2 text-2xl font-bold hover:bg-gray-200 text-red-500 transition-colors;
+	@apply relative flex h-12 w-full items-center whitespace-nowrap rounded-full px-4 py-2 text-2xl font-bold text-red-500 transition-colors;
+
+	&-icon {
+		@apply mr-2 h-6 w-6 min-w-6;
+
+		@media (min-width: 768px) {
+			@apply mr-1 h-5 w-5;
+		}
+	}
+
+	&:before {
+		@apply absolute left-0 mr-2 flex h-1.5 w-2.5 rounded-full bg-red-100 transition-all;
+		content: "";
+		z-index: -1;
+	}
+
+	&:hover:before {
+		@apply h-12 w-full transition-all;
+	}
 
 	@media (min-width: 768px) {
 		@apply mt-0 px-4 py-2 text-base font-normal hover:bg-gray-100;
 		border-radius: 0;
-	}
 
-	&-icon {
-		@apply mr-1 h-6 w-6 min-w-6;
-
-		@media (min-width: 768px) {
-			@apply h-5 w-5;
+		&:before,
+		&:hover:before {
+			display: none;
 		}
 	}
 }
@@ -178,7 +190,7 @@
 }
 
 .header__nav-hamburger-close {
-	@apply flex mb-4 self-end mt-1;
+	@apply mb-4 mt-1 flex self-end;
 	background: transparent;
 
 	&-icon {
