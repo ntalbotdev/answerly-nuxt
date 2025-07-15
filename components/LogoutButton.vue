@@ -9,7 +9,7 @@ const logout = async () => {
 	const supabase = useSupabaseClient();
 	await supabase.auth.signOut();
 	profileStore.clearProfile();
-	router.push(ROUTES.LOGIN);
+	router.push(ROUTES.HOME);
 };
 </script>
 

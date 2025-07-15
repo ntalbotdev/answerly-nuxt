@@ -48,10 +48,10 @@ onUnmounted(() => {
 				<nav class="header__nav-hamburger-links">
 					<template v-if="user">
 						<NuxtLink
-							to="/"
+							:to="ROUTES.HOME"
 							:class="[
 								'header__nav-link',
-								route.path === '/'
+								route.path === ROUTES.HOME
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -68,7 +68,7 @@ onUnmounted(() => {
 							:to="ROUTES.DISCOVER"
 							:class="[
 								'header__nav-link',
-								route.path === '/discover'
+								route.path === ROUTES.DISCOVER
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -85,7 +85,7 @@ onUnmounted(() => {
 							:to="ROUTES.NOTIFICATIONS"
 							:class="[
 								'header__nav-link',
-								route.path === '/notifications'
+								route.path === ROUTES.NOTIFICATIONS
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -102,7 +102,7 @@ onUnmounted(() => {
 							:to="ROUTES.INBOX"
 							:class="[
 								'header__nav-link mt-6',
-								route.path === '/my/inbox'
+								route.path === ROUTES.INBOX
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -119,7 +119,7 @@ onUnmounted(() => {
 							:to="ROUTES.PROFILE"
 							:class="[
 								'header__nav-link',
-								route.path === '/my/profile'
+								route.path === ROUTES.PROFILE
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -129,14 +129,14 @@ onUnmounted(() => {
 								name="bx:id-card"
 								class="header__nav-link-icon"
 							/>
-							My Profile
+							Profile
 						</NuxtLink>
 
 						<NuxtLink
-							:to="ROUTES.QUESTIONS"
+							:to="ROUTES.MY_QUESTIONS"
 							:class="[
 								'header__nav-link',
-								route.path === '/my/questions'
+								route.path === ROUTES.MY_QUESTIONS
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -153,7 +153,7 @@ onUnmounted(() => {
 							:to="ROUTES.SETTINGS"
 							:class="[
 								'header__nav-link',
-								route.path === '/settings'
+								route.path === ROUTES.SETTINGS
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -171,7 +171,7 @@ onUnmounted(() => {
 							:to="ROUTES.LOGIN"
 							:class="[
 								'header__nav-link',
-								route.path === '/auth/login'
+								route.path === ROUTES.LOGIN
 									? 'header__nav-link--active'
 									: '',
 							]"
@@ -184,7 +184,7 @@ onUnmounted(() => {
 							:to="ROUTES.SIGNUP"
 							:class="[
 								'header__nav-link',
-								route.path === '/auth/signup'
+								route.path === ROUTES.SIGNUP
 									? 'header__nav-link--active'
 									: '',
 							]"

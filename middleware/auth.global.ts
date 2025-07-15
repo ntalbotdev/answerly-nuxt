@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
         return navigateTo(ROUTES.HOME);
     }
 
-    // If not logged in, redirect /auth or /auth/ to /auth/login
+    // If not logged in, redirect /auth or /auth/ to /login
     if (!user.value && (to.path === "/auth" || to.path === "/auth/")) {
         return navigateTo(ROUTES.LOGIN);
     }

@@ -32,38 +32,44 @@ const signup = async () => {
 	}
 
 	alert("Check your email for the confirmation link.");
-	router.push("/auth/login");
+	router.push(ROUTES.LOGIN);
 };
 </script>
 
 <template>
 	<form class="auth-form" @submit.prevent="signup">
 		<h2 class="auth-form__title">Welcome! Create your account</h2>
+
 		<label for="email" class="sr-only">Email</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
-                id="email"
+				id="email"
 				v-model="email"
 				type="email"
 				placeholder="Email"
 				class="auth-form__input"
-                required
+				required
 			/>
 		</div>
+
 		<label for="username" class="sr-only">Username</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:user" class="auth-form__input-icon" />
 			<input
-                id="username"
+				id="username"
 				v-model="username"
 				type="text"
 				placeholder="Username"
 				class="auth-form__input"
-                required
+				required
 			/>
 		</div>
+
 		<label for="password" class="sr-only">Password</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
@@ -72,10 +78,12 @@ const signup = async () => {
 				type="password"
 				placeholder="Password"
 				class="auth-form__input"
-                required
+				required
 			/>
 		</div>
+
 		<label for="confirm-password" class="sr-only">Confirm Password</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
@@ -84,13 +92,15 @@ const signup = async () => {
 				type="password"
 				placeholder="Confirm Password"
 				class="auth-form__input"
-                required
+				required
 			/>
 		</div>
+
 		<button type="submit" class="auth-form__button">Sign up</button>
+
 		<div class="auth-form__footer">
 			Already a member?
-			<NuxtLink to="/auth/login" class="auth-form__footer-link">
+			<NuxtLink :to="ROUTES.LOGIN" class="auth-form__footer-link">
 				Log in
 			</NuxtLink>
 		</div>

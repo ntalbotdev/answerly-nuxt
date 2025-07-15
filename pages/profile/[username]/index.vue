@@ -10,7 +10,7 @@ const followerCount = ref(0);
 const fetchAndCheckProfile = async (username: string) => {
 	await profileStore.fetchProfileByUsername(username);
 	if (!profileStore.publicProfile && !profileStore.loading) {
-		router.push("/");
+		router.push(ROUTES.HOME);
 	} else if (profileStore.publicProfile) {
 		// Fetch follower count
 		const supabase = useSupabaseClient();
@@ -63,7 +63,6 @@ watch(
 							user.id !== profileStore.publicProfile.user_id
 						"
 						:target-user-id="profileStore.publicProfile.user_id"
-						class="block"
 					/>
 				</template>
 			</UserProfile>

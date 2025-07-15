@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ROUTES } from "~/utils/routes";
-const router = useRouter();
 const props = defineProps<{ profile: any }>();
 const route = useRoute();
 const canEdit = computed(() => route.path === ROUTES.PROFILE);
@@ -240,7 +239,7 @@ function closeConfirmUnfollowModal() {
 
 			<div class="profile__stats-follow-count-wrapper">
 				<NuxtLink
-					:to="`/profile/${profile.username}/followers`"
+					:to="ROUTES.PROFILE_USER_FOLLOWERS(profile.username)"
 					class="profile__stats-follow-count"
 				>
 					<Icon
@@ -250,7 +249,7 @@ function closeConfirmUnfollowModal() {
 					<FollowerCount :user-id="profile.user_id" />
 				</NuxtLink>
 				<NuxtLink
-					:to="`/profile/${profile.username}/following`"
+					:to="ROUTES.PROFILE_USER_FOLLOWING(profile.username)"
 					class="profile__stats-follow-count"
 				>
 					<Icon name="bx:user" class="profile__stats-icon" />

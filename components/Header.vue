@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useProfileStore } from "~/stores/profile";
-import HeaderNavbar from "~/components/HeaderNavbar.vue";
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 
@@ -24,7 +23,7 @@ watchEffect(async () => {
 		<div class="header__inner">
 			<div class="header__content">
 				<div class="header__logo">
-					<NuxtLink to="/">
+					<NuxtLink :to="ROUTES.HOME">
 						<Icon
 							name="heroicons:chat-bubble-left-20-solid"
 							class="header__logo-icon"

@@ -51,7 +51,7 @@ const sendReset = async () => {
 		</div>
 		<div class="auth-form__footer">
 			Remembered?
-			<NuxtLink to="/auth/login" class="auth-form__footer-link">
+			<NuxtLink :to="ROUTES.LOGIN" class="auth-form__footer-link">
 				Log in
 			</NuxtLink>
 		</div>

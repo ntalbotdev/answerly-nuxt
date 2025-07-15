@@ -25,7 +25,6 @@ function handleDropdownLinkClick() {
 	isDropdownOpen.value = false;
 	emit("close");
 }
-
 </script>
 
 <template>
@@ -59,11 +58,11 @@ function handleDropdownLinkClick() {
 		</button>
 
 		<div v-if="isDropdownOpen" class="header__user-dropdown-menu">
-<NuxtLink
+			<NuxtLink
 				:to="ROUTES.INBOX"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/inbox'
+					$route.path === ROUTES.INBOX
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
@@ -72,24 +71,24 @@ function handleDropdownLinkClick() {
 				Inbox
 			</NuxtLink>
 
-<NuxtLink
+			<NuxtLink
 				:to="ROUTES.PROFILE"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/profile'
+					$route.path === ROUTES.PROFILE
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
 				@click="handleDropdownLinkClick"
 			>
-				My Profile
+				Profile
 			</NuxtLink>
 
-<NuxtLink
-				:to="ROUTES.QUESTIONS"
+			<NuxtLink
+				:to="ROUTES.MY_QUESTIONS"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/my/questions'
+					$route.path === ROUTES.MY_QUESTIONS
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
@@ -98,11 +97,11 @@ function handleDropdownLinkClick() {
 				My Questions
 			</NuxtLink>
 
-<NuxtLink
+			<NuxtLink
 				:to="ROUTES.SETTINGS"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === '/settings'
+					$route.path === ROUTES.SETTINGS
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"
@@ -111,9 +110,7 @@ function handleDropdownLinkClick() {
 				Settings
 			</NuxtLink>
 
-			<LogoutButton
-				@click="handleDropdownLinkClick"
-			/>
+			<LogoutButton @click="handleDropdownLinkClick" />
 		</div>
 	</div>
 </template>

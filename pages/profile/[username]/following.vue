@@ -44,8 +44,8 @@ onMounted(async () => {
 <template>
     <div>
         <h1>Following of {{ username }}</h1>
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="error" style="color: red">{{ error }}</div>
+        <div v-if="loading" class="loading-text">Loading...</div>
+        <div v-else-if="error" class="error-text">{{ error }}</div>
         <div v-else>
             <div v-if="following.length === 0">Not following anyone yet.</div>
             <div v-else>
@@ -58,7 +58,7 @@ onMounted(async () => {
                     <div>
                         <strong>{{ f.profiles?.username }}</strong>
                         <p v-if="f.profiles?.bio">{{ f.profiles.bio }}</p>
-                        <NuxtLink :to="`/profile/${f.profiles?.username}`">
+                        <NuxtLink :to="ROUTES.PROFILE_USER(f.profiles?.username)">
                             View Profile
                         </NuxtLink>
                     </div>

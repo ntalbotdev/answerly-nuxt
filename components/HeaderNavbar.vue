@@ -7,10 +7,10 @@ const user = useSupabaseUser();
 	<nav class="header__nav">
 		<template v-if="user">
 			<NuxtLink
-				to="/"
+				:to="ROUTES.HOME"
 				:class="[
 					'header__nav-link',
-					$route.path === '/' ? 'header__nav-link--active' : '',
+					$route.path === ROUTES.HOME ? 'header__nav-link--active' : '',
 				]"
 			>
 				<Icon name="bx:globe" class="header__nav-link-icon" />
@@ -20,7 +20,7 @@ const user = useSupabaseUser();
 			:to="ROUTES.DISCOVER"
 				:class="[
 					'header__nav-link',
-					$route.path === '/discover'
+					$route.path === ROUTES.DISCOVER
 						? 'header__nav-link--active'
 						: '',
 				]"
@@ -32,7 +32,7 @@ const user = useSupabaseUser();
 			:to="ROUTES.NOTIFICATIONS"
 				:class="[
 					'header__nav-link',
-					$route.path === '/notifications'
+					$route.path === ROUTES.NOTIFICATIONS
 						? 'header__nav-link--active'
 						: '',
 				]"
@@ -48,7 +48,7 @@ const user = useSupabaseUser();
 			:to="ROUTES.LOGIN"
 				:class="[
 					'header__nav-link',
-					$route.path === '/auth/login'
+					$route.path === ROUTES.LOGIN
 						? 'header__nav-link--active'
 						: '',
 				]"
@@ -59,7 +59,7 @@ const user = useSupabaseUser();
 			:to="ROUTES.SIGNUP"
 				:class="[
 					'header__nav-link',
-					$route.path === '/auth/signup'
+					$route.path === ROUTES.SIGNUP
 						? 'header__nav-link--active'
 						: '',
 				]"

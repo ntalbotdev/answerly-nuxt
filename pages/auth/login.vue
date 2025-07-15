@@ -15,12 +15,10 @@ const login = async () => {
 	if (error) {
 		alert(error.message);
 	} else {
-		// Fetch profile after login
 		if (user.value) {
 			await profileStore.fetchProfileById(user.value.id);
 		}
-		// Redirect to profile page
-		router.push("/");
+		router.push(ROUTES.HOME);
 	}
 };
 </script>
@@ -28,7 +26,9 @@ const login = async () => {
 <template>
 	<form class="auth-form" @submit.prevent="login">
 		<h2 class="auth-form__title">Log in</h2>
+		
 		<label for="email" class="sr-only">Email</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
@@ -40,7 +40,9 @@ const login = async () => {
 				required
 			/>
 		</div>
+
 		<label for="password" class="sr-only">Password</label>
+
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
@@ -52,14 +54,16 @@ const login = async () => {
 				required
 			/>
 		</div>
-		<NuxtLink to="/auth/forgot-password" class="auth-form__forgot-password">
+
+		<NuxtLink :to="ROUTES.FORGOT_PASSWORD" class="auth-form__forgot-password">
 			Forgot password?
 		</NuxtLink>
+
 		<button type="submit" class="auth-form__button">Log in</button>
 
 		<div class="auth-form__footer">
 			Not a member?
-			<NuxtLink to="/auth/signup" class="auth-form__footer-link">
+			<NuxtLink :to="ROUTES.SIGNUP" class="auth-form__footer-link">
 				Sign up
 			</NuxtLink>
 		</div>
