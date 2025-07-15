@@ -16,8 +16,8 @@ const user = useSupabaseUser();
 				<Icon name="bx:globe" class="header__nav-link-icon" />
 				Feed
 			</NuxtLink>
-<NuxtLink
-			:to="ROUTES.DISCOVER"
+			<NuxtLink
+				:to="ROUTES.DISCOVER"
 				:class="[
 					'header__nav-link',
 					$route.path === ROUTES.DISCOVER
@@ -28,8 +28,8 @@ const user = useSupabaseUser();
 				<Icon name="bx:search" class="header__nav-link-icon" />
 				Discover
 			</NuxtLink>
-<NuxtLink
-			:to="ROUTES.NOTIFICATIONS"
+			<NuxtLink
+				:to="ROUTES.NOTIFICATIONS"
 				:class="[
 					'header__nav-link',
 					$route.path === ROUTES.NOTIFICATIONS
@@ -44,18 +44,18 @@ const user = useSupabaseUser();
 			<HeaderUserDropdown />
 		</template>
 		<template v-else-if="!user">
-<NuxtLink
-			:to="ROUTES.LOGIN"
-				:class="[
-					'header__nav-link',
-					$route.path === ROUTES.LOGIN
-						? 'header__nav-link--active'
-						: '',
-				]"
-			>
-				Log in
+			<NuxtLink
+				:to="ROUTES.LOGIN"
+					:class="[
+						'header__nav-link',
+						$route.path === ROUTES.LOGIN
+							? 'header__nav-link--active'
+							: '',
+					]"
+				>
+					Log in
 			</NuxtLink>
-<NuxtLink
+			<NuxtLink
 			:to="ROUTES.SIGNUP"
 				:class="[
 					'header__nav-link',
