@@ -20,10 +20,13 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 
 ## Project Structure
 
+- `assets/` — Static assets
+- `components/` — Reusable Vue components
+- `layouts/` — Nuxt 3 layouts
+- `middleware/` — Route guards and redirects
 - `pages/` — Nuxt 3 pages (routes)
 - `stores/` — Pinia stores (profile, questions)
-- `middleware/` — Route guards and redirects
-- `components/` — Vue components
+- `utils/` — Utility functions and constants (like routes)
 
 ## Environment Setup
 
