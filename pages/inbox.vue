@@ -39,6 +39,10 @@ async function answerQuestion(
 	q.answer = q._answer;
 	q._saving = false;
 	q._showForm = false;
+	// Remove from inboxQuestions in store so notification count updates
+	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
+		(qq) => qq.id !== q.id,
+	);
 }
 
 function openRemoveModal(
@@ -57,6 +61,9 @@ async function confirmRemoveQuestion() {
 	if (questionToRemove.value) {
 		await questionsStore.deleteQuestion(questionToRemove.value.id);
 		questions.value = questions.value.filter(
+			(q) => q.id !== questionToRemove.value!.id,
+		);
+		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
 			(q) => q.id !== questionToRemove.value!.id,
 		);
 		closeRemoveModal();
