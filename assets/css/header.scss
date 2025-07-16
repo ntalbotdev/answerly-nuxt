@@ -164,7 +164,7 @@
 }
 
 .header__user-dropdown-link {
-	@apply flex gap-2 px-4 py-2 transition-all hover:bg-gray-100;
+	@apply flex items-center gap-2 px-4 py-2 transition-all hover:bg-gray-100;
 
 	&--active {
 		@apply bg-gray-100 font-bold;
@@ -186,7 +186,7 @@
 }
 
 .header__nav-hamburger-menu {
-	@apply fixed inset-0 z-50 flex flex-col bg-white bg-opacity-95 p-4;
+	@apply fixed inset-0 z-50 flex flex-col overflow-y-scroll bg-white bg-opacity-95 p-4;
 }
 
 .header__nav-hamburger-close {

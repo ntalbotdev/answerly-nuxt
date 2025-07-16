@@ -19,6 +19,10 @@
 	}
 }
 
+.inbox__no-questions {
+	color: $color-muted;
+}
+
 .inbox__question {
 	@apply flex flex-col gap-2 flex-wrap items-start p-4 drop-shadow;
 	width: 100%;
@@ -97,14 +101,25 @@
 }
 
 .inbox__question-answer {
+	@apply flex flex-col gap-2;
 }
 
 .inbox__question-answer-label {
 	@apply mb-2 text-sm font-semibold;
-	color: $color-bg;
+	color: $color-text;
 }
 
 .inbox__question-answer-text {
 	@apply text-base;
 	color: $color-text;
+}
+
+.inbox__modal-question {
+	@apply mb-2 font-semibold break-words max-w-md;
+	color: $color-bg;
+}
+
+.inbox__modal-text {
+	@apply mb-4;
+	color: $color-bg;
 }

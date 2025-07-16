@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ROUTES } from "~/utils/routes";
+
 const user = useSupabaseUser();
 </script>
 
@@ -10,7 +11,9 @@ const user = useSupabaseUser();
 				:to="ROUTES.HOME"
 				:class="[
 					'header__nav-link',
-					$route.path === ROUTES.HOME ? 'header__nav-link--active' : '',
+					$route.path === ROUTES.HOME
+						? 'header__nav-link--active'
+						: '',
 				]"
 			>
 				<Icon name="bx:globe" class="header__nav-link-icon" />
@@ -28,6 +31,7 @@ const user = useSupabaseUser();
 				<Icon name="bx:search" class="header__nav-link-icon" />
 				Discover
 			</NuxtLink>
+
 			<NuxtLink
 				:to="ROUTES.NOTIFICATIONS"
 				:class="[
@@ -46,17 +50,17 @@ const user = useSupabaseUser();
 		<template v-else-if="!user">
 			<NuxtLink
 				:to="ROUTES.LOGIN"
-					:class="[
-						'header__nav-link',
-						$route.path === ROUTES.LOGIN
-							? 'header__nav-link--active'
-							: '',
-					]"
-				>
-					Log in
+				:class="[
+					'header__nav-link',
+					$route.path === ROUTES.LOGIN
+						? 'header__nav-link--active'
+						: '',
+				]"
+			>
+				Log in
 			</NuxtLink>
 			<NuxtLink
-			:to="ROUTES.SIGNUP"
+				:to="ROUTES.SIGNUP"
 				:class="[
 					'header__nav-link',
 					$route.path === ROUTES.SIGNUP

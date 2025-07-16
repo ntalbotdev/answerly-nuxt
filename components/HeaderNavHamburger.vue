@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ROUTES } from "~/utils/routes";
+import { storeToRefs } from "pinia";
+import { useQuestionsStore } from "~/stores/questions";
+const questionsStore = useQuestionsStore();
+const { hasNewInboxItems, newInboxCount } = storeToRefs(questionsStore);
 const showMenu = ref(false);
 const user = useSupabaseUser();
 const route = useRoute();
+
 function toggleMenu() {
 	showMenu.value = !showMenu.value;
 	if (showMenu.value) {
@@ -11,6 +16,7 @@ function toggleMenu() {
 		document.body.style.overflow = "";
 	}
 }
+
 function closeMenu() {
 	showMenu.value = false;
 	document.body.style.overflow = "";
@@ -113,6 +119,13 @@ onUnmounted(() => {
 								class="header__nav-link-icon"
 							/>
 							Inbox
+
+							<span
+								v-if="hasNewInboxItems"
+								class="notification-badge"
+							>
+								{{ newInboxCount }}
+							</span>
 						</NuxtLink>
 
 						<NuxtLink

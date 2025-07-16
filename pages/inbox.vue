@@ -8,6 +8,11 @@ const questions = ref<
 	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]
 >([]);
 const loading = ref(true);
+const showRemoveModal = ref(false);
+const questionToRemove = ref<
+	| (Question & { _answer: string; _saving: boolean; _showForm: boolean })
+	| null
+>(null);
 
 definePageMeta({
 	middleware: "auth",
@@ -26,7 +31,6 @@ async function fetchMyQuestions() {
 }
 onMounted(fetchMyQuestions);
 
-// Function to answer a question
 async function answerQuestion(
 	q: Question & { _answer: string; _saving: boolean; _showForm: boolean },
 ) {
@@ -35,13 +39,34 @@ async function answerQuestion(
 	q.answer = q._answer;
 	q._saving = false;
 	q._showForm = false;
+	// Remove from inboxQuestions in store so notification count updates
+	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
+		(qq) => qq.id !== q.id,
+	);
 }
 
-// Function to remove a question
-async function removeQuestion(qid: string) {
-	if (confirm("Are you sure you want to remove this question?")) {
-		await questionsStore.deleteQuestion(qid);
-		questions.value = questions.value.filter((q) => q.id !== qid);
+function openRemoveModal(
+	q: Question & { _answer: string; _saving: boolean; _showForm: boolean },
+) {
+	questionToRemove.value = q;
+	showRemoveModal.value = true;
+}
+
+function closeRemoveModal() {
+	showRemoveModal.value = false;
+	questionToRemove.value = null;
+}
+
+async function confirmRemoveQuestion() {
+	if (questionToRemove.value) {
+		await questionsStore.deleteQuestion(questionToRemove.value.id);
+		questions.value = questions.value.filter(
+			(q) => q.id !== questionToRemove.value!.id,
+		);
+		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
+			(q) => q.id !== questionToRemove.value!.id,
+		);
+		closeRemoveModal();
 	}
 }
 </script>
@@ -49,11 +74,39 @@ async function removeQuestion(qid: string) {
 <template>
 	<div class="inbox">
 		<h2 class="inbox__title">Inbox</h2>
+		<AppModal v-model:open="showRemoveModal" title="Remove">
+			<template #default>
+				<div class="inbox__modal-text">
+					Are you sure you want to remove this question from
+					<strong>{{ questionToRemove?.asker_username }}</strong>?
+				</div>
+
+				<div class="inbox__modal-question">
+					"{{ questionToRemove?.question }}"
+				</div>
+				<div class="mt-4 flex justify-end gap-2">
+					<button
+						class="btn btn--secondary"
+						@click="closeRemoveModal"
+					>
+						Cancel
+					</button>
+					<button
+						class="btn btn--danger"
+						@click="confirmRemoveQuestion"
+					>
+						Remove
+					</button>
+				</div>
+			</template>
+		</AppModal>
 
 		<div v-if="loading" class="loading-text">Loading...</div>
 
 		<div v-else class="inbox__questions">
-			<div v-if="questions.length === 0">No questions to answer.</div>
+			<div v-if="questions.length === 0" class="inbox__no-questions">
+				No questions to answer.
+			</div>
 
 			<div v-for="q in questions" :key="q.id" class="inbox__question">
 				<div class="inbox__question-header">
@@ -97,10 +150,7 @@ async function removeQuestion(qid: string) {
 							v-if="!q._showForm"
 							type="button"
 							class="btn btn--danger"
-							@click="
-								removeQuestion(q.id);
-								q._showForm = false;
-							"
+							@click="openRemoveModal(q)"
 						>
 							Remove
 						</button>
