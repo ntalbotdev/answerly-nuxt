@@ -26,7 +26,7 @@ body {
 }
 
 .btn {
-	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow-sm transition-all shadow;
+	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow shadow-sm transition-all;
 	border-radius: $radius-xs;
 
 	&:disabled {
@@ -55,5 +55,20 @@ body {
 		@apply bg-red-600 hover:bg-red-700;
 
 		color: $color-text;
+	}
+}
+
+.notification-badge {
+	@apply ml-4 flex px-1 items-center justify-center rounded-full bg-red-500 text-xs font-semibold min-w-4 h-4;
+	// transform: translate(50%, -50%);
+	z-index: 10;
+	color: $color-text;
+
+	&:after {
+		content: attr(data-count);
+	}
+
+	@media (min-width: 768px) {
+		@apply ml-0;
 	}
 }

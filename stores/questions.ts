@@ -24,7 +24,17 @@ export const useQuestionsStore = defineStore("questions", {
 	state: () => ({
 		loading: false as boolean,
 		error: null as string | null,
+		inboxQuestions: [] as Question[],
 	}),
+	getters: {
+		hasNewInboxItems(state) {
+			// True if there are any unanswered questions in inboxQuestions
+			return state.inboxQuestions.some(q => !q.answer);
+		},
+		newInboxCount(state) {
+			return state.inboxQuestions.filter(q => !q.answer).length;
+		}
+	},
 	actions: {
 		// Fetch questions the current user has asked
 		async fetchAskedQuestions(): Promise<
@@ -94,14 +104,17 @@ export const useQuestionsStore = defineStore("questions", {
 					.order("created_at", { ascending: false });
 				if (error) throw error;
 				// Map username for display
-				return (data || []).map((q: any) => ({
+				const questions = (data || []).map((q: any) => ({
 					...q,
 					asker_username: q.is_anonymous
 						? undefined
 						: q.profiles?.username || "Unknown",
 				}));
+				this.inboxQuestions = questions;
+				return questions;
 			} catch (err: any) {
 				this.error = err.message || "Failed to fetch questions";
+				this.inboxQuestions = [];
 				return [];
 			} finally {
 				this.loading = false;
