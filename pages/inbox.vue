@@ -77,7 +77,8 @@ async function confirmRemoveQuestion() {
 		<AppModal v-model:open="showRemoveModal" title="Remove">
 			<template #default>
 				<div class="inbox__modal-text">
-					Are you sure you want to remove this question?
+					Are you sure you want to remove this question from
+					<strong>{{ questionToRemove?.asker_username }}</strong>?
 				</div>
 
 				<div class="inbox__modal-question">

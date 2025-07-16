@@ -115,7 +115,7 @@
 }
 
 .inbox__modal-question {
-	@apply mb-2 font-semibold;
+	@apply mb-2 font-semibold break-words max-w-md;
 	color: $color-bg;
 }
 
