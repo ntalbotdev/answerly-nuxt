@@ -1,0 +1,110 @@
+@use "./variables" as *;
+
+.inbox {
+	@apply mx-auto flex w-full flex-col gap-4 p-4;
+	background: $color-bg;
+}
+
+.inbox__title {
+	@apply mb-4 text-2xl font-semibold;
+	color: $color-text;
+
+}
+
+.inbox__questions {
+	@apply flex flex-col gap-4;
+
+	@media (min-width: 768px) {
+		@apply flex-row flex-wrap gap-6;
+	}
+}
+
+.inbox__question {
+	@apply flex flex-col gap-2 flex-wrap items-start p-4 drop-shadow;
+	width: 100%;
+	background-color: $color-surface;
+	border-radius: $radius-sm;
+
+	@media (min-width: 768px) {
+		width: calc(50% - 1rem);
+	}
+}
+
+.inbox__question-metadata {
+	@apply flex gap-2 items-center text-sm;
+	color: $color-muted;
+}
+
+.inbox__question-header {
+	@apply flex flex-col gap-2 mb-auto;
+	width: 100%;
+}
+
+.inbox__question-asker-wrapper {
+	@apply flex gap-1;
+}
+
+.inbox__question-asker {
+	@apply flex gap-1;
+
+	&--anonymous {
+		color: $color-muted;
+		font-style: italic;
+	}
+
+	&--username {
+		color: $color-accent;
+		text-decoration: none;
+
+		&:hover {
+			@apply underline
+		}
+	}
+}
+
+.inbox__question-date {
+	@apply text-xs;
+	color: $color-muted-dark;
+}
+
+.inbox__question-text {
+	@apply text-lg font-semibold break-words;
+	color: $color-text;
+}
+
+.inbox__question-form-wrapper {
+	@apply flex flex-col gap-2 w-full;
+}
+
+.inbox__question-form-buttons {
+	@apply flex items-center gap-2 ml-auto;
+}
+
+.inbox__question-form {
+	@apply flex flex-col gap-2;
+}
+
+.inbox__question-form-input {
+	@apply block w-full px-3 py-2 outline-none;
+	background: $color-bg;
+	border-radius: $radius-xs;
+	color: $color-muted;
+
+	&:focus::placeholder {
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+}
+
+.inbox__question-answer {
+}
+
+.inbox__question-answer-label {
+	@apply mb-2 text-sm font-semibold;
+	color: $color-bg;
+}
+
+.inbox__question-answer-text {
+	@apply text-base;
+	color: $color-text;
+}
