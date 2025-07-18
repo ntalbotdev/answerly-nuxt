@@ -1,7 +1,4 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
-import { ROUTES } from "~/utils/routes";
-
 const profileStore = useProfileStore();
 const router = useRouter();
 

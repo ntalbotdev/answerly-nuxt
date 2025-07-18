@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useProfileStore } from "~/stores/profile";
-
 interface Profile {
 	username?: string;
 	display_name?: string;

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ROUTES } from "~/utils/routes";
 import { storeToRefs } from "pinia";
-import { useQuestionsStore } from "~/stores/questions";
 const questionsStore = useQuestionsStore();
 const { hasNewInboxItems, newInboxCount } = storeToRefs(questionsStore);
 const showMenu = ref(false);

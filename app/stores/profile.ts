@@ -1,3 +1,5 @@
+import { defineStore } from "pinia";
+
 export interface Profile {
     user_id: string;
     username: string;
