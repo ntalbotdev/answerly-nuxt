@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useQuestionsStore } from "~/stores/questions";
-import type { Question } from "~/stores/questions";
-
 const questionsStore = useQuestionsStore();
 const questions = ref<(Question & { to_username?: string })[]>([]);
 const loading = ref(true);

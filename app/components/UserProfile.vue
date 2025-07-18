@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ROUTES } from "~/utils/routes";
 const props = defineProps<{ profile: any }>();
 const route = useRoute();
 const canEdit = computed(() => route.path === ROUTES.PROFILE);

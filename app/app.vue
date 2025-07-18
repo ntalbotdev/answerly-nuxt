@@ -8,9 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuestionsStore } from '~/stores/questions'
-import { watch } from 'vue'
-
 const user = useSupabaseUser()
 const questionsStore = useQuestionsStore()
 

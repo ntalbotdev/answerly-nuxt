@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useQuestionsStore } from "~/stores/questions";
-import { ROUTES } from "~/utils/routes";
-
 interface Profile {
 	user_id: string;
 	username: string;

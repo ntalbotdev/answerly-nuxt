@@ -1,5 +1,3 @@
-import { ROUTES } from "~/utils/routes";
-
 export default defineNuxtRouteMiddleware((to, _from) => {
     const user = useSupabaseUser();
     // If logged in, redirect from any auth page to home

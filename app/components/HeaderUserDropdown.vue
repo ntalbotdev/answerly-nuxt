@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useProfileStore } from "~/stores/profile";
-import { ROUTES } from "~/utils/routes";
 import { storeToRefs } from "pinia";
-import { useQuestionsStore } from "~/stores/questions";
 const questionsStore = useQuestionsStore();
 const { hasNewInboxItems, newInboxCount } = storeToRefs(questionsStore);
 const profileStore = useProfileStore();

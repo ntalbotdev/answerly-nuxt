@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useProfileStore } from "~/stores/profile";
 const props = defineProps<{ targetUserId: string }>();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
