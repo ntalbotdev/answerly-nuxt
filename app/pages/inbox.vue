@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useQuestionsStore } from "~/stores/questions";
-import type { Question } from "~/stores/questions";
-import { formatDateNoSeconds } from "~/utils/date";
-
 const questionsStore = useQuestionsStore();
 const questions = ref<
 	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]

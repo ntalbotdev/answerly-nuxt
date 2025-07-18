@@ -8,6 +8,7 @@ const modelValue = computed({
 	get: () => props.open,
 	set: (val: boolean) => emit("update:open", val),
 });
+
 function close() {
 	modelValue.value = false;
 	emit("close");

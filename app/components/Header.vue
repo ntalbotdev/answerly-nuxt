@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useProfileStore } from "~/stores/profile";
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ROUTES } from "~/utils/routes";
-
 const user = useSupabaseUser();
 </script>
 
