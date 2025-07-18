@@ -1,6 +1,6 @@
 # Answerly Nuxt App
 
-A modern Nuxt 3 application using Supabase for authentication, database (PostgreSQL), and profile assets storage. It uses Pinia for state management and Tailwind CSS for styling.
+A modern Nuxt 4 application using Supabase for authentication, database (PostgreSQL), and profile assets storage. It uses Pinia for state management and Tailwind CSS for styling.
 
 ## Features
 
@@ -20,13 +20,14 @@ A modern Nuxt 3 application using Supabase for authentication, database (Postgre
 
 ## Project Structure
 
-- `assets/` — Static assets
-- `components/` — Reusable Vue components
-- `layouts/` — Nuxt 3 layouts
-- `middleware/` — Route guards and redirects
-- `pages/` — Nuxt 3 pages (routes)
-- `stores/` — Pinia stores (profile, questions)
-- `utils/` — Utility functions and constants (like routes)
+- `app/` — Main application source folder (Nuxt 4 standard)
+  - `assets/` — Static assets
+  - `components/` — Reusable Vue components
+  - `layouts/` — Nuxt layouts
+  - `middleware/` — Route guards and redirects
+  - `pages/` — Nuxt pages (routes)
+  - `stores/` — Pinia stores (profile, questions)
+  - `utils/` — Utility functions and constants (like routes paths)
 
 ## Environment Setup
 
@@ -169,4 +170,4 @@ npm run dev
 
 ---
 
-**Built with Nuxt 3, Supabase, Pinia, and Tailwind CSS.**
+**Built with Nuxt 4, Supabase, Pinia, and Tailwind CSS.**
