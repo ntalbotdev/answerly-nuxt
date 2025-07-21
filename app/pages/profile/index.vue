@@ -25,11 +25,14 @@ useHead({
 <template>
     <div>
         <div v-if="profileStore.loading" class="loading-text">Loading...</div>
+
         <div v-else-if="profileStore.error" class="error-text">
             {{ profileStore.error }}
         </div>
+
         <div v-else-if="profileStore.myProfile">
             <UserProfile :profile="profileStore.myProfile" />
+            <UserQuestions :user-id="profileStore.myProfile.user_id" />
         </div>
         <div v-else>
             <p>User not found.</p>

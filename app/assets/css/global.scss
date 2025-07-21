@@ -3,6 +3,7 @@
 @use "./header";
 @use "./profile";
 @use "./inbox";
+@use "./questions";
 
 body {
 	background: $color-bg;
