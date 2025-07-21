@@ -10,11 +10,10 @@ const showEditModal = ref(false);
 const showAskModal = ref(false);
 const showConfirmUnfollowModal = ref(false);
 
-// Watch for query ?edit=1 and open modal only when it appears
 watch(
 	() => route.query.edit,
 	(edit) => {
-		// Open modal when ?edit=1 is present
+		// Open modal when query ?edit=1 is present
 		showEditModal.value = edit === "1";
 	},
 	{ immediate: true },
