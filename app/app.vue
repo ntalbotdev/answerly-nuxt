@@ -25,4 +25,11 @@ watch(user, (newUser) => {
     questionsStore.inboxQuestions = []
   }
 })
+
+useHead({
+  titleTemplate: '%s - Answerly',
+  meta: [
+    { name: 'description', content: 'A platform for asking and answering questions.' }
+  ]
+})
 </script>

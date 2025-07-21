@@ -9,7 +9,7 @@ const sendReset = async () => {
 		return;
 	}
 	const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-		redirectTo: window.location.origin + "/auth/reset-password",
+		redirectTo: window.location.origin + ROUTES.FORGOT_PASSWORD,
 	});
 	if (error) {
 		message.value = error.message;
@@ -18,6 +18,13 @@ const sendReset = async () => {
 			"If your email is registered, a reset link has been sent.";
 	}
 };
+
+useHead({
+  title: 'Forgot Password',
+  meta: [
+    { name: 'description', content: 'Reset your password for Answerly.' }
+  ]
+})
 </script>
 
 <template>

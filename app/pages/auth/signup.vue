@@ -33,6 +33,13 @@ const signup = async () => {
 	alert("Check your email for the confirmation link.");
 	router.push(ROUTES.LOGIN);
 };
+
+useHead({
+  title: 'Sign up',
+  meta: [
+    { name: 'description', content: 'Create a new account on Answerly.' }
+  ]
+})
 </script>
 
 <template>

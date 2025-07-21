@@ -41,6 +41,13 @@ watch(
 		}
 	},
 );
+
+useHead({
+  title: 'Profile',
+  meta: [
+	{ name: 'description', content: 'View user profile and details.' }
+  ]
+})
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
+const profileStore = useProfileStore();
 const username = route.params.username as string;
 const supabase = useSupabaseClient();
 const followers = ref<any[]>([]);
@@ -10,6 +11,13 @@ definePageMeta({
 	// This page requires authentication
 	middleware: "auth",
 });
+
+useHead({
+  title: `Followers of ${profileStore.publicProfile?.username || username}`,
+  meta: [
+    { name: 'description', content: 'View the list of followers for this user.' }
+  ]
+})
 
 onMounted(async () => {
 	loading.value = true;

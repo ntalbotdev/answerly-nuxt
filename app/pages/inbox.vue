@@ -65,6 +65,13 @@ async function confirmRemoveQuestion() {
 		closeRemoveModal();
 	}
 }
+
+useHead({
+	title: "Inbox",
+	meta: [
+		{ name: "description", content: "View and respond to your questions." },
+	],
+});
 </script>
 
 <template>

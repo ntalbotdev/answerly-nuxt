@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
+const profileStore = useProfileStore();
 const username = route.params.username as string;
 const supabase = useSupabaseClient();
 const following = ref<any[]>([]);
@@ -10,6 +11,13 @@ definePageMeta({
     // This page requires authentication
     middleware: "auth",
 });
+
+useHead({
+  title: `Following of ${profileStore.publicProfile?.username || username}`,
+  meta: [
+    { name: 'description', content: 'View the list of users this person is following.' }
+  ]
+})
 
 onMounted(async () => {
     loading.value = true;
