@@ -1,3 +1,22 @@
+<script setup lang="ts">
+const user = useSupabaseUser();
+const profileStore = useProfileStore();
+
+// Profile fetch/clear logic remains here for now
+watchEffect(async () => {
+	if (user.value) {
+		if (
+			!profileStore.myProfile ||
+			profileStore.myProfile.user_id !== user.value.id
+		) {
+			await profileStore.fetchProfileById(user.value.id);
+		}
+	} else {
+		profileStore.clearProfile();
+	}
+});
+</script>
+
 <template>
 	<header class="header">
 		<div class="header__inner">

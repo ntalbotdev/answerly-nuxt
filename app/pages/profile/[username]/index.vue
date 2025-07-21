@@ -73,12 +73,7 @@ useHead({
 				</template>
 			</UserProfile>
 
-			<NuxtLink
-				:to="`/profile/${profileStore.publicProfile.username}/questions`"
-				class="mt-2 block px-4 py-2 text-center font-medium"
-			>
-				View Questions
-			</NuxtLink>
+			<UserQuestions :user-id="profileStore.publicProfile.user_id" />
 		</template>
 	</div>
 </template>

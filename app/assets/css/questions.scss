@@ -1,0 +1,96 @@
+@use "./variables" as *;
+.questions {
+	@apply mx-auto flex w-full flex-col gap-4 p-4 max-w-3xl;
+	background: $color-text;
+	color: $color-bg;
+
+	@media (min-width: 640px) {
+		background: transparent;
+	}
+}
+
+.questions__title {
+	@apply my-4 text-xl font-semibold text-center;
+
+	@media (min-width: 640px) {
+		@apply text-2xl my-6 text-white;
+	}
+}
+
+.questions__list {
+	@apply flex flex-col gap-6;
+}
+
+.questions__item {
+	@apply flex flex-col gap-3;
+	border-radius: $radius-sm;
+	width: 100%;
+}
+
+.questions__question {
+	@apply flex shadow bg-white p-4 gap-2 relative;
+	border-radius: $radius-sm;
+}
+
+.questions__question-content {
+	@apply flex flex-col;
+}
+
+.questions__question-text {
+	@apply text-base;
+}
+
+.questions__asker-wrapper {
+	@apply flex flex-col gap-2;
+}
+
+.questions__asker {
+	@apply flex gap-1 items-center;
+
+	&--anonymous {
+		@apply italic;
+		color: $color-muted;
+	}
+
+	&--username {
+		color: $color-accent;
+		text-decoration: none;
+	}
+}
+
+.questions__asker-name {
+  @apply font-semibold;
+}
+
+.questions__asker-avatar {
+  @apply w-10 h-10 rounded-full object-cover;
+}
+
+.questions__asker-username {
+  color: $color-muted;
+}
+
+.questions__answer {
+	@apply flex flex-col shadow bg-white p-4 gap-2 relative ml-4;
+	border-radius: $radius-sm;
+
+	&:before {
+		@apply absolute;
+		content: '';
+		left: -10px;
+		top: 50%;
+		transform: translateY(-50%);
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-right: 10px solid #fff;
+	}
+}
+
+.questions__answer-text {
+  @apply text-lg font-semibold;
+}
+
+.questions__answer-date {
+  @apply text-xs text-right;
+  color: $color-muted;
+}

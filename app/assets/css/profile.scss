@@ -4,14 +4,14 @@
 	@apply relative z-0 flex flex-col items-center;
 
 	&:before {
-		@apply absolute inset-0 w-full drop-shadow-lg;
+		@apply absolute inset-0 w-full;
 		content: "";
 		margin: auto;
 		background: $color-text;
 		z-index: -1;
 
 		@media (min-width: 640px) {
-			@apply w-full;
+			@apply w-full drop-shadow-lg;
 			border-radius: 0 0 $radius-lg $radius-lg;
 			width: 400px;
 		}

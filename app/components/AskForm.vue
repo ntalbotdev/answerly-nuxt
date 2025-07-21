@@ -54,8 +54,9 @@ async function submitQuestion() {
 		
 		emit("submitted");
 		emit("close");
-		
-	router.push(`${ROUTES.PROFILE}/${props.profile.username}`);
+
+	router.push(ROUTES.PROFILE_USER(props.profile.username));
+	
 	} catch {
 		error.value = "Failed to send question. Please try again.";
 	} finally {
