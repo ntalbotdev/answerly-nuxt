@@ -21,6 +21,13 @@ async function fetchAskedQuestions() {
     loading.value = false;
 }
 onMounted(fetchAskedQuestions);
+
+useHead({
+  title: "Questions I Asked",
+  meta: [
+    { name: "description", content: "View the questions you have asked." },
+  ],
+});
 </script>
 
 <template>

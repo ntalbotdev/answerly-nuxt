@@ -20,6 +20,13 @@ const login = async () => {
 		router.push(ROUTES.HOME);
 	}
 };
+
+useHead({
+  title: 'Log in',
+  meta: [
+    { name: 'description', content: 'Log in to your Answerly account.' }
+  ]
+})
 </script>
 
 <template>

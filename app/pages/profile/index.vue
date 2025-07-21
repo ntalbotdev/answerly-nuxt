@@ -13,6 +13,13 @@ onMounted(async () => {
         await profileStore.fetchProfileById(user.value.id);
     }
 });
+
+useHead({
+  title: 'Profile',
+  meta: [
+    { name: 'description', content: 'View your profile and details.' }
+  ]
+});
 </script>
 
 <template>

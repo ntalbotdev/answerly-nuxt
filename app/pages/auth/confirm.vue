@@ -7,6 +7,10 @@ if (!session.value) {
 } else {
     navigateTo(ROUTES.HOME);
 }
+
+useHead({
+  title: 'Finalizing Authentication',
+})
 </script>
 
 <template>

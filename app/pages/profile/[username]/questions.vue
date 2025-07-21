@@ -41,6 +41,13 @@ async function fetchQuestions() {
 function goToAsk() {
   router.push(`/ask/${username}`);
 }
+
+useHead({
+  title: `Questions for ${profileStore.publicProfile?.username || username}`,
+  meta: [
+    { name: 'description', content: 'View questions asked to this user.' }
+  ]
+});
 </script>
 
 <template>
