@@ -12,7 +12,6 @@ export interface Profile {
 }
 
 export const useProfileStore = defineStore("profile", {
-    // Define the store's state
     state: () => ({
         myProfile: null as Profile | null,
         publicProfile: null as Profile | null,
@@ -20,7 +19,6 @@ export const useProfileStore = defineStore("profile", {
         error: null as string | null,
     }),
     actions: {
-        // Fetch profile by user ID
         async fetchProfileById(userId: string) {
             this.loading = true;
             this.error = null;
@@ -41,7 +39,6 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // Create a new profile
         async createProfile(userId: string, username: string, displayName?: string) {
             this.loading = true;
             this.error = null;
@@ -51,7 +48,7 @@ export const useProfileStore = defineStore("profile", {
                     user_id: userId,
                     username: username.toLowerCase(),
                 };
-                // If displayName is provided, use it; otherwise, default to username
+                
                 if (displayName) {
                     profileData.display_name = displayName;
                 } else {
@@ -66,7 +63,7 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // Clear the profile state
+        
         clearProfile() {
             this.myProfile = null;
             this.publicProfile = null;
@@ -74,7 +71,7 @@ export const useProfileStore = defineStore("profile", {
             this.loading = false;
         },
 
-        // Set and get profile
+        
         setMyProfile(profile: Profile) {
             this.myProfile = profile;
         },
@@ -87,8 +84,7 @@ export const useProfileStore = defineStore("profile", {
         getPublicProfile() {
             return this.publicProfile;
         },
-
-        // update profile field
+        
         updateMyProfileField<K extends keyof Profile>(
             field: K,
             value: Profile[K]
@@ -98,7 +94,6 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // update public profile field
         updatePublicProfileField<K extends keyof Profile>(
             field: K,
             value: Profile[K]
@@ -108,7 +103,6 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // Save the current user's profile
         async saveMyProfile() {
             if (!this.myProfile) return;
             this.loading = true;
@@ -135,7 +129,6 @@ export const useProfileStore = defineStore("profile", {
             }
         },
 
-        // Fetch profile by username
         async fetchProfileByUsername(username: string) {
             this.loading = true;
             this.error = null;
@@ -155,7 +148,7 @@ export const useProfileStore = defineStore("profile", {
                 this.loading = false;
             }
         },
-        // Follow a user
+        
         async followUser(targetUserId: string) {
             const user = useSupabaseUser();
             if (!user.value) return;
@@ -169,7 +162,7 @@ export const useProfileStore = defineStore("profile", {
             if (error) this.error = error.message;
         },
 
-        // Unfollow a user
+        
         async unfollowUser(targetUserId: string) {
             const user = useSupabaseUser();
             if (!user.value) return;
@@ -182,7 +175,6 @@ export const useProfileStore = defineStore("profile", {
             if (error) this.error = error.message;
         },
 
-        // Check if current user follows target user
         async isFollowing(targetUserId: string): Promise<boolean> {
             const user = useSupabaseUser();
             if (!user.value) return false;
@@ -196,7 +188,16 @@ export const useProfileStore = defineStore("profile", {
             return !!data && !error;
         },
 
-        // Fetch followers of a user
+        async fetchFollowerCount(userId: string): Promise<number> {
+            const supabase = useSupabaseClient();
+            const { count, error } = await supabase
+                .from("follows")
+                .select("follower_id", { count: "exact", head: true })
+                .eq("following_id", userId);
+            if (error) return 0;
+            return count || 0;
+        },
+
         async fetchFollowers(userId: string) {
             const supabase = useSupabaseClient();
             const { data, error } = await supabase
@@ -209,7 +210,6 @@ export const useProfileStore = defineStore("profile", {
             return data || [];
         },
 
-        // Fetch users this user is following
         async fetchFollows(userId: string) {
             const supabase = useSupabaseClient();
             const { data, error } = await supabase

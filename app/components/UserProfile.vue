@@ -10,16 +10,6 @@ const showEditModal = ref(false);
 const showAskModal = ref(false);
 const showConfirmUnfollowModal = ref(false);
 
-watch(
-	() => route.query.edit,
-	(edit) => {
-		// Open modal when query ?edit=1 is present
-		showEditModal.value = edit === "1";
-	},
-	{ immediate: true },
-);
-
-
 function handleCloseEditModal() {
 	showEditModal.value = false;
 	navigateTo({ path: route.path, query: {} });
@@ -28,22 +18,12 @@ function handleCloseEditModal() {
 function handleCloseAskModal() {
 	showAskModal.value = false;
 }
-
-// Fetch follow status and follower count when mounted or when the profile changes
 async function fetchFollowStatus() {
 	if (!props.profile?.user_id) return;
-	const supabase = useSupabaseClient();
-	// Fetch follower count
-	const { count } = await supabase
-		.from("follows")
-		.select("follower_id", { count: "exact", head: true })
-		.eq("following_id", props.profile.user_id);
-	followerCount.value = count || 0;
-	// Check follow status
+	// Use store actions for follower count and follow status
+	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
 	if (user.value && user.value.id !== props.profile.user_id) {
-		isFollowing.value = await profileStore.isFollowing(
-			props.profile.user_id,
-		);
+		isFollowing.value = await profileStore.isFollowing(props.profile.user_id);
 	}
 }
 onMounted(fetchFollowStatus);
@@ -53,7 +33,7 @@ async function handleFollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.followUser(props.profile.user_id);
 	isFollowing.value = true;
-	followerCount.value++;
+	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
 	window.dispatchEvent(new Event("follow-status-changed"));
 }
 
@@ -65,7 +45,7 @@ async function confirmUnfollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.unfollowUser(props.profile.user_id);
 	isFollowing.value = false;
-	followerCount.value = Math.max(0, followerCount.value - 1);
+	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
 	window.dispatchEvent(new Event("follow-status-changed"));
 	showConfirmUnfollowModal.value = false;
 }
@@ -73,6 +53,15 @@ async function confirmUnfollow() {
 function closeConfirmUnfollowModal() {
 	showConfirmUnfollowModal.value = false;
 }
+
+watch(
+	() => route.query.edit,
+	(edit) => {
+		// Open modal when query ?edit=1 is present
+		showEditModal.value = edit === "1";
+	},
+	{ immediate: true },
+);
 </script>
 
 <template>
