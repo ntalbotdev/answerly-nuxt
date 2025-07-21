@@ -1,26 +1,22 @@
 <script setup lang="ts">
+import { useQuestionsStore } from '~/stores/questions'
 const props = defineProps<{ userId: string }>()
+
 const questions = ref<any[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+const questionsStore = useQuestionsStore()
 
 async function fetchAnsweredQuestions() {
   loading.value = true
   error.value = null
   try {
-	const supabase = useSupabaseClient()
-	const { data, error: err } = await supabase
-	  .from('questions')
-	  .select('id, question, answer, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)')
-	  .eq('to_user_id', props.userId)
-	  .eq('published', true)
-	  .order('answered_at', { ascending: false })
-	if (err) throw err
-	questions.value = data || []
+    const data = await questionsStore.fetchAnsweredQuestionsForUser(props.userId)
+    questions.value = data || []
   } catch (e: any) {
-	error.value = e.message || 'Failed to load questions.'
+    error.value = e.message || 'Failed to load questions.'
   } finally {
-	loading.value = false
+    loading.value = false
   }
 }
 

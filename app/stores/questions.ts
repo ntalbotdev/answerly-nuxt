@@ -159,5 +159,26 @@ export const useQuestionsStore = defineStore("questions", {
 				this.loading = false;
 			}
 		},
+
+		async fetchAnsweredQuestionsForUser(userId: string) {
+			this.loading = true;
+			this.error = null;
+			try {
+				const supabase = useSupabaseClient();
+				const { data, error } = await supabase
+					.from('questions')
+					.select('id, question, answer, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)')
+					.eq('to_user_id', userId)
+					.eq('published', true)
+					.order('answered_at', { ascending: false });
+				if (error) throw error;
+				return data || [];
+			} catch (err: any) {
+				this.error = err.message || 'Failed to fetch answered questions.';
+				return [];
+			} finally {
+				this.loading = false;
+			}
+		},
 	},
 });
