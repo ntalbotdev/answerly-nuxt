@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { validateUsername } from '~/utils/profileUtils';
+
 interface Profile {
 	username?: string;
 	display_name?: string;
@@ -40,17 +42,14 @@ watch(
 	},
 );
 
-// Function to trigger avatar file input
 function triggerAvatarUpload() {
 	avatarCompressor.value?.$el?.click();
 }
 
-// Function to trigger banner file input
 function triggerBannerUpload() {
 	bannerCompressor.value?.$el?.click();
 }
 
-// Handle avatar compressed file from ImageCompressor
 async function handleAvatarCompressed(file: File) {
 	if (!user.value?.id) return;
 	const url = await uploadImage(file, "avatar", user.value.id);
@@ -59,7 +58,6 @@ async function handleAvatarCompressed(file: File) {
 	}
 }
 
-// Handle banner compressed file from ImageCompressor
 async function handleBannerCompressed(file: File) {
 	if (!user.value?.id) return;
 	const url = await uploadImage(file, "banner", user.value.id);
@@ -74,6 +72,13 @@ async function saveProfile() {
 
 	if (!user.value) {
 		error.value = "You must be logged in to edit your profile.";
+		loading.value = false;
+		return;
+	}
+
+	const usernameValidation = validateUsername(form.username);
+	if (!usernameValidation.valid) {
+		error.value = usernameValidation.error || "Invalid username.";
 		loading.value = false;
 		return;
 	}
@@ -116,7 +121,7 @@ function handleCancel() {
 		type="text"
 		class="edit-profile__input"
 		required
-	  />
+	  >
 	</div>
 	<div class="edit-profile__field">
 	  <label for="display-name" class="edit-profile__label">Display Name</label>
@@ -125,7 +130,7 @@ function handleCancel() {
 		v-model="form.display_name"
 		type="text"
 		class="edit-profile__input"
-	  />
+	  >
 	</div>
 	<div class="edit-profile__field">
 	  <label for="bio" class="edit-profile__label">Bio</label>
