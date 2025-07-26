@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const props = defineProps<{ profile: any }>();
-const route = useRoute();
-const canEdit = computed(() => route.path === ROUTES.PROFILE);
-const profileStore = useProfileStore();
+const emit = defineEmits(['profile-updated']);
 const user = useSupabaseUser();
+const canEdit = computed(() => {
+  return user.value && props.profile?.user_id && user.value.id === props.profile.user_id;
+});
+const profileStore = useProfileStore();
 const isFollowing = ref(false);
 const followerCount = ref(0);
 const showEditModal = ref(false);
@@ -12,7 +14,11 @@ const showConfirmUnfollowModal = ref(false);
 
 function handleCloseEditModal() {
 	showEditModal.value = false;
-	navigateTo({ path: route.path, query: {} });
+	if (props.profile?.user_id) {
+		profileStore.fetchProfileById(props.profile.user_id).then(() => {
+			emit('profile-updated');
+		});
+	}
 }
 
 function handleCloseAskModal() {
@@ -53,15 +59,6 @@ async function confirmUnfollow() {
 function closeConfirmUnfollowModal() {
 	showConfirmUnfollowModal.value = false;
 }
-
-watch(
-	() => route.query.edit,
-	(edit) => {
-		// Open modal when query ?edit=1 is present
-		showEditModal.value = edit === "1";
-	},
-	{ immediate: true },
-);
 </script>
 
 <template>
@@ -71,7 +68,7 @@ watch(
 			title="Edit Profile"
 			@close="handleCloseEditModal"
 		>
-			<EditProfileForm :profile="props.profile" @close="handleCloseEditModal" />
+			<EditProfileForm :key="props.profile.user_id + '-' + props.profile.updated_at" :profile="props.profile" @close="handleCloseEditModal" />
 		</AppModal>
 
 		<AppModal v-model:open="showAskModal" title="Ask a Question">
@@ -101,22 +98,6 @@ watch(
 					</template>
 
 					<template v-else>
-						<button
-							v-if="user && user.id === props.profile.user_id"
-							class="profile__action profile__action--edit-profile"
-							@click="
-								$router.push({
-									path: ROUTES.PROFILE,
-									query: { edit: '1' },
-								})
-							"
-						>
-							<Icon name="bx:edit" class="profile__action-icon" />
-							<span class="profile__action-text">
-								Edit Profile
-							</span>
-						</button>
-
 						<template
 							v-if="user && user.id !== props.profile.user_id"
 						>

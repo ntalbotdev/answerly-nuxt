@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import { loginWithPassword } from '~/utils/authUtils';
+
 const user = useSupabaseUser();
 const router = useRouter();
 const email = ref("");
@@ -7,18 +8,17 @@ const password = ref("");
 const profileStore = useProfileStore();
 
 const login = async () => {
-	const { error } = await supabase.auth.signInWithPassword({
-		email: email.value,
-		password: password.value,
-	});
-	if (error) {
-		alert(error.message);
-	} else {
-		if (user.value) {
-			await profileStore.fetchProfileById(user.value.id);
-		}
-		router.push(ROUTES.HOME);
+	const result = await loginWithPassword(email.value, password.value);
+	
+	if (!result.success) {
+		alert(result.error);
+		return;
 	}
+	
+	if (user.value) {
+		await profileStore.fetchProfileById(user.value.id);
+	}
+	router.push(ROUTES.HOME);
 };
 
 useHead({
@@ -44,7 +44,7 @@ useHead({
 				placeholder="Email"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<label for="password" class="sr-only">Password</label>
@@ -58,7 +58,7 @@ useHead({
 				placeholder="Password"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<NuxtLink :to="ROUTES.FORGOT_PASSWORD" class="auth-form__forgot-password">

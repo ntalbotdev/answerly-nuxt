@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isFollowingMe } from '~/utils/followUtils';
+
 const props = defineProps<{ targetUserId: string }>();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
@@ -16,16 +18,7 @@ async function checkStatus() {
         return;
     }
     iFollow.value = await profileStore.isFollowing(props.targetUserId);
-    followsMe.value = false;
-    // Check if the target user follows me
-    const supabase = useSupabaseClient();
-    const { data, error } = await supabase
-        .from("follows")
-        .select("follower_id")
-        .eq("follower_id", props.targetUserId)
-        .eq("following_id", user.value.id)
-        .single();
-    followsMe.value = !!data && !error;
+    followsMe.value = await isFollowingMe(props.targetUserId);
     loading.value = false;
 }
 onMounted(checkStatus);

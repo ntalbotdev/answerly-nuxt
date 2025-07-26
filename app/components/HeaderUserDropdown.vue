@@ -76,10 +76,10 @@ function handleDropdownLinkClick() {
 			</NuxtLink>
 
 			<NuxtLink
-				:to="ROUTES.PROFILE"
+				:to="ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')"
 				:class="[
 					'header__user-dropdown-link',
-					$route.path === ROUTES.PROFILE
+					$route.path === ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')
 						? 'header__user-dropdown-link--active'
 						: '',
 				]"

@@ -1,21 +1,23 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import { sendPasswordReset, validateEmail } from '~/utils/authUtils';
+
 const email = ref("");
 const message = ref("");
 
 const sendReset = async () => {
-	if (!email.value) {
-		message.value = "Please enter your email.";
+	// Validate email
+	const emailValidation = validateEmail(email.value);
+	if (!emailValidation.valid) {
+		message.value = emailValidation.error || "Please enter a valid email.";
 		return;
 	}
-	const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-		redirectTo: window.location.origin + ROUTES.FORGOT_PASSWORD,
-	});
-	if (error) {
-		message.value = error.message;
+	
+	const result = await sendPasswordReset(email.value, window.location.origin + ROUTES.FORGOT_PASSWORD);
+	
+	if (!result.success) {
+		message.value = result.error || "An error occurred.";
 	} else {
-		message.value =
-			"If your email is registered, a reset link has been sent.";
+		message.value = "If your email is registered, a reset link has been sent.";
 	}
 };
 
@@ -45,7 +47,7 @@ useHead({
 				placeholder="Enter your email"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 		<button
 			type="submit"

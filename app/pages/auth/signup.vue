@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import { signUpWithPassword, validatePassword } from '~/utils/authUtils';
+import { validateUsername } from '~/utils/profileUtils';
+
 const router = useRouter();
 const email = ref("");
 const username = ref("");
@@ -8,20 +10,28 @@ const confirmPassword = ref("");
 const profileStore = useProfileStore();
 
 const signup = async () => {
-	if (password.value !== confirmPassword.value) {
-		alert("Passwords do not match.");
+	// Validate password
+	const passwordValidation = validatePassword(password.value, confirmPassword.value);
+	if (!passwordValidation.valid) {
+		alert(passwordValidation.error);
 		return;
 	}
-	const { data, error } = await supabase.auth.signUp({
-		email: email.value,
-		password: password.value,
-	});
-	if (error) {
-		alert(error.message);
+	
+	// Validate username
+	const usernameValidation = validateUsername(username.value);
+	if (!usernameValidation.valid) {
+		alert(usernameValidation.error);
+		return;
+	}
+	
+	// Sign up user
+	const result = await signUpWithPassword(email.value, password.value);
+	if (!result.success) {
+		alert(result.error);
 		return;
 	}
 
-	const user = data.user;
+	const user = result.user;
 	if (user) {
 		await profileStore.createProfile(user.id, username.value);
 		if (profileStore.error) {
@@ -57,7 +67,7 @@ useHead({
 				placeholder="Email"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<label for="username" class="sr-only">Username</label>
@@ -71,7 +81,7 @@ useHead({
 				placeholder="Username"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<label for="password" class="sr-only">Password</label>
@@ -85,7 +95,7 @@ useHead({
 				placeholder="Password"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<label for="confirm-password" class="sr-only">Confirm Password</label>
@@ -99,7 +109,7 @@ useHead({
 				placeholder="Confirm Password"
 				class="auth-form__input"
 				required
-			/>
+			>
 		</div>
 
 		<button type="submit" class="auth-form__button">Sign up</button>
