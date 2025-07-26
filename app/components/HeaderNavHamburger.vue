@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+const profileStore = useProfileStore();
 const questionsStore = useQuestionsStore();
 const { hasNewInboxItems, newInboxCount } = storeToRefs(questionsStore);
 const showMenu = ref(false);
@@ -127,10 +128,10 @@ onUnmounted(() => {
 						</NuxtLink>
 
 						<NuxtLink
-							:to="ROUTES.PROFILE"
+							:to="ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')"
 							:class="[
 								'header__nav-link',
-								route.path === ROUTES.PROFILE
+								route.path === ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')
 									? 'header__nav-link--active'
 									: '',
 							]"

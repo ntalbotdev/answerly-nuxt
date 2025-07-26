@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { fetchFollowerCount as fetchFollowerCountUtil } from '~/utils/followUtils';
+
 const props = defineProps<{ userId: string }>();
 const followerCount = ref(0);
 const loading = ref(true);
@@ -10,12 +12,7 @@ async function fetchFollowerCount() {
     loading.value = false;
     return;
   }
-  const supabase = useSupabaseClient();
-  const { count } = await supabase
-    .from('follows')
-    .select('follower_id', { count: 'exact', head: true })
-    .eq('following_id', props.userId);
-  followerCount.value = count || 0;
+  followerCount.value = await fetchFollowerCountUtil(props.userId);
   loading.value = false;
 }
 
