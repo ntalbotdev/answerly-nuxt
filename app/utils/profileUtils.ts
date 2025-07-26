@@ -1,9 +1,24 @@
 import type { Profile } from '~/stores/profile';
 
-export function validateUsername(username: string): boolean {
-  // Username should be 3-20 characters, alphanumeric and underscores only
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  return usernameRegex.test(username);
+export function validateUsername(username: string): { valid: boolean; error?: string } {
+  if (!username) {
+    return { valid: false, error: "Username is required." };
+  }
+  
+  if (username.length < 3) {
+    return { valid: false, error: "Username must be at least 3 characters long." };
+  }
+  
+  if (username.length > 20) {
+    return { valid: false, error: "Username must be less than 20 characters long." };
+  }
+  
+  const usernameRegex = /^[a-zA-Z0-9_]+$/;
+  if (!usernameRegex.test(username)) {
+    return { valid: false, error: "Username can only contain letters, numbers, and underscores." };
+  }
+  
+  return { valid: true };
 }
 
 export function formatDisplayName(displayName: string | undefined, username: string): string {
