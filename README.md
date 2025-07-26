@@ -7,7 +7,6 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
 - Supabase Auth (email/password)
 - User profile creation and management
 - Public profile pages
-- Personal profile page
 - Profile editing and assets upload
 - Ask questions to any user (optionally anonymously)
 - Users can answer questions they receive
@@ -27,7 +26,7 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
   - `stores/` — Pinia stores (profile, questions)
-  - `utils/` — Utility functions and constants (like routes paths)
+  - `utils/` — Utility functions and constants
 
 ## Environment Setup
 
@@ -156,8 +155,8 @@ create table questions (
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
 - Visit `/my-questions` to see questions you have asked others
-- Visit `/profile` to view or edit your profile
-- Visit `/profile/:username` to view any public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
+- Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
+  - If it's your own profile, you can edit it by clicking the edit button
 - Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following
