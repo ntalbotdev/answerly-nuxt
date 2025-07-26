@@ -1,4 +1,5 @@
 @use "./variables" as *;
+
 .questions {
 	@apply mx-auto flex w-full flex-col gap-4 p-4 max-w-3xl;
 	background: $color-text;
@@ -38,44 +39,49 @@
 
 .questions__question-text {
 	@apply text-base;
+
+	&--answer {
+		@apply font-semibold;
+	}
 }
 
-.questions__asker-wrapper {
-	@apply flex flex-col gap-2;
+.questions__question-date {
+	@apply text-xs text-right;
+	color: $color-muted;
 }
 
-.questions__asker {
-	@apply flex gap-1 items-center;
+.questions__person-wrapper {
+	@apply flex flex-col gap-2 w-full;
+}
+
+.questions__person {
+	@apply flex flex-col;
 
 	&--anonymous {
-		@apply italic;
+		@apply font-semibold;
 		color: $color-muted;
 	}
-
-	&--username {
-		color: $color-accent;
-		text-decoration: none;
-	}
 }
 
-.questions__asker-name {
-  @apply font-semibold;
+.questions__person-avatar {
+	@apply w-10 h-10 rounded-full object-cover;
 }
 
-.questions__asker-avatar {
-  @apply w-10 h-10 rounded-full object-cover;
+.questions__person-name {
+  	@apply font-semibold;
 }
 
-.questions__asker-username {
-  color: $color-muted;
+.questions__person-username {
+	@apply text-sm;
+  	color: $color-muted;
 }
 
 .questions__answer {
-	@apply flex flex-col shadow bg-white p-4 gap-2 relative ml-4;
+	@apply flex shadow bg-white p-4 gap-2 relative ml-4;
 	border-radius: $radius-sm;
 
 	&:before {
-		@apply absolute;
+		@apply absolute ;
 		content: '';
 		left: -10px;
 		top: 50%;
@@ -87,10 +93,10 @@
 }
 
 .questions__answer-text {
-  @apply text-lg font-semibold;
+  	@apply text-lg font-semibold;
 }
 
 .questions__answer-date {
-  @apply text-xs text-right;
-  color: $color-muted;
+  	@apply text-xs text-right;
+  	color: $color-muted;
 }

@@ -167,7 +167,7 @@ export const useQuestionsStore = defineStore("questions", {
 				const supabase = useSupabaseClient();
 				const { data, error } = await supabase
 					.from('questions')
-					.select('id, question, answer, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)')
+					.select('id, question, answer, is_anonymous, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)')
 					.eq('to_user_id', userId)
 					.eq('published', true)
 					.order('answered_at', { ascending: false });

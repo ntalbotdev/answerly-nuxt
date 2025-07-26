@@ -73,7 +73,7 @@ useHead({
 				</template>
 			</UserProfile>
 
-			<UserQuestions :user-id="profileStore.publicProfile.user_id" />
+			<UserQuestions :user-id="profileStore.publicProfile.user_id" :profile="profileStore.publicProfile"/>
 		</template>
 	</div>
 </template>
