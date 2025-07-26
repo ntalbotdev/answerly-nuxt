@@ -130,22 +130,183 @@ create table questions (
 
 ## Storage & Profile Assets
 
-- Each user can upload an avatar and a banner image to their own folder: `profile-assets/<user_id>/avatar.webp` and `profile-assets/<user_id>/banner.webp`
+- Each user can upload an avatar and a banner image to their own folder: `[user_id]/avatar.webp` and `[user_id]/banner.webp`
 - The `avatar_url` and `banner_url` fields in the profile point to the public URLs of the uploaded images
-- Make the bucket public for public URLs, or use signed URLs for private assets.
-- **RLS Policy Example:**
-    ```sql
-    create policy "Users can manage their own profile assets"
-   ON storage.objects FOR {operation} {USING | WITH CHECK} (
-    -- restrict bucket
-    bucket_id = {bucket_name}
-    and (select auth.uid()::text) = (storage.foldername(name))[1]
-);
-    ```
+- Make the bucket public for public URLs
+- Use the RLS policies below to restrict access to profile assets
 
 ## Row Level Security (RLS)
 
-> ⚠️ **Important:** Row Level Security (RLS) is currently **not enabled** on any of the tables. You should set up RLS policies before going to production to protect user data and ensure only authorized access.
+> ℹ️ Click the spoilers below to reveal the SQL queries for each policy 
+
+<details>
+  <summary>📦 <strong>Storage RLS Policies</strong></summary>
+    
+  ```sql
+  CREATE POLICY "Public can view avatar/banner"
+    ON storage.objects
+    FOR SELECT
+    TO public
+    USING (
+      bucket_id = 'profile-assets'
+      AND (
+         name LIKE '%/avatar.webp'
+        OR name LIKE '%/banner.webp'
+      )
+    );
+
+  CREATE POLICY "Users can upload avatar/banner to their folder"
+    ON storage.objects
+    FOR INSERT
+    WITH CHECK (
+      bucket_id = 'profile-assets'
+      AND auth.uid() IS NOT NULL
+      AND (
+        name = auth.uid()::text || '/avatar.webp'
+        OR name = auth.uid()::text || '/banner.webp'
+      )
+    );
+
+  CREATE POLICY "Users can update avatar/banner in their folder"
+    ON storage.objects
+    FOR UPDATE
+    USING (
+      bucket_id = 'profile-assets'
+      AND auth.uid() IS NOT NULL
+      AND (
+        name = auth.uid()::text || '/avatar.webp'
+        OR name = auth.uid()::text || '/banner.webp'
+      )
+    )
+    WITH CHECK (
+      bucket_id = 'profile-assets'
+      AND auth.uid() IS NOT NULL
+      AND (
+        name = auth.uid()::text || '/avatar.webp'
+        OR name = auth.uid()::text || '/banner.webp'
+      )
+    );
+
+  CREATE POLICY "Users can delete avatar/banner from their folder"
+    ON storage.objects
+    FOR DELETE
+    USING (
+      bucket_id = 'profile-assets'
+      AND auth.uid() IS NOT NULL
+      AND (
+        name = auth.uid()::text || '/avatar.webp'
+        OR name = auth.uid()::text || '/banner.webp'
+      )
+    );
+  ```
+</details>
+
+<details>
+  <summary>👤 <strong>Profiles RLS Policies</strong></summary>
+
+  ```sql
+  CREATE POLICY "Public can view profiles"
+    ON profiles
+    FOR SELECT
+    TO public
+    USING (true);
+
+  CREATE POLICY "Users can create their own profile"
+    ON profiles
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+  CREATE POLICY "Users can update their own profile"
+    ON profiles
+    FOR UPDATE
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
+  ```
+</details>
+
+<details>
+  <summary>🤝 <strong>Follows RLS Policies</strong></summary>
+
+  ```sql
+  CREATE POLICY "Only users can view follows"
+    ON follows
+    FOR SELECT
+    TO authenticated
+    USING (true);
+
+  CREATE POLICY "Users can follow others"
+    ON follows
+    FOR INSERT
+    WITH CHECK (
+      auth.uid() IS NOT NULL
+      AND follower_id = auth.uid()
+      );
+
+  CREATE POLICY "Users can unfollow others"
+    ON follows
+    FOR DELETE
+    USING (
+      auth.uid() IS NOT NULL
+      AND follower_id = auth.uid()
+    );
+  ```
+</details>
+
+<details>
+  <summary>❓ <strong>Questions RLS Policies</strong></summary>
+
+  ```sql
+  CREATE POLICY "Public can view published questions"
+    ON questions
+    FOR SELECT
+    TO public
+    USING (
+      published = true
+    );
+
+  CREATE POLICY "Users can view their own questions"
+    ON questions
+    FOR SELECT
+    USING (
+      auth.uid() IS NOT NULL
+      AND (
+        to_user_id = auth.uid()
+        OR from_user_id = auth.uid()
+      )
+    );
+
+  CREATE POLICY "Users can ask questions"
+    ON questions
+    FOR INSERT
+    WITH CHECK (
+      auth.uid() IS NOT NULL
+      AND from_user_id = auth.uid()
+    );
+
+  CREATE POLICY "Users can answer questions sent to them"
+    ON questions
+    FOR UPDATE
+    USING (
+      auth.uid() IS NOT NULL
+      AND to_user_id = auth.uid()
+    )
+    WITH CHECK (
+      auth.uid() IS NOT NULL
+      AND to_user_id = auth.uid()
+    );
+
+  CREATE POLICY "Users can delete questions they asked or received"
+    ON questions
+    FOR DELETE
+    USING (
+      auth.uid() IS NOT NULL
+      AND (
+        from_user_id = auth.uid()
+        OR to_user_id = auth.uid()
+      )
+    );
+  ```
+</details>
 
 ## Usage
 
