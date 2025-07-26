@@ -13,11 +13,14 @@ definePageMeta({
 });
 
 useHead({
-  title: `Followers of ${profileStore.publicProfile?.username || username}`,
-  meta: [
-    { name: 'description', content: 'View the list of followers for this user.' }
-  ]
-})
+	title: `Followers of ${profileStore.publicProfile?.username || username}`,
+	meta: [
+		{
+			name: "description",
+			content: "View the list of followers for this user.",
+		},
+	],
+});
 
 onMounted(async () => {
 	loading.value = true;

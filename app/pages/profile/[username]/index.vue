@@ -14,19 +14,19 @@ watch(
 		if (typeof newUsername === "string") {
 			profileStore.fetchProfileByUsername(newUsername);
 		}
-	},
+	}
 );
 
 useHead({
-  title: 'Profile',
-  meta: [
-	{ name: 'description', content: 'View user profile and details.' }
-  ]
-})
+	title: "Profile",
+	meta: [{ name: "description", content: "View user profile and details." }],
+});
 
 async function refreshProfile() {
 	if (profileStore.publicProfile?.username) {
-		await profileStore.fetchProfileByUsername(profileStore.publicProfile.username);
+		await profileStore.fetchProfileByUsername(
+			profileStore.publicProfile.username
+		);
 		profileStore.publicProfile = { ...profileStore.publicProfile };
 	}
 }
@@ -49,13 +49,19 @@ async function refreshProfile() {
 			>
 				<template #mutual-status>
 					<MutualFollowStatus
-						v-if="user && user.id !== profileStore.publicProfile.user_id"
+						v-if="
+							user &&
+							user.id !== profileStore.publicProfile.user_id
+						"
 						:target-user-id="profileStore.publicProfile.user_id"
 					/>
 				</template>
 			</UserProfile>
 
-			<UserQuestions :user-id="profileStore.publicProfile.user_id" :profile="profileStore.publicProfile"/>
+			<UserQuestions
+				:user-id="profileStore.publicProfile.user_id"
+				:profile="profileStore.publicProfile"
+			/>
 		</template>
 	</div>
 </template>

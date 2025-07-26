@@ -27,7 +27,7 @@ function close() {
 					<Icon name="bx:x" />
 				</button>
 				<h3 v-if="title" class="modal__title">{{ title }}</h3>
-				<slot  />
+				<slot />
 			</div>
 		</div>
 	</div>

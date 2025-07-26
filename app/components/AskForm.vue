@@ -22,19 +22,19 @@ const form = ref({
 async function submitQuestion() {
 	loading.value = true;
 	error.value = "";
-	
+
 	if (!user.value) {
 		error.value = "You must be logged in to ask a question.";
 		loading.value = false;
 		return;
 	}
-	
+
 	if (!form.value.question.trim()) {
 		error.value = "Question is required.";
 		loading.value = false;
 		return;
 	}
-	
+
 	try {
 		await questionsStore.createQuestion({
 			from_user_id: user.value.id,
@@ -42,21 +42,20 @@ async function submitQuestion() {
 			question: form.value.question,
 			is_anonymous: form.value.is_anonymous,
 		});
-		
+
 		if (questionsStore.error) {
 			error.value = questionsStore.error;
 			return;
 		}
-		
+
 		// Reset form
 		form.value.question = "";
 		form.value.is_anonymous = false;
-		
+
 		emit("submitted");
 		emit("close");
 
-	router.push(ROUTES.PROFILE_USER(props.profile.username));
-	
+		router.push(ROUTES.PROFILE_USER(props.profile.username));
 	} catch {
 		error.value = "Failed to send question. Please try again.";
 	} finally {
@@ -70,7 +69,7 @@ async function submitQuestion() {
 		<div v-if="error" class="error-text">
 			{{ error }}
 		</div>
-		
+
 		<div class="ask-form__field">
 			<label for="question" class="ask-form__label">Question</label>
 			<textarea
@@ -82,18 +81,18 @@ async function submitQuestion() {
 				placeholder="What would you like to ask?"
 			/>
 		</div>
-		
+
 		<div class="ask-form__field">
 			<label class="ask-form__checkbox-label">
 				<input
 					v-model="form.is_anonymous"
 					type="checkbox"
 					class="ask-form__checkbox"
-				>
+				/>
 				<span class="ask-form__checkbox-text">Ask anonymously</span>
 			</label>
 		</div>
-		
+
 		<div class="ask-form__button-wrapper">
 			<button
 				type="button"

@@ -2,8 +2,10 @@ export const ROUTES = {
 	HOME: "/",
 	PROFILE: "/profile",
 	PROFILE_USER: (username: string) => `/profile/${username}`,
-	PROFILE_USER_FOLLOWERS: (username: string) => `/profile/${username}/followers`,
-	PROFILE_USER_FOLLOWING: (username: string) => `/profile/${username}/following`,
+	PROFILE_USER_FOLLOWERS: (username: string) =>
+		`/profile/${username}/followers`,
+	PROFILE_USER_FOLLOWING: (username: string) =>
+		`/profile/${username}/following`,
 	MY_QUESTIONS: "/my-questions",
 	INBOX: "/inbox",
 	DISCOVER: "/discover",

@@ -3,16 +3,16 @@ const session = useSupabaseSession();
 
 // watch for session and redirect when present
 if (!session.value) {
-    navigateTo(ROUTES.LOGIN);
+	navigateTo(ROUTES.LOGIN);
 } else {
-    navigateTo(ROUTES.HOME);
+	navigateTo(ROUTES.HOME);
 }
 
 useHead({
-  title: 'Finalizing Authentication',
-})
+	title: "Finalizing Authentication",
+});
 </script>
 
 <template>
-    <p>Finalizing authentication...</p>
+	<p>Finalizing authentication...</p>
 </template>

@@ -14,7 +14,10 @@ function confirm() {
 		<div class="confirm-unfollow-modal__content">
 			<p>
 				Are you sure you want to stop following
-				<strong>{{ props.username }}</strong>?
+				<strong>
+					{{ props.username }}
+				</strong>
+				?
 			</p>
 			<div class="confirm-unfollow-modal__actions">
 				<button class="btn btn--secondary" @click="close">

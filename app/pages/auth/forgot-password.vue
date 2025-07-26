@@ -1,42 +1,40 @@
 <script setup lang="ts">
-import { sendPasswordReset, validateEmail } from '~/utils/authUtils';
+import { sendPasswordReset, validateEmail } from "~/utils/authUtils";
 
 const email = ref("");
 const message = ref("");
 
 const sendReset = async () => {
-	// Validate email
 	const emailValidation = validateEmail(email.value);
 	if (!emailValidation.valid) {
 		message.value = emailValidation.error || "Please enter a valid email.";
 		return;
 	}
-	
-	const result = await sendPasswordReset(email.value, window.location.origin + ROUTES.FORGOT_PASSWORD);
-	
+
+	const result = await sendPasswordReset(
+		email.value,
+		window.location.origin + ROUTES.FORGOT_PASSWORD
+	);
+
 	if (!result.success) {
 		message.value = result.error || "An error occurred.";
 	} else {
-		message.value = "If your email is registered, a reset link has been sent.";
+		message.value =
+			"If your email is registered, a reset link has been sent.";
 	}
 };
 
 useHead({
-  title: 'Forgot Password',
-  meta: [
-    { name: 'description', content: 'Reset your password for Answerly.' }
-  ]
-})
+	title: "Forgot Password",
+	meta: [
+		{ name: "description", content: "Reset your password for Answerly." },
+	],
+});
 </script>
 
 <template>
-	<form
-		class="auth-form"
-		@submit.prevent="sendReset"
-	>
-		<h2 class="auth-form__title">
-			Forgot your password?
-		</h2>
+	<form class="auth-form" @submit.prevent="sendReset">
+		<h2 class="auth-form__title">Forgot your password?</h2>
 		<label for="email" class="sr-only">Email</label>
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
@@ -47,14 +45,9 @@ useHead({
 				placeholder="Enter your email"
 				class="auth-form__input"
 				required
-			>
+			/>
 		</div>
-		<button
-			type="submit"
-			class="auth-form__button"
-		>
-			Send reset link
-		</button>
+		<button type="submit" class="auth-form__button">Send reset link</button>
 		<div v-if="message" class="auth-form__message">
 			{{ message }}
 		</div>

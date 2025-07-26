@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { validateUsername } from '~/utils/profileUtils';
+import { validateUsername } from "~/utils/profileUtils";
 
 interface Profile {
 	username?: string;
@@ -19,7 +19,12 @@ const avatarCompressor = ref();
 const bannerCompressor = ref();
 
 const form = reactive({
-	user_id: typeof user.value?.id === 'string' ? user.value.id : (typeof props.profile.user_id === 'string' ? props.profile.user_id : ""),
+	user_id:
+		typeof user.value?.id === "string"
+			? user.value.id
+			: typeof props.profile.user_id === "string"
+				? props.profile.user_id
+				: "",
 	username: props.profile.username || "",
 	display_name: props.profile.display_name || "",
 	bio: props.profile.bio || "",
@@ -33,13 +38,18 @@ const error = ref("");
 watch(
 	() => props.profile,
 	(newProfile) => {
-	form.user_id = typeof user.value?.id === 'string' ? user.value.id : (typeof newProfile.user_id === 'string' ? newProfile.user_id : "");
+		form.user_id =
+			typeof user.value?.id === "string"
+				? user.value.id
+				: typeof newProfile.user_id === "string"
+					? newProfile.user_id
+					: "";
 		form.username = newProfile.username || "";
 		form.display_name = newProfile.display_name || "";
 		form.bio = newProfile.bio || "";
 		form.avatar_url = newProfile.avatar_url || "";
 		form.banner_url = newProfile.banner_url || "";
-	},
+	}
 );
 
 function triggerAvatarUpload() {
@@ -85,7 +95,7 @@ async function saveProfile() {
 
 	// Update the store's myProfile with form data, then save
 	profileStore.setMyProfile({
-		user_id: typeof user.value?.id === 'string' ? user.value.id : "",
+		user_id: typeof user.value?.id === "string" ? user.value.id : "",
 		username: form.username,
 		display_name: form.display_name,
 		bio: form.bio,
@@ -95,7 +105,7 @@ async function saveProfile() {
 
 	try {
 		await profileStore.saveMyProfile();
-		emit('profile-updated');
+		emit("profile-updated");
 	} catch {
 		error.value = "Failed to update profile";
 	} finally {
@@ -104,108 +114,110 @@ async function saveProfile() {
 }
 
 function handleCancel() {
-	emit('close');
+	emit("close");
 }
 </script>
 
 <template>
-  <form class="edit-profile" @submit.prevent="saveProfile">
-	<div v-if="error" class="error-text">
-	  {{ error }}
-	</div>
-	<div class="edit-profile__field">
-	  <label for="username" class="edit-profile__label">Username</label>
-	  <input
-		id="username"
-		v-model="form.username"
-		type="text"
-		class="edit-profile__input"
-		required
-	  >
-	</div>
-	<div class="edit-profile__field">
-	  <label for="display-name" class="edit-profile__label">Display Name</label>
-	  <input
-		id="display-name"
-		v-model="form.display_name"
-		type="text"
-		class="edit-profile__input"
-	  >
-	</div>
-	<div class="edit-profile__field">
-	  <label for="bio" class="edit-profile__label">Bio</label>
-	  <textarea
-		id="bio"
-		v-model="form.bio"
-		class="edit-profile__input"
-		rows="4"
-	  />
-	</div>
-	<div class="edit-profile__field">
-	  <div class="edit-profile__upload">
-		<img
-		  v-if="form.avatar_url"
-		  :src="form.avatar_url"
-		  alt="Avatar preview"
-		  class="edit-profile__image-preview edit-profile__image-preview--avatar"
-		>
-		<button
-		  type="button"
-		  class="edit-profile__upload-button edit-profile__upload-button--avatar"
-		  @click="triggerAvatarUpload"
-		>
-		  Upload Avatar
-		</button>
-		<ImageCompressor 
-		  ref="avatarCompressor"
-		  :max-width-or-height="400"
-		  :max-size-m-b="10"
-		  file-type="image/webp"
-		  class="hidden"
-		  @compressed="handleAvatarCompressed"
-		/>
-	  </div>
-	</div>
-	<div class="edit-profile__field">
-	  <div class="edit-profile__upload">
-		<img
-		  v-if="form.banner_url"
-		  :src="form.banner_url"
-		  alt="Banner preview"
-		  class="edit-profile__image-preview edit-profile__image-preview--banner"
-		>
-		<button
-		  type="button"
-		  class="edit-profile__upload-button edit-profile__upload-button--banner"
-		  @click="triggerBannerUpload"
-		>
-		  Upload Banner
-		</button>
-		<ImageCompressor 
-		  ref="bannerCompressor"
-		  :max-width-or-height="1000"
-		  :max-size-m-b="10"
-		  file-type="image/webp"
-		  class="hidden"
-		  @compressed="handleBannerCompressed"
-		/>
-	  </div>
-	</div>
-	<div class="edit-profile__button-wrapper">
-	  <button 
-		type="button"
-		class="btn btn--secondary" 
-		@click="handleCancel"
-	  >
-		Cancel
-	  </button>
-	  <button
-		type="submit"
-		class="btn btn--primary"
-		:disabled="loading || !form.username.trim()"
-	  >
-		{{ loading ? "Saving..." : "Save Profile" }}
-	  </button>
-	</div>
-  </form>
+	<form class="edit-profile" @submit.prevent="saveProfile">
+		<div v-if="error" class="error-text">
+			{{ error }}
+		</div>
+		<div class="edit-profile__field">
+			<label for="username" class="edit-profile__label">Username</label>
+			<input
+				id="username"
+				v-model="form.username"
+				type="text"
+				class="edit-profile__input"
+				required
+			/>
+		</div>
+		<div class="edit-profile__field">
+			<label for="display-name" class="edit-profile__label">
+				Display Name
+			</label>
+			<input
+				id="display-name"
+				v-model="form.display_name"
+				type="text"
+				class="edit-profile__input"
+			/>
+		</div>
+		<div class="edit-profile__field">
+			<label for="bio" class="edit-profile__label"> Bio </label>
+			<textarea
+				id="bio"
+				v-model="form.bio"
+				class="edit-profile__input"
+				rows="4"
+			/>
+		</div>
+		<div class="edit-profile__field">
+			<div class="edit-profile__upload">
+				<img
+					v-if="form.avatar_url"
+					:src="form.avatar_url"
+					alt="Avatar preview"
+					class="edit-profile__image-preview edit-profile__image-preview--avatar"
+				/>
+				<button
+					type="button"
+					class="edit-profile__upload-button edit-profile__upload-button--avatar"
+					@click="triggerAvatarUpload"
+				>
+					Upload Avatar
+				</button>
+				<ImageCompressor
+					ref="avatarCompressor"
+					:max-width-or-height="400"
+					:max-size-m-b="10"
+					file-type="image/webp"
+					class="hidden"
+					@compressed="handleAvatarCompressed"
+				/>
+			</div>
+		</div>
+		<div class="edit-profile__field">
+			<div class="edit-profile__upload">
+				<img
+					v-if="form.banner_url"
+					:src="form.banner_url"
+					alt="Banner preview"
+					class="edit-profile__image-preview edit-profile__image-preview--banner"
+				/>
+				<button
+					type="button"
+					class="edit-profile__upload-button edit-profile__upload-button--banner"
+					@click="triggerBannerUpload"
+				>
+					Upload Banner
+				</button>
+				<ImageCompressor
+					ref="bannerCompressor"
+					:max-width-or-height="1000"
+					:max-size-m-b="10"
+					file-type="image/webp"
+					class="hidden"
+					@compressed="handleBannerCompressed"
+				/>
+			</div>
+		</div>
+		<div class="edit-profile__button-wrapper">
+			<button
+				type="button"
+				class="btn btn--secondary"
+				@click="handleCancel"
+			>
+				Cancel
+			</button>
+			<button
+				type="submit"
+				class="btn btn--primary"
+				:disabled="loading || !form.username.trim()"
+			>
+				{{ loading ? "Saving..." : "Save Profile" }}
+			</button>
+		</div>
+	</form>
 </template>

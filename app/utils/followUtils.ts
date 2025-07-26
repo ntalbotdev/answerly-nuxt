@@ -1,151 +1,153 @@
 export async function followUser(targetUserId: string): Promise<boolean> {
-  const user = useSupabaseUser();
-  if (!user.value) return false;
-  
-  const supabase = useSupabaseClient();
-  
-  try {
-    const followObj = {
-      follower_id: user.value.id,
-      following_id: targetUserId,
-    };
-    
-    const { error } = await supabase.from("follows").insert([followObj] as any);
-    if (error) throw error;
-    return true;
-  } catch (err) {
-    console.error("Failed to follow user:", err);
-    return false;
-  }
+	const user = useSupabaseUser();
+	if (!user.value) return false;
+
+	const supabase = useSupabaseClient();
+
+	try {
+		const followObj = {
+			follower_id: user.value.id,
+			following_id: targetUserId,
+		};
+
+		const { error } = await supabase
+			.from("follows")
+			.insert([followObj] as any);
+		if (error) throw error;
+		return true;
+	} catch (err) {
+		console.error("Failed to follow user:", err);
+		return false;
+	}
 }
 
 export async function unfollowUser(targetUserId: string): Promise<boolean> {
-  const user = useSupabaseUser();
-  if (!user.value) return false;
-  
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { error } = await supabase
-      .from("follows")
-      .delete()
-      .eq("follower_id", user.value.id)
-      .eq("following_id", targetUserId);
-    
-    if (error) throw error;
-    return true;
-  } catch (err) {
-    console.error("Failed to unfollow user:", err);
-    return false;
-  }
+	const user = useSupabaseUser();
+	if (!user.value) return false;
+
+	const supabase = useSupabaseClient();
+
+	try {
+		const { error } = await supabase
+			.from("follows")
+			.delete()
+			.eq("follower_id", user.value.id)
+			.eq("following_id", targetUserId);
+
+		if (error) throw error;
+		return true;
+	} catch (err) {
+		console.error("Failed to unfollow user:", err);
+		return false;
+	}
 }
 
 export async function isFollowing(targetUserId: string): Promise<boolean> {
-  const user = useSupabaseUser();
-  if (!user.value) return false;
-  
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { data, error } = await supabase
-      .from("follows")
-      .select("follower_id")
-      .eq("follower_id", user.value.id)
-      .eq("following_id", targetUserId)
-      .single();
-    
-    return !!data && !error;
-  } catch {
-    return false;
-  }
+	const user = useSupabaseUser();
+	if (!user.value) return false;
+
+	const supabase = useSupabaseClient();
+
+	try {
+		const { data, error } = await supabase
+			.from("follows")
+			.select("follower_id")
+			.eq("follower_id", user.value.id)
+			.eq("following_id", targetUserId)
+			.single();
+
+		return !!data && !error;
+	} catch {
+		return false;
+	}
 }
 
 export async function isFollowingMe(followerUserId: string): Promise<boolean> {
-  const user = useSupabaseUser();
-  if (!user.value) return false;
-  
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { data, error } = await supabase
-      .from("follows")
-      .select("follower_id")
-      .eq("follower_id", followerUserId)
-      .eq("following_id", user.value.id)
-      .single();
-    
-    return !!data && !error;
-  } catch {
-    return false;
-  }
+	const user = useSupabaseUser();
+	if (!user.value) return false;
+
+	const supabase = useSupabaseClient();
+
+	try {
+		const { data, error } = await supabase
+			.from("follows")
+			.select("follower_id")
+			.eq("follower_id", followerUserId)
+			.eq("following_id", user.value.id)
+			.single();
+
+		return !!data && !error;
+	} catch {
+		return false;
+	}
 }
 
 export async function fetchFollowerCount(userId: string): Promise<number> {
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { count, error } = await supabase
-      .from("follows")
-      .select("follower_id", { count: "exact", head: true })
-      .eq("following_id", userId);
-    
-    if (error) return 0;
-    return count || 0;
-  } catch {
-    return 0;
-  }
+	const supabase = useSupabaseClient();
+
+	try {
+		const { count, error } = await supabase
+			.from("follows")
+			.select("follower_id", { count: "exact", head: true })
+			.eq("following_id", userId);
+
+		if (error) return 0;
+		return count || 0;
+	} catch {
+		return 0;
+	}
 }
 
 export async function fetchFollowingCount(userId: string): Promise<number> {
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { count, error } = await supabase
-      .from("follows")
-      .select("following_id", { count: "exact", head: true })
-      .eq("follower_id", userId);
-    
-    if (error) return 0;
-    return count || 0;
-  } catch {
-    return 0;
-  }
+	const supabase = useSupabaseClient();
+
+	try {
+		const { count, error } = await supabase
+			.from("follows")
+			.select("following_id", { count: "exact", head: true })
+			.eq("follower_id", userId);
+
+		if (error) return 0;
+		return count || 0;
+	} catch {
+		return 0;
+	}
 }
 
 export async function fetchFollowers(userId: string) {
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { data, error } = await supabase
-      .from("follows")
-      .select(
-        "follower_id, profiles:follower_id(username, avatar_url, bio)"
-      )
-      .eq("following_id", userId);
-    
-    if (error) throw new Error(error.message);
-    return data || [];
-  } catch (err) {
-    console.error("Failed to fetch followers:", err);
-    return [];
-  }
+	const supabase = useSupabaseClient();
+
+	try {
+		const { data, error } = await supabase
+			.from("follows")
+			.select(
+				"follower_id, profiles:follower_id(username, avatar_url, bio)"
+			)
+			.eq("following_id", userId);
+
+		if (error) throw new Error(error.message);
+		return data || [];
+	} catch (err) {
+		console.error("Failed to fetch followers:", err);
+		return [];
+	}
 }
 
 export async function fetchFollows(userId: string) {
-  const supabase = useSupabaseClient();
-  
-  try {
-    const { data, error } = await supabase
-      .from("follows")
-      .select(
-        "following_id, profiles:following_id(username, avatar_url, bio)"
-      )
-      .eq("follower_id", userId);
-    
-    if (error) throw new Error(error.message);
-    return data || [];
-  } catch (err) {
-    console.error("Failed to fetch follows:", err);
-    return [];
-  }
+	const supabase = useSupabaseClient();
+
+	try {
+		const { data, error } = await supabase
+			.from("follows")
+			.select(
+				"following_id, profiles:following_id(username, avatar_url, bio)"
+			)
+			.eq("follower_id", userId);
+
+		if (error) throw new Error(error.message);
+		return data || [];
+	} catch (err) {
+		console.error("Failed to fetch follows:", err);
+		return [];
+	}
 }

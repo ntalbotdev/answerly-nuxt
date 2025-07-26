@@ -1,7 +1,7 @@
 @use "./variables" as *;
 
 .questions {
-	@apply mx-auto flex w-full flex-col gap-4 p-4 max-w-3xl;
+	@apply mx-auto flex w-full max-w-3xl flex-col gap-4 p-4;
 	background: $color-text;
 	color: $color-bg;
 
@@ -11,10 +11,10 @@
 }
 
 .questions__title {
-	@apply my-4 text-xl font-semibold text-center;
+	@apply my-4 text-center text-xl font-semibold;
 
 	@media (min-width: 640px) {
-		@apply text-2xl my-6 text-white;
+		@apply my-6 text-2xl text-white;
 	}
 }
 
@@ -29,7 +29,7 @@
 }
 
 .questions__question {
-	@apply flex shadow bg-white p-4 gap-2 relative;
+	@apply relative flex gap-2 bg-white p-4 shadow;
 	border-radius: $radius-sm;
 }
 
@@ -46,12 +46,12 @@
 }
 
 .questions__question-date {
-	@apply text-xs text-right;
+	@apply text-right text-xs;
 	color: $color-muted;
 }
 
 .questions__person-wrapper {
-	@apply flex flex-col gap-2 w-full;
+	@apply flex w-full flex-col gap-2;
 }
 
 .questions__person {
@@ -64,25 +64,25 @@
 }
 
 .questions__person-avatar {
-	@apply w-10 h-10 rounded-full object-cover;
+	@apply h-10 w-10 rounded-full object-cover;
 }
 
 .questions__person-name {
-  	@apply font-semibold;
+	@apply font-semibold;
 }
 
 .questions__person-username {
 	@apply text-sm;
-  	color: $color-muted;
+	color: $color-muted;
 }
 
 .questions__answer {
-	@apply flex shadow bg-white p-4 gap-2 relative ml-4;
+	@apply relative ml-4 flex gap-2 bg-white p-4 shadow;
 	border-radius: $radius-sm;
 
 	&:before {
-		@apply absolute ;
-		content: '';
+		@apply absolute;
+		content: "";
 		left: -10px;
 		top: 50%;
 		transform: translateY(-50%);
@@ -93,10 +93,10 @@
 }
 
 .questions__answer-text {
-  	@apply text-lg font-semibold;
+	@apply text-lg font-semibold;
 }
 
 .questions__answer-date {
-  	@apply text-xs text-right;
-  	color: $color-muted;
+	@apply text-right text-xs;
+	color: $color-muted;
 }

@@ -136,13 +136,11 @@ create table questions (
 - **RLS Policy Example:**
     ```sql
     create policy "Users can manage their own profile assets"
-    on storage.objects
-    for all
-    to authenticated
-    using (
-      bucket_id = 'profile-assets'
-      and auth.uid()::text = split_part(name, '/', 1)
-    );
+   ON storage.objects FOR {operation} {USING | WITH CHECK} (
+    -- restrict bucket
+    bucket_id = {bucket_name}
+    and (select auth.uid()::text) = (storage.foldername(name))[1]
+);
     ```
 
 ## Row Level Security (RLS)

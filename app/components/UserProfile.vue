@@ -1,9 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{ profile: any }>();
-const emit = defineEmits(['profile-updated']);
+const emit = defineEmits(["profile-updated"]);
 const user = useSupabaseUser();
 const canEdit = computed(() => {
-  return user.value && props.profile?.user_id && user.value.id === props.profile.user_id;
+	return (
+		user.value &&
+		props.profile?.user_id &&
+		user.value.id === props.profile.user_id
+	);
 });
 const profileStore = useProfileStore();
 const isFollowing = ref(false);
@@ -16,7 +20,7 @@ function handleCloseEditModal() {
 	showEditModal.value = false;
 	if (props.profile?.user_id) {
 		profileStore.fetchProfileById(props.profile.user_id).then(() => {
-			emit('profile-updated');
+			emit("profile-updated");
 		});
 	}
 }
@@ -27,9 +31,13 @@ function handleCloseAskModal() {
 async function fetchFollowStatus() {
 	if (!props.profile?.user_id) return;
 	// Use store actions for follower count and follow status
-	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
+	followerCount.value = await profileStore.fetchFollowerCount(
+		props.profile.user_id
+	);
 	if (user.value && user.value.id !== props.profile.user_id) {
-		isFollowing.value = await profileStore.isFollowing(props.profile.user_id);
+		isFollowing.value = await profileStore.isFollowing(
+			props.profile.user_id
+		);
 	}
 }
 onMounted(fetchFollowStatus);
@@ -39,7 +47,9 @@ async function handleFollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.followUser(props.profile.user_id);
 	isFollowing.value = true;
-	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
+	followerCount.value = await profileStore.fetchFollowerCount(
+		props.profile.user_id
+	);
 	window.dispatchEvent(new Event("follow-status-changed"));
 }
 
@@ -51,7 +61,9 @@ async function confirmUnfollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.unfollowUser(props.profile.user_id);
 	isFollowing.value = false;
-	followerCount.value = await profileStore.fetchFollowerCount(props.profile.user_id);
+	followerCount.value = await profileStore.fetchFollowerCount(
+		props.profile.user_id
+	);
 	window.dispatchEvent(new Event("follow-status-changed"));
 	showConfirmUnfollowModal.value = false;
 }
@@ -68,7 +80,11 @@ function closeConfirmUnfollowModal() {
 			title="Edit Profile"
 			@close="handleCloseEditModal"
 		>
-			<EditProfileForm :key="props.profile.user_id + '-' + props.profile.updated_at" :profile="props.profile" @close="handleCloseEditModal" />
+			<EditProfileForm
+				:key="props.profile.user_id + '-' + props.profile.updated_at"
+				:profile="props.profile"
+				@close="handleCloseEditModal"
+			/>
 		</AppModal>
 
 		<AppModal v-model:open="showAskModal" title="Ask a Question">

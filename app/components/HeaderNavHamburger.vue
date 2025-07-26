@@ -128,10 +128,17 @@ onUnmounted(() => {
 						</NuxtLink>
 
 						<NuxtLink
-							:to="ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')"
+							:to="
+								ROUTES.PROFILE_USER(
+									profileStore.myProfile?.username || ''
+								)
+							"
 							:class="[
 								'header__nav-link',
-								route.path === ROUTES.PROFILE_USER(profileStore.myProfile?.username || '')
+								route.path ===
+								ROUTES.PROFILE_USER(
+									profileStore.myProfile?.username || ''
+								)
 									? 'header__nav-link--active'
 									: '',
 							]"

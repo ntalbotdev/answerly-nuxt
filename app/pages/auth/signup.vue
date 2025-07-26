@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { signUpWithPassword, validatePassword } from '~/utils/authUtils';
-import { validateUsername } from '~/utils/profileUtils';
+import { signUpWithPassword, validatePassword } from "~/utils/authUtils";
+import { validateUsername } from "~/utils/profileUtils";
 
 const router = useRouter();
 const email = ref("");
@@ -11,19 +11,22 @@ const profileStore = useProfileStore();
 
 const signup = async () => {
 	// Validate password
-	const passwordValidation = validatePassword(password.value, confirmPassword.value);
+	const passwordValidation = validatePassword(
+		password.value,
+		confirmPassword.value
+	);
 	if (!passwordValidation.valid) {
 		alert(passwordValidation.error);
 		return;
 	}
-	
+
 	// Validate username
 	const usernameValidation = validateUsername(username.value);
 	if (!usernameValidation.valid) {
 		alert(usernameValidation.error);
 		return;
 	}
-	
+
 	// Sign up user
 	const result = await signUpWithPassword(email.value, password.value);
 	if (!result.success) {
@@ -45,11 +48,11 @@ const signup = async () => {
 };
 
 useHead({
-  title: 'Sign up',
-  meta: [
-    { name: 'description', content: 'Create a new account on Answerly.' }
-  ]
-})
+	title: "Sign up",
+	meta: [
+		{ name: "description", content: "Create a new account on Answerly." },
+	],
+});
 </script>
 
 <template>
@@ -67,7 +70,7 @@ useHead({
 				placeholder="Email"
 				class="auth-form__input"
 				required
-			>
+			/>
 		</div>
 
 		<label for="username" class="sr-only">Username</label>
@@ -81,7 +84,7 @@ useHead({
 				placeholder="Username"
 				class="auth-form__input"
 				required
-			>
+			/>
 		</div>
 
 		<label for="password" class="sr-only">Password</label>
@@ -95,7 +98,7 @@ useHead({
 				placeholder="Password"
 				class="auth-form__input"
 				required
-			>
+			/>
 		</div>
 
 		<label for="confirm-password" class="sr-only">Confirm Password</label>
@@ -109,7 +112,7 @@ useHead({
 				placeholder="Confirm Password"
 				class="auth-form__input"
 				required
-			>
+			/>
 		</div>
 
 		<button type="submit" class="auth-form__button">Sign up</button>

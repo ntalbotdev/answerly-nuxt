@@ -23,7 +23,7 @@
 }
 
 .inbox__question {
-	@apply flex flex-col gap-2 flex-wrap items-start p-4 drop-shadow;
+	@apply flex flex-col flex-wrap items-start gap-2 p-4 drop-shadow;
 	width: 100%;
 	background-color: $color-surface;
 	border-radius: $radius-sm;
@@ -34,12 +34,12 @@
 }
 
 .inbox__question-metadata {
-	@apply flex gap-2 items-center text-sm;
+	@apply flex items-center gap-2 text-sm;
 	color: $color-muted;
 }
 
 .inbox__question-header {
-	@apply flex flex-col gap-2 mb-auto;
+	@apply mb-auto flex flex-col gap-2;
 	width: 100%;
 }
 
@@ -60,7 +60,7 @@
 		text-decoration: none;
 
 		&:hover {
-			@apply underline
+			@apply underline;
 		}
 	}
 }
@@ -71,16 +71,16 @@
 }
 
 .inbox__question-text {
-	@apply text-lg font-semibold break-words;
+	@apply break-words text-lg font-semibold;
 	color: $color-text;
 }
 
 .inbox__question-form-wrapper {
-	@apply flex flex-col gap-2 w-full;
+	@apply flex w-full flex-col gap-2;
 }
 
 .inbox__question-form-buttons {
-	@apply flex items-center gap-2 ml-auto;
+	@apply ml-auto flex items-center gap-2;
 }
 
 .inbox__question-form {
@@ -114,7 +114,7 @@
 }
 
 .inbox__modal-question {
-	@apply mb-2 font-semibold break-words max-w-md;
+	@apply mb-2 max-w-md break-words font-semibold;
 	color: $color-bg;
 }
 

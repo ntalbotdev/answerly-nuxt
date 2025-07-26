@@ -29,11 +29,11 @@ export const useQuestionsStore = defineStore("questions", {
 	getters: {
 		hasNewInboxItems(state) {
 			// True if there are any unanswered questions in inboxQuestions
-			return state.inboxQuestions.some(q => !q.answer);
+			return state.inboxQuestions.some((q) => !q.answer);
 		},
 		newInboxCount(state) {
-			return state.inboxQuestions.filter(q => !q.answer).length;
-		}
+			return state.inboxQuestions.filter((q) => !q.answer).length;
+		},
 	},
 	actions: {
 		// Fetch questions the current user has asked
@@ -49,7 +49,7 @@ export const useQuestionsStore = defineStore("questions", {
 				const { data, error } = await supabase
 					.from("questions")
 					.select(
-						"id, to_user_id, question, answer, published, created_at, profiles:to_user_id(username)",
+						"id, to_user_id, question, answer, published, created_at, profiles:to_user_id(username)"
 					)
 					.eq("from_user_id", user.value.id)
 					.order("created_at", { ascending: false });
@@ -97,7 +97,7 @@ export const useQuestionsStore = defineStore("questions", {
 				const { data, error } = await supabase
 					.from("questions")
 					.select(
-						"id, from_user_id, question, is_anonymous, answer, published, created_at, profiles:from_user_id(username)",
+						"id, from_user_id, question, is_anonymous, answer, published, created_at, profiles:from_user_id(username)"
 					)
 					.eq("to_user_id", user.value.id)
 					.eq("published", false)
@@ -166,15 +166,18 @@ export const useQuestionsStore = defineStore("questions", {
 			try {
 				const supabase = useSupabaseClient();
 				const { data, error } = await supabase
-					.from('questions')
-					.select('id, question, answer, is_anonymous, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)')
-					.eq('to_user_id', userId)
-					.eq('published', true)
-					.order('answered_at', { ascending: false });
+					.from("questions")
+					.select(
+						"id, question, answer, is_anonymous, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)"
+					)
+					.eq("to_user_id", userId)
+					.eq("published", true)
+					.order("answered_at", { ascending: false });
 				if (error) throw error;
 				return data || [];
 			} catch (err: any) {
-				this.error = err.message || 'Failed to fetch answered questions.';
+				this.error =
+					err.message || "Failed to fetch answered questions.";
 				return [];
 			} finally {
 				this.loading = false;

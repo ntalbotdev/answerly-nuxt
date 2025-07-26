@@ -28,7 +28,7 @@ async function fetchMyQuestions() {
 onMounted(fetchMyQuestions);
 
 async function answerQuestion(
-	q: Question & { _answer: string; _saving: boolean; _showForm: boolean },
+	q: Question & { _answer: string; _saving: boolean; _showForm: boolean }
 ) {
 	q._saving = true;
 	await questionsStore.answerQuestion(q.id, q._answer);
@@ -37,12 +37,12 @@ async function answerQuestion(
 	q._showForm = false;
 	// Remove from inboxQuestions in store so notification count updates
 	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-		(qq) => qq.id !== q.id,
+		(qq) => qq.id !== q.id
 	);
 }
 
 function openRemoveModal(
-	q: Question & { _answer: string; _saving: boolean; _showForm: boolean },
+	q: Question & { _answer: string; _saving: boolean; _showForm: boolean }
 ) {
 	questionToRemove.value = q;
 	showRemoveModal.value = true;
@@ -57,10 +57,10 @@ async function confirmRemoveQuestion() {
 	if (questionToRemove.value) {
 		await questionsStore.deleteQuestion(questionToRemove.value.id);
 		questions.value = questions.value.filter(
-			(q) => q.id !== questionToRemove.value!.id,
+			(q) => q.id !== questionToRemove.value!.id
 		);
 		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-			(q) => q.id !== questionToRemove.value!.id,
+			(q) => q.id !== questionToRemove.value!.id
 		);
 		closeRemoveModal();
 	}
@@ -81,11 +81,14 @@ useHead({
 			<template #default>
 				<div class="inbox__modal-text">
 					Are you sure you want to remove this question from
-					<strong>{{ questionToRemove?.asker_username }}</strong>?
+					<strong>
+						{{ questionToRemove?.asker_username }}
+					</strong>
+					?
 				</div>
 
 				<div class="inbox__modal-question">
-					"{{ questionToRemove?.question }}"
+					{{ questionToRemove?.question }}
 				</div>
 				<div class="mt-4 flex justify-end gap-2">
 					<button
@@ -129,7 +132,7 @@ useHead({
 								<NuxtLink
 									:to="
 										ROUTES.PROFILE_USER(
-											q.asker_username ?? '',
+											q.asker_username ?? ''
 										)
 									"
 									class="inbox__question-asker inbox__question-asker--username"

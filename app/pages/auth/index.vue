@@ -1,3 +1,3 @@
 <template>
-  <p>Redirecting...</p>
+	<p>Redirecting...</p>
 </template>

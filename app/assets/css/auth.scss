@@ -1,7 +1,7 @@
 @use "./variables" as *;
 
 .auth-form {
-	@apply mx-auto pt-16 flex max-w-xs flex-col gap-4 p-4;
+	@apply mx-auto flex max-w-xs flex-col gap-4 p-4 pt-16;
 	background: $color-bg;
 }
 
