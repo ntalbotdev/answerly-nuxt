@@ -1,3 +1,4 @@
+import { defineNuxtConfig } from "nuxt/config";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	compatibilityDate: "2025-05-15",
@@ -8,6 +9,7 @@ export default defineNuxtConfig({
 		"@pinia/nuxt",
 		"@nuxtjs/tailwindcss",
 		"@nuxt/icon",
+		"@nuxt/test-utils/module",
 	],
 	css: ["~/assets/css/global.scss"],
 	supabase: {
