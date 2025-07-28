@@ -27,6 +27,8 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
   - `pages/` — Nuxt pages (routes)
   - `stores/` — Pinia stores (profile, questions)
   - `utils/` — Utility functions and constants
+- `tests/` — Unit and integration tests
+  - `components/` — Test Nuxt components
 
 ## Environment Setup
 
@@ -41,6 +43,7 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
     - `@nuxtjs/supabase`
     - `@pinia/nuxt`
     - `@nuxtjs/tailwindcss`
+    - `@nuxt/test-utils/module`
 
 3. **Install dependencies**
     ```
@@ -325,6 +328,13 @@ create table questions (
 ```bash
 npm run dev
 ```
+
+## Testing
+
+- Run tests using Vitest:
+  ```bash
+  npm run test
+  ```
 
 ---
 
