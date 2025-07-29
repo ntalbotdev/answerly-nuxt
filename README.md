@@ -354,4 +354,4 @@ npm run dev
 
 ---
 
-**Built with Nuxt 4, Supabase, Pinia, and Tailwind CSS.**
+**Built with Nuxt, Supabase, Pinia, and Tailwind CSS.**
