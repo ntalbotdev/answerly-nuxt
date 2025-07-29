@@ -1,13 +1,13 @@
 # Answerly Nuxt App
 
-A modern Nuxt 4 application using Supabase for authentication, database (PostgreSQL), and profile assets storage. It uses Pinia for state management and Tailwind CSS for styling.
+A robust Nuxt 4 CRUD application leveraging Supabase for authentication, database management, and profile asset storage, Pinia for state handling, and Tailwind CSS for modern UI styling. Testing is provided via Vitest for unit tests and Playwright for end-to-end automation.
 
 ## Features
 
 - Supabase Auth (email/password)
 - User profile creation and management
 - Public profile pages
-- Profile editing and assets upload
+- Profile editing and assets upload (avatar/banner via Supabase Storage)
 - Ask questions to any user (optionally anonymously)
 - Users can answer questions they receive
 - Questions are only published after being answered
@@ -27,6 +27,9 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
   - `pages/` — Nuxt pages (routes)
   - `stores/` — Pinia stores (profile, questions)
   - `utils/` — Utility functions and constants
+- `test/` — Unit and integration tests
+  - `e2e/` — End-to-end tests using Playwright
+  - `unit/` — Unit tests using Vitest
 
 ## Environment Setup
 
@@ -41,6 +44,7 @@ A modern Nuxt 4 application using Supabase for authentication, database (Postgre
     - `@nuxtjs/supabase`
     - `@pinia/nuxt`
     - `@nuxtjs/tailwindcss`
+    - `@nuxt/test-utils/module`
 
 3. **Install dependencies**
     ```
@@ -326,6 +330,28 @@ create table questions (
 npm run dev
 ```
 
+## Testing
+
+- Run unit tests using Vitest:
+  ```bash
+  npm run test
+  ```
+
+- Run end-to-end tests using Playwright:
+  ```bash
+  npm run test:e2e
+  ```
+
+- Use Playwright codegen to generate tests:
+  ```bash
+  npm run codegen:e2e
+  ```
+  - This will open a browser window where you can interact with the app and generate tests automatically.
+
+### Test User
+- Email: `test@test.com`
+- Password: `test123`
+
 ---
 
-**Built with Nuxt 4, Supabase, Pinia, and Tailwind CSS.**
+**Built with Nuxt, Supabase, Pinia, and Tailwind CSS.**
