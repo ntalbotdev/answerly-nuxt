@@ -37,6 +37,7 @@
 		"@testing-library/jest-dom": "^6.6.4",
 		"@testing-library/vue": "^8.1.0",
 		"@types/node": "^24.1.0",
+		"@vitest/ui": "^3.2.4",
 		"@vue/test-utils": "^2.4.6",
 		"happy-dom": "^18.0.1",
 		"playwright": "^1.54.1",
