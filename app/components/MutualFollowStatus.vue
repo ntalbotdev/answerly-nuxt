@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isFollowingMe } from "~/utils/followUtils";
+import { isFollowingMe } from "~/composables/useFollow";
 
 const props = defineProps<{ targetUserId: string }>();
 const user = useSupabaseUser();
