@@ -28,7 +28,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - `pages/` — Nuxt pages (routes)
   - `stores/` — Pinia stores (profile, questions)
   - `utils/` — Utility functions and constants
-- `test/`
+- `test/` — Unit and integration tests
   - `e2e/` — End-to-end tests using Playwright
   - `unit/` — Unit tests using Vitest
 
