@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { loginWithPassword } from "~/utils/authUtils";
+import { loginWithPassword } from "~/composables/useAuth";
 
 const user = useSupabaseUser();
 const router = useRouter();
