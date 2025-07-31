@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sendPasswordReset, validateEmail } from "~/utils/authUtils";
+import { sendPasswordReset, validateEmail } from "~/composables/useAuth";
 
 const email = ref("");
 const message = ref("");
