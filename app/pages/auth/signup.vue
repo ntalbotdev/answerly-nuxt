@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { signUpWithPassword, validatePassword } from "~/utils/authUtils";
+import { signUpWithPassword, validatePassword } from "~/composables/useAuth";
 import { validateUsername } from "~/utils/profileUtils";
 
 const router = useRouter();

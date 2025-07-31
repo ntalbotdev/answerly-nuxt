@@ -111,7 +111,6 @@
 	}
 }
 
-/* User dropdown styles */
 .header__user-dropdown {
 	@apply relative;
 }
@@ -172,7 +171,6 @@
 	}
 }
 
-/* Hamburger menu styles */
 .header__nav-hamburger {
 	@apply flex items-center md:hidden;
 }

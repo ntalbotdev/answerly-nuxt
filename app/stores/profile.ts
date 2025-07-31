@@ -3,17 +3,15 @@ import {
 	fetchProfileById,
 	fetchProfileByUsername,
 	createProfile as createProfileUtil,
-	updateProfile as updateProfileUtil,
-} from "~/utils/supabaseQueries";
+} from "~/composables/useSupabaseQueries";
 import {
 	followUser as followUserUtil,
 	unfollowUser as unfollowUserUtil,
 	isFollowing as isFollowingUtil,
 	fetchFollowerCount as fetchFollowerCountUtil,
-	fetchFollowingCount as fetchFollowingCountUtil,
 	fetchFollowers as fetchFollowersUtil,
 	fetchFollows as fetchFollowsUtil,
-} from "~/utils/followUtils";
+} from "~/composables/useFollow";
 
 // Define types for Supabase tables
 export interface ProfileRow {

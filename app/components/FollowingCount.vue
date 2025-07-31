@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { fetchFollowingCount as fetchFollowingCountUtil } from "~/utils/followUtils";
+import { fetchFollowingCount as fetchFollowingCountUtil } from "~/composables/useFollow";
 
 const props = defineProps<{ userId: string }>();
 const followingCount = ref(0);
