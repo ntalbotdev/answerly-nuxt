@@ -22,12 +22,13 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - `app/` — Main application source folder (Nuxt 4 standard)
   - `assets/` — Static assets
   - `components/` — Reusable Vue components
+  - `composables/` — Reusable composable functions
   - `layouts/` — Nuxt layouts
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
   - `stores/` — Pinia stores (profile, questions)
   - `utils/` — Utility functions and constants
-- `test/` — Unit and integration tests
+- `test/`
   - `e2e/` — End-to-end tests using Playwright
   - `unit/` — Unit tests using Vitest
 
