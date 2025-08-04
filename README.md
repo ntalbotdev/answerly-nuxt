@@ -76,18 +76,22 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | created_at   | timestamptz | Default: now()                   |
 | updated_at   | timestamptz | Default: now()                   |
 
-```sql
-create table profiles (
-  user_id uuid primary key default auth.uid() on delete cascade,
-  username text unique not null,
-  display_name text,
-  avatar_url text,
-  banner_url text,
-  bio text,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-```
+<details>
+  <summary>📄 <strong>Profiles Table SQL Query</strong></summary>
+
+  ```sql
+  create table profiles (
+    user_id uuid primary key default auth.uid() on delete cascade,
+    username text unique not null,
+    display_name text,
+    avatar_url text,
+    banner_url text,
+    bio text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+  );
+  ```
+</details>
 
 #### `follows` Table
 
@@ -97,14 +101,18 @@ create table profiles (
 | following_id | uuid        | Primary key, references profiles(user_id) |
 | created_at   | timestamptz | Default: now()                            |
 
-```sql
-create table follows (
-  follower_id uuid references profiles(user_id) on delete cascade,
-  following_id uuid references profiles(user_id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (follower_id, following_id)
-);
-```
+<details>
+  <summary>📄 <strong>Follows Table SQL Query</strong></summary>
+
+  ```sql
+  create table follows (
+    follower_id uuid references profiles(user_id) on delete cascade,
+    following_id uuid references profiles(user_id) on delete cascade,
+    created_at timestamptz not null default now(),
+    primary key (follower_id, following_id)
+  );
+  ```
+</details>
 
 #### `questions` Table
 
@@ -120,19 +128,157 @@ create table follows (
 | created_at   | timestamptz | Default: now()      |
 | answered_at  | timestamptz | Nullable            |
 
-```sql
-create table questions (
-  id uuid primary key default gen_random_uuid(),
-  from_user_id uuid not null references profiles(user_id) on delete cascade,
-  to_user_id uuid not null references profiles(user_id) on delete cascade,
-  question text not null,
-  is_anonymous boolean not null default false,
-  answer text,
-  published boolean not null default false,
-  created_at timestamptz not null default now(),
-  answered_at timestamptz
-);
-```
+<details>
+  <summary>📄 <strong>Questions Table SQL Query</strong></summary>
+
+  ```sql
+  create table questions (
+    id uuid primary key default gen_random_uuid(),
+    from_user_id uuid not null references profiles(user_id) on delete cascade,
+    to_user_id uuid not null references profiles(user_id) on delete cascade,
+    question text not null,
+    is_anonymous boolean not null default false,
+    answer text,
+    published boolean not null default false,
+    created_at timestamptz not null default now(),
+    answered_at timestamptz
+  );
+  ```
+</details>
+
+#### `notifications` Table
+
+| Column       | Type        | Description             |
+| ------------ | ----------- | ----------------------- |
+| id           | uuid        | Primary key             |
+| user_id      | uuid        | User ID, required       |
+| type         | text        | Notification type       |
+| payload      | jsonb       | Nullable, Flexible data |
+| message      | text        | Notification message    |
+| is_read      | boolean     | Default: false          |
+| created_at   | timestamptz | Default: now()          |
+
+<details>
+  <summary>📄 <strong>Notifications Table SQL Query</strong></summary>
+
+  ```sql
+  create table notifications (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references auth.users on delete cascade,
+    type text not null check (type in ('follow', 'question', 'answer', 'system')),
+    payload jsonb,
+    message text not null,
+    is_read boolean not null default false,
+    created_at timestamptz not null default now()
+  );
+  ```
+</details>
+
+### Functions and Triggers
+
+<details>
+  <summary>🔧 <strong>notify_user() Function</strong></summary>
+
+  ```sql
+  create function notify_user(
+    target_user uuid,
+    notif_type text,
+    notif_message text,
+    notif_payload jsonb default null
+  ) returns void as $$
+  begin
+    insert into notifications (target_user, type, message, payload)
+    values (target_user, notif_type, notif_message, notif_payload);
+  end;
+  $$ language plpgsql;
+  ```
+</details>
+
+<details>
+  <summary>🔧 <strong>on_follow_insert() Function</strong></summary>
+
+  ```sql
+  create function on_follow_insert() returns trigger as $$
+  begin
+    perform notify_user(
+      new.following_id,
+      'follow',
+      'You have a new follower!',
+      jsonb_build_object('follower_id', new.follower_id)
+    );
+    return new;
+  end;
+  $$ language plpgsql;
+  ```
+</details>
+
+<details>
+  <summary>🔧 <strong>on_question_insert() Function</strong></summary>
+
+  ```sql
+  create function on_question_insert() returns trigger as $$
+  begin
+    perform notify_user(
+      new.to_user_id,
+      'question',
+      'You received a new question!',
+      jsonb_build_object('question_id', new.id, 'from_user_id', new.from_user_id)
+    );
+    return new;
+  end;
+  $$ language plpgsql;
+  ```
+</details>
+
+<details>
+  <summary>🔧 <strong>on_question_answered() Function</strong></summary>
+
+  ```sql
+  create function on_question_answered() returns trigger as $$
+  begin
+    if new.answer is not null and old.answer is null then
+      perform notify_user(
+        new.from_user_id,
+        'answer',
+        'Your question has been answered!',
+        jsonb_build_object('question_id', new.id, 'to_user_id', new.to_user_id)
+      );
+    end if;
+    return new;
+  end;
+  $$ language plpgsql;
+  ```
+</details>
+
+<details>
+  <summary>⏰ <strong>notify_on_follow Trigger</strong></summary>
+
+  ```sql
+  create trigger notify_on_follow
+    after insert on follows
+    for each row execute procedure on_follow_insert();
+  ```
+</details>
+
+<details>
+  <summary>⏰ <strong>notify_on_question Trigger</strong></summary>
+
+  ```sql
+  create trigger notify_on_question
+    after insert on questions
+    for each row execute procedure on_question_insert();
+  ```
+</details>
+
+<details>
+  <summary>⏰ <strong>notify_on_answer Trigger</strong></summary>
+
+  ```sql
+  create trigger notify_on_answer
+    after update on questions
+    for each row execute procedure on_question_answered();
+  ```
+</details>
 
 ## Storage & Profile Assets
 
@@ -266,9 +412,7 @@ create table questions (
     ON questions
     FOR SELECT
     TO public
-    USING (
-      published = true
-    );
+    USING (published = true);
 
   CREATE POLICY "Users can view their own questions"
     ON questions
@@ -310,6 +454,54 @@ create table questions (
         from_user_id = auth.uid()
         OR to_user_id = auth.uid()
       )
+    );
+  ```
+</details>
+
+<details>
+  <summary>🔔 <strong>Notifications RLS Policies</strong></summary>
+
+  ```sql
+  CREATE POLICY "No public access to notifications"
+    ON notifications
+    FOR SELECT
+    TO public
+    USING (false);
+
+  CREATE POLICY "Users can view their notifications"
+    ON notifications
+    FOR SELECT
+    USING (
+      auth.uid() IS NOT NULL
+      AND target_user = auth.uid()
+    );
+
+  CREATE POLICY "Users can create notifications"
+    ON notifications
+    FOR INSERT
+    WITH CHECK (
+      auth.uid() IS NOT NULL
+      AND target_user = auth.uid()
+    );
+
+  CREATE POLICY "Users can update their notifications"
+    ON notifications
+    FOR UPDATE
+    USING (
+      auth.uid() IS NOT NULL
+      AND target_user = auth.uid()
+    )
+    WITH CHECK (
+      auth.uid() IS NOT NULL
+      AND target_user = auth.uid()
+    );
+
+  CREATE POLICY "Users can delete their notifications"
+    ON notifications
+    FOR DELETE
+    USING (
+      auth.uid() IS NOT NULL
+      AND target_user = auth.uid()
     );
   ```
 </details>
