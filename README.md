@@ -14,6 +14,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Follow/unfollow users (social feature)
 - View followers and following lists for any user
 - See mutual follow status on profiles
+- Notifications for user activity and events
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -26,7 +27,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - `layouts/` — Nuxt layouts
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
-  - `stores/` — Pinia stores (profile, questions)
+  - `stores/` — Pinia stores (profile, questions, notifications)
   - `utils/` — Utility functions and constants
 - `test/` — Unit and integration tests
   - `e2e/` — End-to-end tests using Playwright
@@ -318,6 +319,7 @@ create table questions (
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
+- Visit `/notifications` to see notifications for user activity and events
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
