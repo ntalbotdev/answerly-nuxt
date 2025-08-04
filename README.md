@@ -233,10 +233,10 @@ create table questions (
   <summary>🤝 <strong>Follows RLS Policies</strong></summary>
 
   ```sql
-  CREATE POLICY "Only users can view follows"
+  CREATE POLICY "Everyone can view follows"
     ON follows
     FOR SELECT
-    TO authenticated
+    TO public
     USING (true);
 
   CREATE POLICY "Users can follow others"
