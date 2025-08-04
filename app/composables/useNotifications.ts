@@ -7,7 +7,7 @@ export async function fetchNotifications(
 	const { data, error } = await supabase
 		.from("notifications")
 		.select("id, type, message, is_read, created_at, payload")
-		.eq("target_user", userId)
+		.eq("user_id", userId)
 		.order("created_at", { ascending: false });
 
 	if (error) {
@@ -37,7 +37,7 @@ export function subscribeToNotifications(
 				event: "*",
 				schema: "public",
 				table: "notifications",
-				filter: `target_user=eq.${userId}`,
+				filter: `user_id=eq.${userId}`,
 			},
 			(payload) => {
 				if (
