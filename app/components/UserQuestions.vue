@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useQuestionsStore } from "~/stores/questions";
 import type { Profile } from "~/stores/profile";
 const props = defineProps<{ userId: string; profile: Profile }>();
 const { profile } = props;
@@ -46,7 +45,7 @@ watch(() => props.userId, fetchAnsweredQuestions);
 						:src="q.profiles.avatar_url"
 						alt="Avatar"
 						class="questions__person-avatar"
-					/>
+					>
 
 					<div class="questions__person-wrapper">
 						<div
@@ -89,7 +88,7 @@ watch(() => props.userId, fetchAnsweredQuestions);
 						:src="profile.avatar_url"
 						alt="Avatar"
 						class="questions__person-avatar"
-					/>
+					>
 
 					<div class="questions__person-wrapper">
 						<div
