@@ -164,7 +164,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   ```sql
   create table notifications (
     id uuid primary key default gen_random_uuid(),
-    user_id uuid not null references auth.users on delete cascade,
+    user_id uuid not null references profiles(user_id) on delete cascade,
     type text not null check (type in ('follow', 'question', 'answer', 'system')),
     payload jsonb,
     message text not null,
