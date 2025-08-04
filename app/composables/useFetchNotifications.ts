@@ -16,12 +16,12 @@ export async function useFetchNotifications(
 	}
 
 	// Map DB fields to Notification interface
-	return (data || []).map((n: any) => ({
-		id: n.id,
-		type: n.type,
-		message: n.message,
-		read: n.is_read,
-		createdAt: n.created_at,
+	return (data || []).map((n: Record<string, unknown>) => ({
+		id: n.id as string,
+		type: n.type as string,
+		message: n.message as string,
+		read: n.is_read as boolean,
+		createdAt: n.created_at as string,
 		payload: n.payload,
 	}));
 }
