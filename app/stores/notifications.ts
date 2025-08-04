@@ -6,6 +6,7 @@ export interface Notification {
 	message: string;
 	read: boolean;
 	createdAt: string;
+	payload: unknown;
 }
 
 export const useNotificationsStore = defineStore("notifications", {
