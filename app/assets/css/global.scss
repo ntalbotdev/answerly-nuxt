@@ -4,6 +4,7 @@
 @use "./profile";
 @use "./inbox";
 @use "./questions";
+@use "./notifications";
 
 body {
 	background: $color-bg;
