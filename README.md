@@ -181,14 +181,14 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
   ```sql
   create function notify_user(
-    target_user uuid,
+    user_id uuid,
     notif_type text,
     notif_message text,
     notif_payload jsonb default null
   ) returns void as $$
   begin
-    insert into notifications (target_user, type, message, payload)
-    values (target_user, notif_type, notif_message, notif_payload);
+    insert into notifications (user_id, type, message, payload)
+    values (user_id, notif_type, notif_message, notif_payload);
   end;
   $$ language plpgsql;
   ```
@@ -473,7 +473,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     FOR SELECT
     USING (
       auth.uid() IS NOT NULL
-      AND target_user = auth.uid()
+      AND user_id = auth.uid()
     );
 
   CREATE POLICY "Users can create notifications"
@@ -481,7 +481,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     FOR INSERT
     WITH CHECK (
       auth.uid() IS NOT NULL
-      AND target_user = auth.uid()
+      AND user_id = auth.uid()
     );
 
   CREATE POLICY "Users can update their notifications"
@@ -489,11 +489,11 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     FOR UPDATE
     USING (
       auth.uid() IS NOT NULL
-      AND target_user = auth.uid()
+      AND user_id = auth.uid()
     )
     WITH CHECK (
       auth.uid() IS NOT NULL
-      AND target_user = auth.uid()
+      AND user_id = auth.uid()
     );
 
   CREATE POLICY "Users can delete their notifications"
@@ -501,7 +501,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     FOR DELETE
     USING (
       auth.uid() IS NOT NULL
-      AND target_user = auth.uid()
+      AND user_id = auth.uid()
     );
   ```
 </details>
