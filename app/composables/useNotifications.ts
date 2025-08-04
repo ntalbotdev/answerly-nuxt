@@ -1,6 +1,6 @@
 import type { Notification } from "@/stores/notifications";
 
-export async function useFetchNotifications(
+export async function fetchNotifications(
 	userId: string
 ): Promise<Notification[]> {
 	const supabase = useSupabaseClient();
