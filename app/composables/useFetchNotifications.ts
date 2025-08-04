@@ -11,11 +11,9 @@ export async function useFetchNotifications(
 		.order("created_at", { ascending: false });
 
 	if (error) {
-		// Optionally handle error
 		return [];
 	}
 
-	// Map DB fields to Notification interface
 	return (data || []).map((n: Record<string, unknown>) => ({
 		id: n.id as string,
 		type: n.type as string,
