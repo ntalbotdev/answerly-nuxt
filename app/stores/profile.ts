@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
 	fetchProfileById,
 	fetchProfileByUsername,
 	createProfile as createProfileUtil,
-} from "~/composables/useSupabaseQueries";
+} from "~/composables/useProfile";
 import {
 	followUser as followUserUtil,
 	unfollowUser as unfollowUserUtil,
