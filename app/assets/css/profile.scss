@@ -1,7 +1,7 @@
 @use "./variables" as *;
 
 .profile {
-	@apply relative z-0 flex flex-col items-center;
+	@apply relative flex flex-col items-center;
 
 	&:before {
 		@apply absolute inset-0 w-full;
