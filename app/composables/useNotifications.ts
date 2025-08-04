@@ -23,3 +23,42 @@ export async function fetchNotifications(
 		payload: n.payload,
 	}));
 }
+
+export function subscribeToNotifications(
+	userId: string,
+	onChange: (notif: Notification, eventType: string) => void
+) {
+	const supabase = useSupabaseClient();
+	const channel = supabase
+		.channel("notifications")
+		.on(
+			"postgres_changes",
+			{
+				event: "*",
+				schema: "public",
+				table: "notifications",
+				filter: `target_user=eq.${userId}`,
+			},
+			(payload) => {
+				if (
+					payload.eventType === "INSERT" ||
+					payload.eventType === "UPDATE"
+				) {
+					const n = payload.new;
+					onChange(
+						{
+							id: n.id,
+							type: n.type,
+							message: n.message,
+							read: n.is_read,
+							createdAt: n.created_at,
+							payload: n.payload,
+						},
+						payload.eventType
+					);
+				}
+			}
+		)
+		.subscribe();
+	return channel;
+}
