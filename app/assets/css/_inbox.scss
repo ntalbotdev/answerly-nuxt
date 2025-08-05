@@ -1,15 +1,5 @@
 @use "./variables" as *;
 
-.inbox {
-	@apply mx-auto flex w-full flex-col gap-4 p-4;
-	background: $color-bg;
-}
-
-.inbox__title {
-	@apply mb-4 text-2xl font-semibold;
-	color: $color-text;
-}
-
 .inbox__questions {
 	@apply flex flex-col gap-4;
 

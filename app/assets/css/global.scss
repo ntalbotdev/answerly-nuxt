@@ -74,3 +74,12 @@ body {
 		@apply ml-0;
 	}
 }
+
+.section {
+	@apply mx-auto flex w-full flex-col gap-4 p-4;
+}
+
+.section__title {
+	@apply mb-4 text-2xl font-semibold;
+	color: $color-text;
+}
