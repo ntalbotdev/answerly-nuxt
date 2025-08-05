@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-import { fetchIncomingQuestions } from "@/composables/useQuestions";
 const questionsStore = useQuestionsStore();
 const questions = ref<
 	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]
