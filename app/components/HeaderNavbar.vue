@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
+const notificationsStore = useNotificationsStore();
 </script>
 
 <template>
@@ -41,6 +42,12 @@ const user = useSupabaseUser();
 			>
 				<Icon name="bx:bell" class="header__nav-link-icon" />
 				Notifications
+				<span
+					v-if="notificationsStore.unreadCount > 0"
+					class="notification-badge"
+				>
+					{{ notificationsStore.unreadCount }}
+				</span>
 			</NuxtLink>
 
 			<HeaderUserDropdown />
