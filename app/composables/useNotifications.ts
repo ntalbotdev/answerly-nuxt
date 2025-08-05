@@ -6,7 +6,7 @@ export async function fetchNotifications(
 	const supabase = useSupabaseClient();
 	const { data, error } = await supabase
 		.from("notifications")
-		.select("id, type, message, is_read, created_at, payload")
+		.select("id, type, message, is_read, created_at, payload, event_id")
 		.eq("user_id", userId)
 		.order("created_at", { ascending: false });
 
@@ -21,6 +21,7 @@ export async function fetchNotifications(
 		read: n.is_read as boolean,
 		createdAt: n.created_at as string,
 		payload: n.payload,
+		eventId: n.event_id as string,
 	}));
 }
 
@@ -53,6 +54,7 @@ export function subscribeToNotifications(
 							read: n.is_read,
 							createdAt: n.created_at,
 							payload: n.payload,
+							eventId: n.event_id,
 						},
 						payload.eventType
 					);
