@@ -14,11 +14,6 @@ export async function fetchNotifications(
 		return [];
 	}
 
-	type NotificationPayload = {
-		username?: string;
-		follower_id?: string;
-	};
-
 	return (data || []).map((n: Record<string, unknown>) => ({
 		id: n.id as string,
 		user_id: n.user_id as string,
@@ -26,15 +21,9 @@ export async function fetchNotifications(
 		message: n.message as string,
 		read: n.is_read as boolean,
 		createdAt: n.created_at as string,
-		payload:
-			typeof n.payload === "object" && n.payload !== null
-				? {
-						username: (n.payload as NotificationPayload).username,
-						follower_id:
-							(n.payload as NotificationPayload).follower_id ??
-							"",
-					}
-				: undefined,
+		payload: n.payload as
+			| { username?: string; follower_id: string }
+			| undefined,
 		eventId: n.event_id as string,
 	}));
 }
