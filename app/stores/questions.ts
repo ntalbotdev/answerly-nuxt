@@ -56,40 +56,6 @@ export const useQuestionsStore = defineStore("questions", {
 			}
 		},
 
-		async fetchIncomingQuestions(): Promise<Question[]> {
-			this.loading = true;
-			this.error = null;
-			try {
-				const supabase = useSupabaseClient();
-				const user = useSupabaseUser();
-				if (!user.value) throw new Error("Not logged in");
-				const { data, error } = await supabase
-					.from("questions")
-					.select(
-						"id, from_user_id, question, is_anonymous, answer, published, created_at, profiles:from_user_id(username)"
-					)
-					.eq("to_user_id", user.value.id)
-					.eq("published", false)
-					.order("created_at", { ascending: false });
-				if (error) throw error;
-				// Map username for display
-				const questions = (data || []).map((q: any) => ({
-					...q,
-					asker_username: q.is_anonymous
-						? undefined
-						: q.profiles?.username || "Unknown",
-				}));
-				this.inboxQuestions = questions;
-				return questions;
-			} catch (err: any) {
-				this.error = err.message || "Failed to fetch questions";
-				this.inboxQuestions = [];
-				return [];
-			} finally {
-				this.loading = false;
-			}
-		},
-
 		async answerQuestion(questionId: string, answer: string) {
 			this.loading = true;
 			this.error = null;
