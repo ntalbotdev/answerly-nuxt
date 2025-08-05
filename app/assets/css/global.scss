@@ -65,17 +65,19 @@ body {
 }
 
 .notification-badge {
-	@apply ml-4 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold;
-	// transform: translate(50%, -50%);
-	z-index: 10;
+	@apply ml-4 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-normal;
 	color: $color-text;
 
 	&:after {
 		content: attr(data-count);
 	}
 
+	&--absolute {
+		@apply absolute right-0 top-0;
+	}
+
 	@media (min-width: 768px) {
-		@apply ml-0;
+		@apply ml-2;
 	}
 }
 
