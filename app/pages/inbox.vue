@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+import { fetchIncomingQuestions } from "@/composables/useQuestions";
 const questionsStore = useQuestionsStore();
 const questions = ref<
 	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]
@@ -16,7 +18,7 @@ definePageMeta({
 
 async function fetchMyQuestions() {
 	loading.value = true;
-	const res = await questionsStore.fetchIncomingQuestions();
+	const res = await fetchIncomingQuestions();
 	questions.value = res.map((q) => ({
 		...q,
 		_answer: "",
