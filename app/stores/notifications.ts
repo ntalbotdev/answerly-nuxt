@@ -7,6 +7,7 @@ export interface Notification {
 	read: boolean;
 	createdAt: string;
 	payload: unknown;
+	eventId: string;
 }
 
 export const useNotificationsStore = defineStore("notifications", {
@@ -19,8 +20,21 @@ export const useNotificationsStore = defineStore("notifications", {
 		async fetchNotifications() {
 			this.loading = true;
 			this.error = null;
-			// TODO: Fetch notifications from API or Supabase
-			// Example: this.notifications = await fetchNotificationsApi();
+			try {
+				const user = useSupabaseUser();
+				if (!user.value) {
+					this.notifications = [];
+					this.loading = false;
+					return;
+				}
+				const { fetchNotifications } = await import(
+					"@/composables/useNotifications"
+				);
+				this.notifications = await fetchNotifications(user.value.id);
+			} catch (err: any) {
+				this.error = err.message || "Failed to fetch notifications";
+				this.notifications = [];
+			}
 			this.loading = false;
 		},
 		addNotification(notification: Notification) {
