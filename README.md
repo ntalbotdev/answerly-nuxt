@@ -169,7 +169,15 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     payload jsonb,
     message text not null,
     is_read boolean not null default false,
-    created_at timestamptz not null default now()
+    created_at timestamptz not null default now(),
+    event_id text generated always as (
+      case
+        when type = 'follow' then (payload::jsonb->>'follower_id') || ':' || (payload::jsonb->>'following_id')
+        when type = 'question' then (payload::jsonb->>'question_id')
+        else id::text
+      end
+    ) stored,
+    unique (user_id, type, event_id)
   );
   ```
 </details>
