@@ -1,18 +1,4 @@
 export function useInboxQuestions() {
-	interface Question {
-		id: string;
-		to_user_id: string;
-		from_user_id: string;
-		question: string;
-		is_anonymous: boolean;
-		answer: string | null;
-		published: boolean;
-		created_at: string;
-		answered_at?: string | null;
-		asker_username?: string;
-		profiles?: Profile;
-	}
-
 	const supabase = useSupabaseClient();
 	const user = useSupabaseUser();
 	const questionsStore = useQuestionsStore();
@@ -25,11 +11,24 @@ export function useInboxQuestions() {
 		}
 		const { data, error } = await supabase
 			.from("questions")
-			.select("*")
+			.select(
+				"id, from_user_id, question, is_anonymous, answer, published, created_at, profiles:from_user_id(username)"
+			)
 			.eq("to_user_id", user.value.id)
+			.is("answer", null)
 			.order("created_at", { ascending: false });
 		if (!error) {
-			questionsStore.inboxQuestions = (data as Question[]) || [];
+			const questionsWithAskerUsername = (data || []).map((q: Question & { profiles?: { username?: string } }) => ({
+				...q,
+				asker_username: q.is_anonymous
+					? "Anonymous"
+					: q.profiles?.username || "Unknown",
+			}));
+			questionsStore.inboxQuestions.splice(
+				0,
+				questionsStore.inboxQuestions.length,
+				...questionsWithAskerUsername
+			);
 		}
 	}
 
@@ -51,57 +50,43 @@ export function useInboxQuestions() {
 					new?: Question;
 					old?: Question;
 				}) => {
-					if (payload.eventType === "INSERT") {
-						const exists =
-							payload.new &&
-							questionsStore.inboxQuestions.some(
-								(q: Question) => q.id === payload.new!.id
-							);
-						if (!exists) {
-							const q: Question = { ...payload.new };
-							questionsStore.inboxQuestions.unshift(q);
-						}
-					} else if (payload.eventType === "UPDATE") {
-						const idx = payload.new
-							? questionsStore.inboxQuestions.findIndex(
-									(q: Question) => q.id === payload.new!.id
-								)
-							: -1;
-						if (idx !== -1) {
+					let arr = [...questionsStore.inboxQuestions];
+
+					switch (payload.eventType) {
+						case "INSERT":
 							if (
 								payload.new &&
-								payload.new.id &&
-								payload.new.to_user_id &&
-								payload.new.from_user_id &&
-								payload.new.question &&
-								typeof payload.new.is_anonymous === "boolean" &&
-								typeof payload.new.published === "boolean" &&
-								payload.new.created_at
+								!arr.some((q) => q.id === payload.new!.id)
 							) {
-								questionsStore.inboxQuestions[idx] = {
-									id: payload.new.id,
-									to_user_id: payload.new.to_user_id,
-									from_user_id: payload.new.from_user_id,
-									question: payload.new.question,
-									is_anonymous: payload.new.is_anonymous,
-									answer: payload.new.answer ?? null,
-									published: payload.new.published,
-									created_at: payload.new.created_at,
-									answered_at:
-										payload.new.answered_at ?? null,
-									asker_username: payload.new.asker_username,
-									profiles: payload.new.profiles,
-								};
+								arr.unshift(payload.new);
 							}
-						}
-					} else if (payload.eventType === "DELETE") {
-						if (payload.old && payload.old.id) {
-							questionsStore.inboxQuestions =
-								questionsStore.inboxQuestions.filter(
-									(q: Question) => q.id !== payload.old!.id
+							break;
+						case "UPDATE":
+							if (payload.new) {
+								const idx = arr.findIndex(
+									(q) => q.id === payload.new!.id
 								);
-						}
+								if (idx !== -1) arr[idx] = { ...payload.new };
+							}
+							break;
+						case "DELETE":
+							if (payload.old) {
+								arr = arr.filter(
+									(q) => q.id !== payload.old!.id
+								);
+							}
+							break;
 					}
+
+					// Only keep unanswered questions
+					const filteredQuestions = arr.filter(
+						(q) => q.answer === null
+					);
+					questionsStore.inboxQuestions.splice(
+						0,
+						questionsStore.inboxQuestions.length,
+						...filteredQuestions
+					);
 				}
 			)
 			.subscribe();
