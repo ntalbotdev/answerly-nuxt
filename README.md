@@ -264,8 +264,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
   ```sql
   create trigger notify_on_follow
-    after insert on follows
-    for each row execute procedure on_follow_insert();
+  after insert on follows for each row
+  execute procedure on_follow_insert();
   ```
 </details>
 
@@ -274,8 +274,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
   ```sql
   create trigger notify_on_question
-    after insert on questions
-    for each row execute procedure on_question_insert();
+  after insert on questions for each row
+  execute procedure on_question_insert();
   ```
 </details>
 
@@ -284,8 +284,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
   ```sql
   create trigger notify_on_answer
-    after update on questions
-    for each row execute procedure on_question_answered();
+  after update on questions for each row
+  execute procedure on_question_answered();
   ```
 </details>
 
