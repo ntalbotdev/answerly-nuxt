@@ -14,7 +14,13 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Follow/unfollow users (social feature)
 - View followers and following lists for any user
 - See mutual follow status on profiles
-- Notifications for user activity and events
+- Real-time notification system with automatic cleanup
+  - Get notified when someone follows you
+  - Get notified when someone asks you a question
+  - Get notified when someone answers your question
+  - Notifications are automatically removed when actions are completed (questions answered/deleted, users unfollowed)
+  - Real-time updates using Supabase subscriptions
+  - Mark notifications as read (delete from system)
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -469,23 +475,10 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   <summary>🔔 <strong>Notifications RLS Policies</strong></summary>
 
   ```sql
-  CREATE POLICY "No public access to notifications"
-    ON notifications
-    FOR SELECT
-    TO public
-    USING (false);
-
   CREATE POLICY "Users can view their notifications"
     ON notifications
     FOR SELECT
     USING (
-      user_id = auth.uid()
-    );
-
-  CREATE POLICY "Users can create notifications"
-    ON notifications
-    FOR INSERT
-    WITH CHECK (
       user_id = auth.uid()
     );
 
@@ -519,10 +512,16 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
-- Visit `/notifications` to see notifications for user activity and events
+  - Answering or deleting questions automatically removes related notifications
+- Visit `/notifications` to see real-time notifications for user activity and events
+  - Follow notifications: See who followed you
+  - Question notifications: See new questions you received
+  - Answer notifications: See when your questions are answered
+  - Click "Mark as read" to permanently delete notifications
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
+  - Follow/unfollow users with automatic notification management
 - Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following
