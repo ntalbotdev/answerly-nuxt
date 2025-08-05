@@ -34,7 +34,9 @@ export async function fetchAnsweredQuestionsForUser(userId: string) {
 	return data || [];
 }
 
-export async function fetchIncomingQuestions(): Promise<Question[]> {
+export async function fetchIncomingQuestions(): Promise<
+	(Question & { asker_username: string })[]
+> {
 	const supabase = useSupabaseClient();
 	const user = useSupabaseUser();
 	if (!user.value) throw new Error("Not logged in");
@@ -50,7 +52,7 @@ export async function fetchIncomingQuestions(): Promise<Question[]> {
 	return (data || []).map((q: any) => ({
 		...q,
 		asker_username: q.is_anonymous
-			? undefined
+			? "Anonymous"
 			: q.profiles?.username || "Unknown",
 	}));
 }
