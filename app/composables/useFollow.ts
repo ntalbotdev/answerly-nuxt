@@ -15,7 +15,6 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 			.insert([followObj] as any);
 		if (error) throw error;
 
-		const notificationsStore = useNotificationsStore();
 		let username = user.value.user_metadata?.username || "Someone";
 		try {
 			const { data: profile } = await supabase
@@ -29,7 +28,7 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 		} catch {
 			// Ignore profile fetch errors, fallback to user_metadata
 		}
-		await notificationsStore.sendNotification({
+		await sendNotification({
 			user_id: targetUserId,
 			type: "follow",
 			message: `${username} followed you.`,
