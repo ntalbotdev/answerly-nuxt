@@ -503,6 +503,11 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
       auth.uid() IS NOT NULL
       AND user_id = auth.uid()
     );
+
+  CREATE POLICY "Allow system inserts for notifications"
+    ON notifications
+    FOR INSERT
+    WITH CHECK (true);
   ```
 </details>
 
