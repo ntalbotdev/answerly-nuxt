@@ -44,7 +44,7 @@ const notificationsStore = useNotificationsStore();
 				Notifications
 				<span
 					v-if="notificationsStore.unreadCount > 0"
-					class="notification-badge"
+					class="notification-badge notification-badge--absolute"
 				>
 					{{ notificationsStore.unreadCount }}
 				</span>
