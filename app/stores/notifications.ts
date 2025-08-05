@@ -10,6 +10,12 @@ export interface Notification {
 	payload?: {
 		username?: string;
 		follower_id: string;
+		following_id?: string;
+		question_id?: string;
+		from_user_id?: string;
+		to_user_id?: string;
+		from_username?: string;
+		to_username?: string;
 	};
 	eventId: string;
 }
@@ -20,8 +26,13 @@ export interface SendNotificationPayload {
 	payload?: {
 		username?: string;
 		follower_id: string;
+		following_id?: string;
+		question_id?: string;
+		from_user_id?: string;
+		to_user_id?: string;
+		from_username?: string;
+		to_username?: string;
 	};
-	event_id: string;
 }
 
 export const useNotificationsStore = defineStore("notifications", {
@@ -50,8 +61,12 @@ export const useNotificationsStore = defineStore("notifications", {
 					"@/composables/useNotifications"
 				);
 				this.notifications = await fetchNotifications(user.value.id);
-			} catch (err: any) {
-				this.error = err.message || "Failed to fetch notifications";
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to fetch notifications";
+				} else {
+					this.error = "Failed to fetch notifications";
+				}
 				this.notifications = [];
 			}
 			this.loading = false;
@@ -60,34 +75,21 @@ export const useNotificationsStore = defineStore("notifications", {
 			this.notifications.unshift(notification);
 		},
 		async markNotificationAsRead(id: string) {
-			console.log(
-				"Attempting to remove notification with id/eventId:",
-				id
-			);
-
-			// First, let's see what notifications we have
-			const matchingNotifications = this.notifications.filter(
-				(n) => n.id === id || n.eventId === id
-			);
-			console.log("Found matching notifications:", matchingNotifications);
-
 			this.notifications = this.notifications.filter(
-				(n) => n.id !== id && n.eventId !== id
+				(n) => n.eventId !== id
 			);
 
 			const supabase = useSupabaseClient();
 			const { error } = await supabase
 				.from("notifications")
 				.delete()
-				.or(`id.eq.${id},event_id.eq.${id}`);
+				.eq("event_id", id);
 
 			if (error) {
 				console.error(
 					"Error deleting notification from database:",
 					error
 				);
-			} else {
-				console.log("Successfully deleted notification from database");
 			}
 		},
 		clearNotifications() {
