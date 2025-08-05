@@ -90,7 +90,7 @@ useHead({
 				<div class="inbox__modal-question">
 					{{ questionToRemove?.question }}
 				</div>
-				<div class="mt-4 flex justify-end gap-2">
+				<div class="inbox__modal-buttons">
 					<button
 						class="btn btn--secondary"
 						@click="closeRemoveModal"
@@ -110,7 +110,10 @@ useHead({
 		<div v-if="loading" class="loading-text">Loading...</div>
 
 		<div v-else class="inbox__questions">
-			<div v-if="questions.length === 0" class="inbox__no-questions">
+			<div
+				v-if="questions.length === 0"
+				class="inbox__no-questions muted-text"
+			>
 				No questions to answer.
 			</div>
 
