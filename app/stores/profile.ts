@@ -159,30 +159,6 @@ export const useProfileStore = defineStore("profile", {
 		setPublicProfile(profile: Profile) {
 			this.publicProfile = profile;
 		},
-		getMyProfile() {
-			return this.myProfile;
-		},
-		getPublicProfile() {
-			return this.publicProfile;
-		},
-
-		updateMyProfileField<K extends keyof Profile>(
-			field: K,
-			value: Profile[K]
-		) {
-			if (this.myProfile) {
-				this.myProfile[field] = value;
-			}
-		},
-
-		updatePublicProfileField<K extends keyof Profile>(
-			field: K,
-			value: Profile[K]
-		) {
-			if (this.publicProfile) {
-				this.publicProfile[field] = value;
-			}
-		},
 
 		async saveMyProfile() {
 			if (!this.myProfile) return;
