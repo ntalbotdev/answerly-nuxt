@@ -27,6 +27,10 @@ body {
 	@apply text-red-500;
 }
 
+.muted-text {
+	color: $color-muted;
+}
+
 .btn {
 	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow shadow-sm transition-all;
 	border-radius: $radius-xs;
