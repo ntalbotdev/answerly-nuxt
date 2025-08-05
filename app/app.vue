@@ -15,14 +15,14 @@ let notificationChannel: any = null;
 
 onMounted(() => {
 	if (user.value) {
-		questionsStore.fetchIncomingQuestions();
+		fetchIncomingQuestions();
 	}
 });
 
 // Watch for user login/logout and refetch inbox questions
 watch(user, (newUser) => {
 	if (newUser) {
-		questionsStore.fetchIncomingQuestions();
+		fetchIncomingQuestions();
 	} else {
 		questionsStore.inboxQuestions = [];
 	}
