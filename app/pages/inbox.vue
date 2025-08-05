@@ -75,8 +75,8 @@ useHead({
 </script>
 
 <template>
-	<div class="inbox">
-		<h2 class="inbox__title">Inbox</h2>
+	<div class="section inbox">
+		<h2 class="section__title inbox__title">Inbox</h2>
 		<AppModal v-model:open="showRemoveModal" title="Remove">
 			<template #default>
 				<div class="inbox__modal-text">
