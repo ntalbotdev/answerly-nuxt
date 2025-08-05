@@ -189,14 +189,15 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
   ```sql
   create function notify_user(
-    user_id uuid,
+    notif_user_id uuid,
     notif_type text,
     notif_message text,
     notif_payload jsonb default null
   ) returns void as $$
   begin
     insert into notifications (user_id, type, message, payload)
-    values (user_id, notif_type, notif_message, notif_payload);
+    values (notif_user_id, notif_type, notif_message, notif_payload)
+    on conflict (user_id, type, event_id) do nothing;
   end;
   $$ language plpgsql;
   ```
@@ -398,16 +399,14 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     ON follows
     FOR INSERT
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND follower_id = auth.uid()
-      );
+      follower_id = auth.uid()
+    );
 
   CREATE POLICY "Users can unfollow others"
     ON follows
     FOR DELETE
     USING (
-      auth.uid() IS NOT NULL
-      AND follower_id = auth.uid()
+      follower_id = auth.uid()
     );
   ```
 </details>
@@ -428,8 +427,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     USING (
       auth.uid() IS NOT NULL
       AND (
-        to_user_id = auth.uid()
-        OR from_user_id = auth.uid()
+        from_user_id = auth.uid()
       )
     );
 
@@ -437,20 +435,17 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     ON questions
     FOR INSERT
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND from_user_id = auth.uid()
+      from_user_id = auth.uid()
     );
 
   CREATE POLICY "Users can answer questions sent to them"
     ON questions
     FOR UPDATE
     USING (
-      auth.uid() IS NOT NULL
-      AND to_user_id = auth.uid()
+      to_user_id = auth.uid()
     )
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND to_user_id = auth.uid()
+      to_user_id = auth.uid()
     );
 
   CREATE POLICY "Users can delete questions they asked or received"
@@ -459,8 +454,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     USING (
       auth.uid() IS NOT NULL
       AND (
-        from_user_id = auth.uid()
-        OR to_user_id = auth.uid()
+        to_user_id = auth.uid()
       )
     );
   ```
@@ -480,36 +474,31 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     ON notifications
     FOR SELECT
     USING (
-      auth.uid() IS NOT NULL
-      AND user_id = auth.uid()
+      user_id = auth.uid()
     );
 
   CREATE POLICY "Users can create notifications"
     ON notifications
     FOR INSERT
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND user_id = auth.uid()
+      user_id = auth.uid()
     );
 
   CREATE POLICY "Users can update their notifications"
     ON notifications
     FOR UPDATE
     USING (
-      auth.uid() IS NOT NULL
-      AND user_id = auth.uid()
+      user_id = auth.uid()
     )
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND user_id = auth.uid()
+      user_id = auth.uid()
     );
 
   CREATE POLICY "Users can delete their notifications"
     ON notifications
     FOR DELETE
     USING (
-      auth.uid() IS NOT NULL
-      AND user_id = auth.uid()
+      user_id = auth.uid()
     );
 
   CREATE POLICY "Allow system inserts for notifications"
