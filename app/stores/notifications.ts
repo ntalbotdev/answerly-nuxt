@@ -9,6 +9,7 @@ export interface Notification {
 	createdAt: string;
 	payload?: {
 		username?: string;
+		follower_id: string;
 	};
 	eventId: string;
 }
@@ -18,6 +19,7 @@ export interface SendNotificationPayload {
 	message: string;
 	payload?: {
 		username?: string;
+		follower_id: string;
 	};
 	event_id: string;
 }
