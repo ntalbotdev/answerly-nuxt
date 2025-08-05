@@ -21,4 +21,10 @@ export default defineNuxtConfig({
 			callback: "/auth/confirm",
 		},
 	},
+	runtimeConfig: {
+		public: {
+			supabaseUrl: process.env.SUPABASE_URL,
+			supabaseKey: process.env.SUPABASE_ANON_KEY,
+		},
+	},
 });
