@@ -199,7 +199,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         status: 204,
         headers: {
           'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         }
       });
@@ -214,6 +214,45 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         }
       });
     }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+    if (req.method === 'DELETE') {
+      const { user_id, event_id, type } = await req.json();
+      if (!user_id || !event_id || !type) {
+        return new Response('Missing required fields for deletion', {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': origin
+          }
+        });
+      }
+
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('user_id', user_id)
+        .eq('event_id', event_id)
+        .eq('type', type);
+
+      if (error) {
+        return new Response(`Error deleting notification: ${error.message}`, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': origin
+          }
+        });
+      }
+
+      return new Response('Notification deleted', {
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+
+    // Handle notification creation (POST)
     const { user_id, type, message, payload } = await req.json();
     if (!user_id || !type || !message) {
       return new Response('Missing required fields', {
@@ -223,17 +262,20 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         }
       });
     }
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-    const { error } = await supabase
-      .from('notifications')
-      .upsert([
-        {
-          user_id,
-          type,
-          message,
-          payload
-        }
-      ], { onConflict: ['user_id', 'type', 'event_id'] });
+    const { error } = await supabase.from('notifications').upsert([
+      {
+        user_id,
+        type,
+        message,
+        payload
+      }
+    ], {
+      onConflict: [
+        'user_id',
+        'type',
+        'event_id'
+      ]
+    });
     if (error) {
       return new Response(`Error: ${error.message}`, {
         status: 500,
