@@ -68,3 +68,28 @@ export function subscribeToNotifications(
 		.subscribe();
 	return channel;
 }
+
+export async function sendNotification(notification: SendNotificationPayload) {
+	const config = useRuntimeConfig();
+	const supabaseUrl = config.public.supabaseUrl;
+	const supabaseAnonKey = config.public.supabaseKey;
+	const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+	if (!supabaseUrl || !supabaseAnonKey) {
+		throw new Error("Environment variables are not set in runtime config");
+	}
+
+	const res = await fetch(edgeFunctionUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${supabaseAnonKey}`,
+		},
+		body: JSON.stringify(notification),
+	});
+
+	if (!res.ok) {
+		const error = await res.text();
+		throw new Error(error);
+	}
+	return await res.text();
+}

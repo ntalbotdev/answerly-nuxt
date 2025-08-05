@@ -56,30 +56,6 @@ export const useNotificationsStore = defineStore("notifications", {
 			}
 			this.loading = false;
 		},
-		async sendNotification(notification: SendNotificationPayload) {
-			const config = useRuntimeConfig();
-			const supabaseUrl = config.public.supabaseUrl;
-			const supabaseAnonKey = config.public.supabaseKey;
-			const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
-			if (!supabaseUrl) {
-				throw new Error("Supabase URL is not set in runtime config");
-			}
-
-			const res = await fetch(edgeFunctionUrl, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${supabaseAnonKey}`,
-				},
-				body: JSON.stringify(notification),
-			});
-
-			if (!res.ok) {
-				const error = await res.text();
-				throw new Error(error);
-			}
-			return await res.text();
-		},
 		addNotification(notification: Notification) {
 			this.notifications.unshift(notification);
 		},
