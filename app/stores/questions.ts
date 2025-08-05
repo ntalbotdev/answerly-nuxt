@@ -29,9 +29,13 @@ export const useQuestionsStore = defineStore("questions", {
 	}),
 	getters: {
 		hasNewInboxItems(state) {
+			if (!state.inboxQuestions || state.inboxQuestions.length === 0)
+				return false;
 			return state.inboxQuestions.some((q) => !q.answer);
 		},
 		newInboxCount(state) {
+			if (!state.inboxQuestions || state.inboxQuestions.length === 0)
+				return 0;
 			return state.inboxQuestions.filter((q) => !q.answer).length;
 		},
 	},
@@ -53,6 +57,7 @@ export const useQuestionsStore = defineStore("questions", {
 					},
 				]);
 				if (error) throw error;
+
 				const config = useRuntimeConfig();
 				const supabaseUrl = config.public.supabaseUrl;
 				const supabaseAnonKey = config.public.supabaseKey;
@@ -74,7 +79,6 @@ export const useQuestionsStore = defineStore("questions", {
 								user.value?.user_metadata?.username ||
 								"Someone",
 						},
-						event_id: questionId,
 					}),
 				});
 			} catch (err: unknown) {
@@ -107,9 +111,13 @@ export const useQuestionsStore = defineStore("questions", {
 						answer,
 						published: true,
 						answered_at: new Date().toISOString(),
-					})
+					} as any)
 					.eq("id", questionId);
 				if (error) throw error;
+
+				// Remove the question notification since it's been answered
+				const notifStore = useNotificationsStore();
+				await notifStore.markNotificationAsRead(questionId);
 				// Send notification to asker
 				const config = useRuntimeConfig();
 				const supabaseUrl = config.public.supabaseUrl;
@@ -132,7 +140,6 @@ export const useQuestionsStore = defineStore("questions", {
 								user.value?.user_metadata?.username ||
 								"Someone",
 						},
-						event_id: questionId,
 					}),
 				});
 			} catch (err: unknown) {
@@ -156,6 +163,10 @@ export const useQuestionsStore = defineStore("questions", {
 					.delete()
 					.eq("id", questionId);
 				if (error) throw error;
+				
+				// Remove the related notification
+				const notifStore = useNotificationsStore();
+				await notifStore.markNotificationAsRead(questionId);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
 					this.error = err.message || "Failed to delete question";
