@@ -157,6 +157,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | message      | text        | Notification message    |
 | is_read      | boolean     | Default: false          |
 | created_at   | timestamptz | Default: now()          |
+| event_id     | text        | Generated from payload  |
 
 <details>
   <summary>📄 <strong>Notifications Table SQL Query</strong></summary>
@@ -164,7 +165,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   ```sql
   create table notifications (
     id uuid primary key default gen_random_uuid(),
-    user_id uuid not null references profiles(user_id) on delete cascade,
+    user_id uuid not null references auth.users on delete cascade,
     type text not null check (type in ('follow', 'question', 'answer', 'system')),
     payload jsonb,
     message text not null,
@@ -172,9 +173,9 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     created_at timestamptz not null default now(),
     event_id text generated always as (
       case
-        when type = 'follow' then (payload::jsonb->>'follower_id') || ':' || (payload::jsonb->>'following_id')
-        when type = 'question' then (payload::jsonb->>'question_id')
-        else id::text
+        when type = 'follow' then COALESCE(payload::jsonb->>'follower_id', '') || ':' || COALESCE(payload::jsonb->>'following_id', '')
+        when type = 'question' then COALESCE(payload::jsonb->>'question_id', '')
+        else COALESCE(id::text, '')
       end
     ) stored,
     unique (user_id, type, event_id)
@@ -182,110 +183,72 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   ```
 </details>
 
-### Functions and Triggers
+### Edge Functions
 
 <details>
-  <summary>🔧 <strong>notify_user() Function</strong></summary>
+  <summary>🔧 <strong>send-notification Edge Function</strong></summary>
 
-  ```sql
-  create function notify_user(
-    notif_user_id uuid,
-    notif_type text,
-    notif_message text,
-    notif_payload jsonb default null
-  ) returns void as $$
-  begin
-    insert into notifications (user_id, type, message, payload)
-    values (notif_user_id, notif_type, notif_message, notif_payload)
-    on conflict (user_id, type, event_id) do nothing;
-  end;
-  $$ language plpgsql;
-  ```
-</details>
+  ```ts
+  import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-<details>
-  <summary>🔧 <strong>on_follow_insert() Function</strong></summary>
-
-  ```sql
-  create function on_follow_insert() returns trigger as $$
-  begin
-    perform notify_user(
-      new.following_id,
-      'follow',
-      'You have a new follower!',
-      jsonb_build_object('follower_id', new.follower_id)
-    );
-    return new;
-  end;
-  $$ language plpgsql;
-  ```
-</details>
-
-<details>
-  <summary>🔧 <strong>on_question_insert() Function</strong></summary>
-
-  ```sql
-  create function on_question_insert() returns trigger as $$
-  begin
-    perform notify_user(
-      new.to_user_id,
-      'question',
-      'You received a new question!',
-      jsonb_build_object('question_id', new.id, 'from_user_id', new.from_user_id)
-    );
-    return new;
-  end;
-  $$ language plpgsql;
-  ```
-</details>
-
-<details>
-  <summary>🔧 <strong>on_question_answered() Function</strong></summary>
-
-  ```sql
-  create function on_question_answered() returns trigger as $$
-  begin
-    if new.answer is not null and old.answer is null then
-      perform notify_user(
-        new.from_user_id,
-        'answer',
-        'Your question has been answered!',
-        jsonb_build_object('question_id', new.id, 'to_user_id', new.to_user_id)
-      );
-    end if;
-    return new;
-  end;
-  $$ language plpgsql;
-  ```
-</details>
-
-<details>
-  <summary>⏰ <strong>notify_on_follow Trigger</strong></summary>
-
-  ```sql
-  create trigger notify_on_follow
-  after insert on follows for each row
-  execute procedure on_follow_insert();
-  ```
-</details>
-
-<details>
-  <summary>⏰ <strong>notify_on_question Trigger</strong></summary>
-
-  ```sql
-  create trigger notify_on_question
-  after insert on questions for each row
-  execute procedure on_question_insert();
-  ```
-</details>
-
-<details>
-  <summary>⏰ <strong>notify_on_answer Trigger</strong></summary>
-
-  ```sql
-  create trigger notify_on_answer
-  after update on questions for each row
-  execute procedure on_question_answered();
+  serve(async (req) => {
+    const origin = req.headers.get('origin') || '*';
+    if (req.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': origin,
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      return new Response('Missing environment variables', {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    const { user_id, type, message, payload } = await req.json();
+    if (!user_id || !type || !message) {
+      return new Response('Missing required fields', {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const { error } = await supabase
+      .from('notifications')
+      .upsert([
+        {
+          user_id,
+          type,
+          message,
+          payload
+        }
+      ], { onConflict: ['user_id', 'type', 'event_id'] });
+    if (error) {
+      return new Response(`Error: ${error.message}`, {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    return new Response('Notification inserted', {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': origin
+      }
+    });
+  });
   ```
 </details>
 
@@ -504,6 +467,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   CREATE POLICY "Allow system inserts for notifications"
     ON notifications
     FOR INSERT
+    TO service_role
     WITH CHECK (true);
   ```
 </details>
