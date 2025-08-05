@@ -49,6 +49,7 @@ export const useQuestionsStore = defineStore("questions", {
 						...payload,
 						answer: null,
 						published: false,
+						created_at: new Date().toISOString(),
 					},
 				]);
 				if (error) throw error;
@@ -93,7 +94,6 @@ export const useQuestionsStore = defineStore("questions", {
 			try {
 				const supabase = useSupabaseClient();
 				const user = useSupabaseUser();
-				// Get question info for notification
 				const { data: questionData, error: fetchError } = await supabase
 					.from("questions")
 					.select("from_user_id, to_user_id")
