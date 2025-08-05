@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 const questionsStore = useQuestionsStore();
-const questions = ref<
-	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]
->([]);
+const { inboxQuestions } = storeToRefs(questionsStore);
 const loading = ref(true);
 const showRemoveModal = ref(false);
 const questionToRemove = ref<
@@ -14,16 +13,39 @@ definePageMeta({
 	middleware: "auth",
 });
 
+const questionsWithUi = ref<
+	Array<Question & { _answer: string; _saving: boolean; _showForm: boolean }>
+>([]);
+
+function syncQuestionsWithUi() {
+	const existingUiState = new Map<
+		string,
+		{ _answer: string; _saving: boolean; _showForm: boolean }
+	>();
+
+	questionsWithUi.value.forEach((q) => {
+		existingUiState.set(q.id, {
+			_answer: q._answer,
+			_saving: q._saving,
+			_showForm: q._showForm,
+		});
+	});
+
+	questionsWithUi.value = inboxQuestions.value.map((q) => ({
+		...q,
+		_answer: existingUiState.get(q.id)?._answer || "",
+		_saving: existingUiState.get(q.id)?._saving || false,
+		_showForm: existingUiState.get(q.id)?._showForm || false,
+	}));
+}
+
+watch(inboxQuestions, syncQuestionsWithUi, { immediate: true });
+
 async function fetchMyQuestions() {
 	loading.value = true;
-	const res = await fetchIncomingQuestions();
-	questions.value = res.map((q) => ({
-		...q,
-		_answer: "",
-		_saving: false,
-		_showForm: false,
-	}));
+	await fetchIncomingQuestions();
 	loading.value = false;
+	syncQuestionsWithUi();
 }
 onMounted(fetchMyQuestions);
 
@@ -36,14 +58,22 @@ async function answerQuestion(
 	q._saving = false;
 	q._showForm = false;
 
-	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-		(qq, idx, arr) =>
-			qq.id !== q.id && arr.findIndex((item) => item.id === qq.id) === idx
-	);
+	// Remove the answered question from both UI list and store
+	questionsWithUi.value = questionsWithUi.value
+		.filter(
+			(qq, idx, arr) =>
+				qq.id !== q.id &&
+				arr.findIndex((item) => item.id === qq.id) === idx
+		)
+		.filter((qq) => qq.answer === null);
 
-	if (questionsStore.inboxQuestions.length === 0) {
-		questionsStore.inboxQuestions = [];
-	}
+	questionsStore.inboxQuestions = questionsStore.inboxQuestions
+		.filter(
+			(qq, idx, arr) =>
+				qq.id !== q.id &&
+				arr.findIndex((item) => item.id === qq.id) === idx
+		)
+		.filter((qq) => qq.answer === null);
 }
 
 function openRemoveModal(
@@ -61,18 +91,22 @@ function closeRemoveModal() {
 async function confirmRemoveQuestion() {
 	if (questionToRemove.value) {
 		await questionsStore.deleteQuestion(questionToRemove.value.id);
-		questions.value = questions.value.filter(
-			(q) => q.id !== questionToRemove.value!.id
-		);
-		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-			(q, idx, arr) =>
-				q.id !== questionToRemove.value!.id &&
-				arr.findIndex((item) => item.id === q.id) === idx
-		);
+		questionsWithUi.value = questionsWithUi.value
+			.filter(
+				(q, idx, arr) =>
+					q.id !== questionToRemove.value!.id &&
+					arr.findIndex((item) => item.id === q.id) === idx
+			)
+			.filter((q) => q.answer === null);
 
-		if (questionsStore.inboxQuestions.length === 0) {
-			questionsStore.inboxQuestions = [];
-		}
+		questionsStore.inboxQuestions = questionsStore.inboxQuestions
+			.filter(
+				(q, idx, arr) =>
+					q.id !== questionToRemove.value!.id &&
+					arr.findIndex((item) => item.id === q.id) === idx
+			)
+			.filter((q) => q.answer === null);
+
 		closeRemoveModal();
 	}
 }
@@ -122,13 +156,17 @@ useHead({
 
 		<div v-else class="inbox__questions">
 			<div
-				v-if="questions.length === 0"
+				v-if="questionsWithUi.length === 0"
 				class="inbox__no-questions muted-text"
 			>
 				No questions to answer.
 			</div>
 
-			<div v-for="q in questions" :key="q.id" class="inbox__question">
+			<div
+				v-for="q in questionsWithUi"
+				:key="q.id"
+				class="inbox__question"
+			>
 				<div class="inbox__question-header">
 					<div class="inbox__question-text">{{ q.question }}</div>
 
@@ -144,11 +182,7 @@ useHead({
 
 							<template v-else-if="q.asker_username">
 								<NuxtLink
-									:to="
-										ROUTES.PROFILE_USER(
-											q.asker_username ?? ''
-										)
-									"
+									:to="ROUTES.PROFILE_USER(q.asker_username)"
 									class="inbox__question-asker inbox__question-asker--username"
 								>
 									{{ q.asker_username }}
