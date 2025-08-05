@@ -39,18 +39,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div v-if="!loading">
+	<div v-if="!loading" class="muted-text">
 		<span v-if="iFollow && followsMe">You follow each other</span>
 		<span v-else-if="iFollow">You follow this user</span>
 		<span v-else-if="followsMe">This user follows you</span>
 		<span v-else>You do not follow each other</span>
 	</div>
 </template>
-
-<style scoped lang="scss">
-@use "@/assets/css/variables.scss" as *;
-
-div {
-	color: $color-muted;
-}
-</style>
