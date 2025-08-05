@@ -63,7 +63,7 @@ definePageMeta({
 				</div>
 				<button
 					v-if="!notif.read"
-					@click="notificationsStore.markAsRead(notif.id)"
+					@click="notificationsStore.markNotificationAsRead(notif.id)"
 				>
 					Mark as read
 				</button>
