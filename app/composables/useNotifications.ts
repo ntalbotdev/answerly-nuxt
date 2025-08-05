@@ -60,10 +60,12 @@ export function subscribeToNotifications(
 					payload.eventType === "UPDATE"
 				) {
 					const n = payload.new;
+					// Type guard for n.type
+					const safeType = typeof n.type === "string" ? n.type : "";
 					onChange(
 						{
 							id: n.id,
-							type: n.type,
+							type: safeType,
 							message: n.message,
 							read: n.is_read,
 							createdAt: n.created_at,
