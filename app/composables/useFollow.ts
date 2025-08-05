@@ -14,6 +14,28 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 			.from("follows")
 			.insert([followObj] as any);
 		if (error) throw error;
+
+		const notificationsStore = useNotificationsStore();
+		let username = user.value.user_metadata?.username || "Someone";
+		try {
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("username")
+				.eq("user_id", user.value.id)
+				.single<{ username: string }>();
+			if (profile && profile.username) {
+				username = profile.username;
+			}
+		} catch {
+			// Ignore profile fetch errors, fallback to user_metadata
+		}
+		await notificationsStore.sendNotification({
+			user_id: targetUserId,
+			type: "follow",
+			message: `${username} followed you.`,
+			event_id: `follow-${user.value.id}-${targetUserId}`,
+			payload: { follower_id: user.value.id },
+		});
 		return true;
 	} catch (err) {
 		console.error("Failed to follow user:", err);
