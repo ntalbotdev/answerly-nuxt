@@ -35,10 +35,15 @@ async function answerQuestion(
 	q.answer = q._answer;
 	q._saving = false;
 	q._showForm = false;
-	// Remove from inboxQuestions in store so notification count updates
+
 	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-		(qq) => qq.id !== q.id
+		(qq, idx, arr) =>
+			qq.id !== q.id && arr.findIndex((item) => item.id === qq.id) === idx
 	);
+
+	if (questionsStore.inboxQuestions.length === 0) {
+		questionsStore.inboxQuestions = [];
+	}
 }
 
 function openRemoveModal(
@@ -60,8 +65,14 @@ async function confirmRemoveQuestion() {
 			(q) => q.id !== questionToRemove.value!.id
 		);
 		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-			(q) => q.id !== questionToRemove.value!.id
+			(q, idx, arr) =>
+				q.id !== questionToRemove.value!.id &&
+				arr.findIndex((item) => item.id === q.id) === idx
 		);
+
+		if (questionsStore.inboxQuestions.length === 0) {
+			questionsStore.inboxQuestions = [];
+		}
 		closeRemoveModal();
 	}
 }
