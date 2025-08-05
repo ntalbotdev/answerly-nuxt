@@ -16,11 +16,15 @@ export async function fetchNotifications(
 
 	return (data || []).map((n: Record<string, unknown>) => ({
 		id: n.id as string,
+		user_id: n.user_id as string,
 		type: n.type as string,
 		message: n.message as string,
 		read: n.is_read as boolean,
 		createdAt: n.created_at as string,
-		payload: n.payload,
+		payload:
+			typeof n.payload === "object" && n.payload !== null
+				? (n.payload as { username?: string })
+				: undefined,
 		eventId: n.event_id as string,
 	}));
 }
@@ -55,7 +59,7 @@ export function subscribeToNotifications(
 							createdAt: n.created_at,
 							payload: n.payload,
 							eventId: n.event_id,
-						},
+						} as Notification,
 						payload.eventType
 					);
 				}
