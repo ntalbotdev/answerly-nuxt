@@ -9,6 +9,10 @@ useHead({
 	title: "Notifications",
 	meta: [{ name: "description", content: "View your notifications." }],
 });
+
+definePageMeta({
+	middleware: "auth",
+});
 </script>
 
 <template>
@@ -18,37 +22,52 @@ useHead({
 		<div v-if="notificationsStore.loading" class="loading-text">
 			Loading...
 		</div>
+
 		<div v-else-if="notificationsStore.error" class="error-text">
 			{{ notificationsStore.error }}
 		</div>
-		<div
-			v-else-if="notificationsStore.notifications.length === 0"
-			class="muted-text"
-		>
-			No notifications yet.
-		</div>
 
-		<ul v-else class="">
+		<div v-else class="notifications__list">
+			<div
+				v-if="notificationsStore.notifications.length === 0"
+				class="muted-text"
+			>
+				No notifications yet.
+			</div>
+
 			<li
 				v-for="notif in notificationsStore.notifications"
 				:key="notif.id"
-				class=""
+				class="notifications__item"
 			>
-				<span v-if="!notif.read" class="text-blue-500">●</span>
-				<div class="">
-					<div class="">{{ notif.message }}</div>
-					<div class="">
+				<span v-if="!notif.read" class="">●</span>
+				<div>
+					<template
+						v-if="
+							notif.type === 'follow' &&
+							notif.payload &&
+							notif.payload.username
+						"
+					>
+						<router-link :to="`/profile/${notif.payload.username}`"
+							>@{{ notif.payload.username }}</router-link
+						>
+						{{ notif.message }}
+					</template>
+					<template v-else>
+						{{ notif.message }}
+					</template>
+					<div>
 						{{ new Date(notif.createdAt).toLocaleString() }}
 					</div>
 				</div>
 				<button
 					v-if="!notif.read"
-					class=""
 					@click="notificationsStore.markAsRead(notif.id)"
 				>
 					Mark as read
 				</button>
 			</li>
-		</ul>
+		</div>
 	</div>
 </template>
