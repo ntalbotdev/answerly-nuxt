@@ -40,17 +40,48 @@ export const useQuestionsStore = defineStore("questions", {
 			this.error = null;
 			try {
 				const supabase = useSupabaseClient();
+				const user = useSupabaseUser();
+				const questionId = crypto.randomUUID();
 				const { error } = await supabase.from("questions").insert([
 					{
-						id: crypto.randomUUID(),
+						id: questionId,
 						...payload,
 						answer: null,
 						published: false,
 					},
 				]);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to create question";
+				// Send notification to recipient
+				const config = useRuntimeConfig();
+				const supabaseUrl = config.public.supabaseUrl;
+				const supabaseAnonKey = config.public.supabaseKey;
+				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+				await fetch(edgeFunctionUrl, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${supabaseAnonKey}`,
+					},
+					body: JSON.stringify({
+						user_id: payload.to_user_id,
+						type: "question",
+						message: "You received a new question.",
+						payload: {
+							question_id: questionId,
+							from_user_id: payload.from_user_id,
+							from_username:
+								user.value?.user_metadata?.username ||
+								"Someone",
+						},
+						event_id: questionId,
+					}),
+				});
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to create question";
+				} else {
+					this.error = "Failed to create question";
+				}
 			} finally {
 				this.loading = false;
 			}
@@ -61,6 +92,15 @@ export const useQuestionsStore = defineStore("questions", {
 			this.error = null;
 			try {
 				const supabase = useSupabaseClient();
+				const user = useSupabaseUser();
+				// Get question info for notification
+				const { data: questionData, error: fetchError } = await supabase
+					.from("questions")
+					.select("from_user_id, to_user_id")
+					.eq("id", questionId)
+					.single<{ from_user_id: string; to_user_id: string }>();
+				if (fetchError || !questionData)
+					throw fetchError || new Error("Question not found");
 				const { error } = await supabase
 					.from("questions")
 					.update({
@@ -70,8 +110,37 @@ export const useQuestionsStore = defineStore("questions", {
 					})
 					.eq("id", questionId);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to answer question";
+				// Send notification to asker
+				const config = useRuntimeConfig();
+				const supabaseUrl = config.public.supabaseUrl;
+				const supabaseAnonKey = config.public.supabaseKey;
+				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+				await fetch(edgeFunctionUrl, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${supabaseAnonKey}`,
+					},
+					body: JSON.stringify({
+						user_id: questionData.from_user_id,
+						type: "answer",
+						message: "Your question was answered.",
+						payload: {
+							question_id: questionId,
+							to_user_id: questionData.to_user_id,
+							to_username:
+								user.value?.user_metadata?.username ||
+								"Someone",
+						},
+						event_id: questionId,
+					}),
+				});
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to answer question";
+				} else {
+					this.error = "Failed to answer question";
+				}
 			} finally {
 				this.loading = false;
 			}
@@ -87,8 +156,12 @@ export const useQuestionsStore = defineStore("questions", {
 					.delete()
 					.eq("id", questionId);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to delete question";
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to delete question";
+				} else {
+					this.error = "Failed to delete question";
+				}
 			} finally {
 				this.loading = false;
 			}
