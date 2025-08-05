@@ -59,17 +59,36 @@ export const useNotificationsStore = defineStore("notifications", {
 		addNotification(notification: Notification) {
 			this.notifications.unshift(notification);
 		},
-		async markAsRead(id: string) {
-			// Remove from local state
+		async markNotificationAsRead(id: string) {
+			console.log(
+				"Attempting to remove notification with id/eventId:",
+				id
+			);
+
+			// First, let's see what notifications we have
+			const matchingNotifications = this.notifications.filter(
+				(n) => n.id === id || n.eventId === id
+			);
+			console.log("Found matching notifications:", matchingNotifications);
+
 			this.notifications = this.notifications.filter(
 				(n) => n.id !== id && n.eventId !== id
 			);
-			// Remove from database
+
 			const supabase = useSupabaseClient();
-			await supabase
+			const { error } = await supabase
 				.from("notifications")
 				.delete()
 				.or(`id.eq.${id},event_id.eq.${id}`);
+
+			if (error) {
+				console.error(
+					"Error deleting notification from database:",
+					error
+				);
+			} else {
+				console.log("Successfully deleted notification from database");
+			}
 		},
 		clearNotifications() {
 			this.notifications = [];
