@@ -11,6 +11,7 @@ export interface Question {
 	created_at: string;
 	answered_at?: string | null;
 	asker_username?: string;
+	profiles?: Profile;
 }
 
 export interface QuestionInput {
@@ -51,7 +52,6 @@ export const useQuestionsStore = defineStore("questions", {
 					},
 				]);
 				if (error) throw error;
-				// Send notification to recipient
 				const config = useRuntimeConfig();
 				const supabaseUrl = config.public.supabaseUrl;
 				const supabaseAnonKey = config.public.supabaseKey;
