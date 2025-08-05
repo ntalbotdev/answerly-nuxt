@@ -11,24 +11,43 @@
 const user = useSupabaseUser();
 const questionsStore = useQuestionsStore();
 const notificationsStore = useNotificationsStore();
-let notificationChannel: any = null;
+let notificationChannel: ReturnType<typeof subscribeToNotifications> | null =
+	null;
+
+const {
+	fetchInboxQuestions,
+	subscribeToInboxQuestions,
+	unsubscribeInboxQuestions,
+} = useInboxQuestions();
 
 onMounted(() => {
 	if (user.value) {
-		fetchIncomingQuestions();
+		fetchInboxQuestions();
+		subscribeToInboxQuestions();
 	}
 });
 
-// Watch for user login/logout and refetch inbox questions
 watch(user, (newUser) => {
 	if (newUser) {
-		fetchIncomingQuestions();
+		fetchInboxQuestions();
+		subscribeToInboxQuestions();
 	} else {
-		questionsStore.inboxQuestions = [];
+		if (
+			!questionsStore.inboxQuestions.length ||
+			questionsStore.inboxQuestions.length === 0
+		) {
+			questionsStore.inboxQuestions = [];
+		}
+		unsubscribeInboxQuestions();
+		if (
+			!notificationsStore.notifications.length ||
+			notificationsStore.notifications.length === 0
+		) {
+			notificationsStore.notifications = [];
+		}
 	}
 });
 
-// Subscribe to notifications if user is logged in
 watch(
 	() => user.value?.id,
 	(id) => {
@@ -64,6 +83,7 @@ watch(
 
 onUnmounted(() => {
 	if (notificationChannel) notificationChannel.unsubscribe();
+	unsubscribeInboxQuestions();
 });
 
 useHead({
