@@ -9,10 +9,6 @@ const questionToRemove = ref<
 	| null
 >(null);
 
-definePageMeta({
-	middleware: "auth",
-});
-
 const questionsWithUi = ref<
 	Array<Question & { _answer: string; _saving: boolean; _showForm: boolean }>
 >([]);
@@ -58,7 +54,6 @@ async function answerQuestion(
 	q._saving = false;
 	q._showForm = false;
 
-	// Remove the answered question from both UI list and store
 	questionsWithUi.value = questionsWithUi.value
 		.filter(
 			(qq, idx, arr) =>
@@ -74,6 +69,9 @@ async function answerQuestion(
 				arr.findIndex((item) => item.id === qq.id) === idx
 		)
 		.filter((qq) => qq.answer === null);
+
+	const notificationsStore = useNotificationsStore();
+	await notificationsStore.fetchNotifications();
 }
 
 function openRemoveModal(
@@ -107,9 +105,16 @@ async function confirmRemoveQuestion() {
 			)
 			.filter((q) => q.answer === null);
 
+		const notificationsStore = useNotificationsStore();
+		await notificationsStore.fetchNotifications();
+
 		closeRemoveModal();
 	}
 }
+
+definePageMeta({
+	middleware: "auth",
+});
 
 useHead({
 	title: "Inbox",
