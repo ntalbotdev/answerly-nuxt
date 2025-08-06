@@ -71,7 +71,6 @@ export const useQuestionsStore = defineStore("questions", {
 					body: JSON.stringify({
 						user_id: payload.to_user_id,
 						type: "question",
-						message: "You received a new question.",
 						payload: {
 							question_id: questionId,
 							from_user_id: payload.from_user_id,
@@ -132,7 +131,6 @@ export const useQuestionsStore = defineStore("questions", {
 					body: JSON.stringify({
 						user_id: questionData.from_user_id,
 						type: "answer",
-						message: "Your question was answered.",
 						payload: {
 							question_id: questionId,
 							to_user_id: questionData.to_user_id,
@@ -163,7 +161,7 @@ export const useQuestionsStore = defineStore("questions", {
 					.delete()
 					.eq("id", questionId);
 				if (error) throw error;
-				
+
 				// Remove the related notification
 				const notifStore = useNotificationsStore();
 				await notifStore.markNotificationAsRead(questionId);
