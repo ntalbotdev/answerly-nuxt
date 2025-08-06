@@ -12,7 +12,7 @@ export const useProfilePage = (username: string) => {
 			const { data, error: profileError } = await supabase
 				.from("profiles")
 				.select("user_id, username, display_name, avatar_url, bio")
-				.eq("username", username)
+				.eq("username", username.toLowerCase())
 				.single();
 
 			if (profileError || !data) {

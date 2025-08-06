@@ -36,7 +36,7 @@ const signup = async () => {
 
 	const user = result.user;
 	if (user) {
-		await profileStore.createProfile(user.id, username.value);
+		await profileStore.createProfile(user.id, username.value.toLowerCase());
 		if (profileStore.error) {
 			alert(profileStore.error);
 			return;
@@ -84,6 +84,7 @@ useHead({
 				placeholder="Username"
 				class="auth-form__input"
 				required
+				@input="username = username.toLowerCase()"
 			/>
 		</div>
 
