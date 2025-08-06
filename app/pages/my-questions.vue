@@ -2,25 +2,33 @@
 const questionsStore = useQuestionsStore();
 const questions = ref<(Question & { to_username?: string })[]>([]);
 const loading = ref(true);
+const error = ref<string | null>(null);
 
 definePageMeta({
-	// This page requires authentication
 	middleware: "auth",
 });
 
-// Format date to a readable string
 function formatDate(dateStr: string) {
 	return new Date(dateStr).toLocaleString();
 }
 
-// Fetch the questions asked by the user
-async function fetchAskedQuestions() {
+async function fetchUserAskedQuestions() {
 	loading.value = true;
-	const res = await questionsStore.fetchAskedQuestions();
-	questions.value = res;
-	loading.value = false;
+	error.value = null;
+	try {
+		const res = await fetchAskedQuestions();
+		questions.value = res;
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value = err.message || "Failed to load questions.";
+		} else {
+			error.value = "Failed to load questions.";
+		}
+	} finally {
+		loading.value = false;
+	}
 }
-onMounted(fetchAskedQuestions);
+onMounted(fetchUserAskedQuestions);
 
 useHead({
 	title: "Questions I Asked",
@@ -31,31 +39,43 @@ useHead({
 </script>
 
 <template>
-	<div>
-		<h1>Questions I Asked</h1>
-		<div v-if="loading">Loading...</div>
-		<div v-else>
-			<div v-if="questions.length === 0">
-				You haven't asked any questions yet.
-			</div>
-			<div v-for="q in questions" :key="q.id">
-				<div>
-					<span>
+	<div class="section my-questions">
+		<h2 class="section__title my-questions__title">Questions I Asked</h2>
+
+		<LoadingError
+			:loading="loading"
+			:error="error || ''"
+			:show-empty-state="questions.length === 0"
+			empty-state="You haven't asked any questions yet."
+			loading-text="Loading questions..."
+		>
+			<div v-for="q in questions" :key="q.id" class="my-questions__item">
+				<div class="my-questions__header">
+					<span class="my-questions__recipient">
 						To:
-						<NuxtLink :to="`/profile/${q.to_username}`">{{
-							q.to_username || q.to_user_id
-						}}</NuxtLink>
+						<NuxtLink
+							:to="
+								ROUTES.PROFILE_USER(
+									q.to_username || q.to_user_id
+								)
+							"
+							class="my-questions__recipient-link"
+						>
+							{{ q.to_username || q.to_user_id }}
+						</NuxtLink>
 					</span>
-					<span>{{ formatDate(q.created_at) }}</span>
+					<span class="my-questions__date">{{
+						formatDate(q.created_at)
+					}}</span>
 				</div>
-				<div>{{ q.question }}</div>
-				<div v-if="q.answer">
+				<div class="my-questions__question">{{ q.question }}</div>
+				<div v-if="q.answer" class="my-questions__answer">
 					<strong>Answered:</strong> {{ q.answer }}
 				</div>
-				<div v-else>
+				<div v-else class="my-questions__pending">
 					<em>Pending answer...</em>
 				</div>
 			</div>
-		</div>
+		</LoadingError>
 	</div>
 </template>
