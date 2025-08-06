@@ -1,8 +1,28 @@
 <script setup lang="ts">
 const profileStore = useProfileStore();
-const router = useRouter();
 const route = useRoute();
 const user = useSupabaseUser();
+
+const usernameParam = route.params.username as string;
+const isUUID =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+		usernameParam
+	);
+
+if (isUUID && user.value && usernameParam === user.value.id) {
+	if (!profileStore.myProfile) {
+		await profileStore.fetchProfileById(user.value.id);
+	}
+
+	if (
+		profileStore.myProfile?.username &&
+		profileStore.myProfile.username !== usernameParam
+	) {
+		await navigateTo(ROUTES.PROFILE_USER(profileStore.myProfile.username), {
+			replace: true,
+		});
+	}
+}
 
 onMounted(() => {
 	profileStore.fetchProfileByUsername(route.params.username as string);
