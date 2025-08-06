@@ -10,7 +10,7 @@ const canEdit = computed(() => {
 	);
 });
 const profileStore = useProfileStore();
-const isFollowing = ref(false);
+const followStatus = ref(false);
 const followerCount = ref(0);
 const showEditModal = ref(false);
 const showAskModal = ref(false);
@@ -18,11 +18,11 @@ const showConfirmUnfollowModal = ref(false);
 
 function handleCloseEditModal() {
 	showEditModal.value = false;
-	if (props.profile?.user_id) {
-		profileStore.fetchProfileById(props.profile.user_id).then(() => {
-			emit("profile-updated");
-		});
-	}
+}
+
+async function handleProfileUpdated() {
+	emit("profile-updated");
+	showEditModal.value = false;
 }
 
 function handleCloseAskModal() {
@@ -30,12 +30,11 @@ function handleCloseAskModal() {
 }
 async function fetchFollowStatus() {
 	if (!props.profile?.user_id) return;
-	// Use store actions for follower count and follow status
 	followerCount.value = await profileStore.fetchFollowerCount(
 		props.profile.user_id
 	);
 	if (user.value && user.value.id !== props.profile.user_id) {
-		isFollowing.value = await profileStore.isFollowing(
+		followStatus.value = await profileStore.isFollowing(
 			props.profile.user_id
 		);
 	}
@@ -46,7 +45,7 @@ watch(() => props.profile?.user_id, fetchFollowStatus);
 async function handleFollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.followUser(props.profile.user_id);
-	isFollowing.value = true;
+	followStatus.value = true;
 	followerCount.value = await profileStore.fetchFollowerCount(
 		props.profile.user_id
 	);
@@ -60,7 +59,7 @@ function requestUnfollow() {
 async function confirmUnfollow() {
 	if (!props.profile?.user_id) return;
 	await profileStore.unfollowUser(props.profile.user_id);
-	isFollowing.value = false;
+	followStatus.value = false;
 	followerCount.value = await profileStore.fetchFollowerCount(
 		props.profile.user_id
 	);
@@ -84,6 +83,7 @@ function closeConfirmUnfollowModal() {
 				:key="props.profile.user_id + '-' + props.profile.updated_at"
 				:profile="props.profile"
 				@close="handleCloseEditModal"
+				@profile-updated="handleProfileUpdated"
 			/>
 		</AppModal>
 
@@ -136,27 +136,27 @@ function closeConfirmUnfollowModal() {
 							<button
 								class="profile__action profile__action--follow"
 								:class="
-									isFollowing
+									followStatus
 										? 'text-red-700'
 										: 'text-blue-700'
 								"
-								:aria-pressed="isFollowing"
+								:aria-pressed="followStatus"
 								@click="
-									isFollowing
+									followStatus
 										? requestUnfollow()
 										: handleFollow()
 								"
 							>
 								<Icon
 									:name="
-										isFollowing
+										followStatus
 											? 'bx:user-minus'
 											: 'bx:plus'
 									"
 									class="profile__action-icon"
 								/>
 								<span class="profile__action-text">
-									{{ isFollowing ? "Unfollow" : "Follow" }}
+									{{ followStatus ? "Unfollow" : "Follow" }}
 								</span>
 							</button>
 
@@ -199,7 +199,6 @@ function closeConfirmUnfollowModal() {
 				alt="Avatar"
 				class="profile__avatar"
 			/>
-			<!-- Placeholder for avatar if not set -->
 			<span v-else class="profile__avatar profile__avatar--placeholder">
 				{{ profile.username?.charAt(0).toUpperCase() }}
 			</span>
