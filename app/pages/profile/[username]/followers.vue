@@ -13,7 +13,14 @@ definePageMeta({
 });
 
 useHead({
-	title: `Followers of ${username}`,
+	title: computed(() => {
+		if (profile.value) {
+			const displayName =
+				profile.value.display_name || profile.value.username;
+			return `${displayName} (@${profile.value.username}) Followers`;
+		}
+		return `@${username} Followers`;
+	}),
 	meta: [
 		{
 			name: "description",
@@ -52,7 +59,10 @@ async function loadFollowers() {
 		>
 			<div v-if="profile">
 				<h2 class="section__title followers__title">
-					Followers of {{ profile.username }}
+					{{ profile.display_name || profile.username }}'s Followers
+					<span v-if="!followersLoading" class="follow-count">
+						({{ followers.length }})
+					</span>
 				</h2>
 
 				<LoadingError
