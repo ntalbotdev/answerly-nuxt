@@ -197,7 +197,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   ```ts
   import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+  
   serve(async (req) => {
     const origin = req.headers.get('origin') || '*';
     if (req.method === 'OPTIONS') {
@@ -220,9 +220,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         }
       });
     }
-
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-
     if (req.method === 'DELETE') {
       const { user_id, event_id, type } = await req.json();
       if (!user_id || !event_id || !type) {
@@ -233,14 +231,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
           }
         });
       }
-
-      const { error } = await supabase
-        .from('notifications')
-        .delete()
-        .eq('user_id', user_id)
-        .eq('event_id', event_id)
-        .eq('type', type);
-
+      const { error } = await supabase.from('notifications').delete().eq('user_id', user_id).eq('event_id', event_id).eq('type', type);
       if (error) {
         return new Response(`Error deleting notification: ${error.message}`, {
           status: 500,
@@ -249,7 +240,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
           }
         });
       }
-
       return new Response('Notification deleted', {
         status: 200,
         headers: {
@@ -257,10 +247,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         }
       });
     }
-
-    // Handle notification creation (POST)
-    const { user_id, type, message, payload } = await req.json();
-    if (!user_id || !type || !message) {
+    const { user_id, type, payload } = await req.json();
+    if (!user_id || !type) {
       return new Response('Missing required fields', {
         status: 400,
         headers: {
@@ -272,7 +260,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
       {
         user_id,
         type,
-        message,
         payload
       }
     ], {
