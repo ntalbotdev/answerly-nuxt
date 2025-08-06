@@ -15,8 +15,29 @@ body {
 }
 
 .main {
-	@apply mx-auto max-w-4xl md:px-4;
+	@apply mx-auto min-h-screen max-w-4xl md:px-4;
 	padding-top: 65px; // Adjust for fixed header
+}
+
+.loading-error-container {
+	@apply flex h-full w-full items-center justify-center;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+	@apply flex flex-col items-center justify-center py-12 text-center;
+}
+
+.error-icon,
+.empty-icon {
+	@apply mb-2 text-2xl;
+}
+
+.loading-spinner {
+	@apply mb-4 h-8 w-8 animate-spin rounded-full border-4;
+	border-color: $color-muted;
+	border-top-color: $color-accent;
 }
 
 .loading-text {
