@@ -48,7 +48,15 @@ watch(
 );
 
 useHead({
-	title: props.title,
+	title: computed(() => {
+		if (profileStore.publicProfile) {
+			const displayName =
+				profileStore.publicProfile.display_name ||
+				profileStore.publicProfile.username;
+			return `${displayName} (@${profileStore.publicProfile.username})`;
+		}
+		return props.title;
+	}),
 	meta: [{ name: "description", content: props.description }],
 });
 
