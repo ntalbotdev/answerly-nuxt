@@ -38,6 +38,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - `layouts/` — Nuxt layouts
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
+    - `profile/[username]/` — Profile pages using shared components
   - `stores/` — Pinia stores (profile, questions, notifications)
   - `utils/` — Utility functions and constants
 - `test/` — Unit and integration tests
@@ -514,7 +515,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
   - Follow/unfollow users with automatic notification management
-- Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following
 
