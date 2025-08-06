@@ -53,7 +53,7 @@ body {
 }
 
 .btn {
-	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow shadow-sm transition-all;
+	@apply mt-4 whitespace-nowrap px-3.5 py-1.5 font-bold shadow-sm transition-all;
 	border-radius: $radius-xs;
 
 	&:disabled {
