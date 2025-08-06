@@ -30,6 +30,28 @@ export function validateUsername(username: string): {
 		};
 	}
 
+	if (username.startsWith("_")) {
+		return {
+			valid: false,
+			error: "Username cannot start with an underscore.",
+		};
+	}
+
+	if (username.includes("__")) {
+		return {
+			valid: false,
+			error: "Username cannot contain consecutive underscores.",
+		};
+	}
+
+	const underscoreCount = (username.match(/_/g) || []).length;
+	if (underscoreCount > 2) {
+		return {
+			valid: false,
+			error: "Username can contain at most 2 underscores.",
+		};
+	}
+
 	return { valid: true };
 }
 
