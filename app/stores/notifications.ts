@@ -4,7 +4,6 @@ export interface Notification {
 	id: string;
 	user_id: string;
 	type: string;
-	message: string;
 	read: boolean;
 	createdAt: string;
 	payload?: {
@@ -22,7 +21,6 @@ export interface Notification {
 export interface SendNotificationPayload {
 	user_id: string;
 	type: string;
-	message: string;
 	payload?: {
 		username?: string;
 		follower_id: string;
