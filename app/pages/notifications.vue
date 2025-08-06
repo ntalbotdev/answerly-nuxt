@@ -18,7 +18,7 @@ function getNotificationContent(notif: Notification) {
 			return {
 				text: "followed you",
 				userLink: notif.payload?.username
-					? `/profile/${notif.payload.username}`
+					? ROUTES.PROFILE_USER(notif.payload.username)
 					: null,
 				username: notif.payload?.username || "Someone",
 				actionLink: null,
@@ -30,7 +30,7 @@ function getNotificationContent(notif: Notification) {
 				userLink:
 					notif.payload?.is_anonymous || !notif.payload?.from_username
 						? null
-						: `/profile/${notif.payload.from_username}`,
+						: ROUTES.PROFILE_USER(notif.payload.from_username),
 				username: notif.payload?.is_anonymous
 					? "Anonymous"
 					: notif.payload?.from_username || "Someone",
@@ -41,11 +41,11 @@ function getNotificationContent(notif: Notification) {
 			return {
 				text: "answered your question",
 				userLink: notif.payload?.to_username
-					? `/profile/${notif.payload.to_username}`
+					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
 				username: notif.payload?.to_username || "Someone",
-				actionLink: notif.payload?.question_id
-					? `/profile/${notif.payload.to_username}/questions`
+				actionLink: notif.payload?.to_username
+					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
 				actionText: "View Answer",
 			};
