@@ -34,12 +34,12 @@ function syncQuestionsWithUi() {
 		_showForm: existingUiState.get(q.id)?._showForm || false,
 	}));
 }
-
 watch(inboxQuestions, syncQuestionsWithUi, { immediate: true });
 
 async function fetchMyQuestions() {
 	loading.value = true;
-	await fetchIncomingQuestions();
+	const { fetchInboxQuestions } = useInboxQuestions();
+	await fetchInboxQuestions();
 	loading.value = false;
 	syncQuestionsWithUi();
 }
