@@ -14,7 +14,6 @@ import {
 	fetchFollows as fetchFollowsUtil,
 } from "~/composables/useFollow";
 
-// Define types for Supabase tables
 export interface ProfileRow {
 	user_id: string;
 	username: string;
@@ -50,14 +49,12 @@ export const useProfileStore = defineStore("profile", {
 		error: null as string | null,
 	}),
 	actions: {
-		// Save and refetch profile, then update publicProfile for reactivity
 		async updateAndRefetchProfile(profile: Profile) {
 			this.loading = true;
 			this.error = null;
 			try {
 				const supabase = useSupabaseClient();
 				const router = useRouter();
-				// Ensure user_id is present and valid
 				let userId = profile.user_id;
 				if (!userId || userId === "undefined") {
 					const user = useSupabaseUser();
@@ -69,7 +66,7 @@ export const useProfileStore = defineStore("profile", {
 						);
 					}
 				}
-				// Store old username for redirect check
+
 				const oldUsername = this.publicProfile?.username;
 				const updateObj = {
 					user_id: userId,
@@ -84,7 +81,7 @@ export const useProfileStore = defineStore("profile", {
 					.update(updateObj as any)
 					.eq("user_id", userId);
 				if (error) throw error;
-				// Refetch and force new reference for reactivity
+
 				const { data } = await supabase
 					.from("profiles")
 					.select("*")
@@ -92,7 +89,7 @@ export const useProfileStore = defineStore("profile", {
 					.single();
 				const profileData = data as Profile | null;
 				this.publicProfile = profileData ?? null;
-				// If username changed, redirect to new profile URL
+
 				if (
 					oldUsername &&
 					profileData?.username &&
@@ -166,6 +163,10 @@ export const useProfileStore = defineStore("profile", {
 			this.error = null;
 			try {
 				const supabase: SupabaseClient = useSupabaseClient();
+				const router = useRouter();
+
+				const oldUsername = this.publicProfile?.username;
+
 				const updateObj = {
 					user_id: this.myProfile.user_id,
 					username: this.myProfile.username?.toLowerCase() || "",
@@ -180,6 +181,23 @@ export const useProfileStore = defineStore("profile", {
 					.update(updateObj)
 					.eq("user_id", this.myProfile.user_id);
 				if (error) throw error;
+
+				if (
+					this.publicProfile &&
+					this.publicProfile.user_id === this.myProfile.user_id
+				) {
+					this.publicProfile = { ...this.myProfile };
+
+					if (
+						oldUsername &&
+						this.myProfile.username &&
+						oldUsername !== this.myProfile.username
+					) {
+						await router.replace({
+							path: ROUTES.PROFILE_USER(this.myProfile.username),
+						});
+					}
+				}
 			} catch (err) {
 				this.error =
 					(err as Error).message || "Failed to update profile";
@@ -187,7 +205,6 @@ export const useProfileStore = defineStore("profile", {
 				this.loading = false;
 			}
 		},
-
 		async fetchProfileByUsername(username: string) {
 			this.loading = true;
 			this.error = null;
