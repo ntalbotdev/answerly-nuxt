@@ -9,6 +9,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Public profile pages
 - Profile editing and assets upload (avatar/banner via Supabase Storage)
 - Ask questions to any user (optionally anonymously)
+  - Anonymous questions protect user privacy and show as "Anonymous" in notifications
 - Users can answer questions they receive
 - Questions are only published after being answered
 - Follow/unfollow users (social feature)
@@ -21,6 +22,10 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Notifications are automatically removed when actions are completed (questions answered/deleted, users unfollowed)
   - Real-time updates using Supabase subscriptions
   - Mark notifications as read (delete from system)
+  - Clear all notifications at once
+- Real-time inbox system
+  - Questions appear instantly when received
+  - Real-time updates when questions are answered or deleted
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -497,12 +502,14 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
+  - Real-time updates when new questions arrive
   - Answering or deleting questions automatically removes related notifications
 - Visit `/notifications` to see real-time notifications for user activity and events
   - Follow notifications: See who followed you
-  - Question notifications: See new questions you received
+  - Question notifications: See new questions you received (shows "Anonymous" for anonymous questions)
   - Answer notifications: See when your questions are answered
-  - Click "Mark as read" to permanently delete notifications
+  - Click "Mark as read" to permanently delete individual notifications
+  - Use "Clear All" to remove all notifications at once
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
