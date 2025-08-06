@@ -14,17 +14,39 @@ export async function fetchNotifications(
 		return [];
 	}
 
-	return (data || []).map((n: Record<string, unknown>) => ({
+	const mappedNotifications = (data || []).map((n: Record<string, unknown>) => ({
 		id: n.id as string,
 		user_id: n.user_id as string,
 		type: n.type as string,
 		read: n.is_read as boolean,
 		createdAt: n.created_at as string,
 		payload: n.payload as
-			| { username?: string; follower_id: string }
+			| {
+				username?: string;
+				follower_id?: string;
+				following_id?: string;
+				question_id?: string;
+				from_user_id?: string;
+				to_user_id?: string;
+				from_username?: string;
+				to_username?: string;
+			}
 			| undefined,
 		eventId: n.event_id as string,
 	}));
+
+	// Debug: Log question notifications specifically
+	mappedNotifications.forEach((notif) => {
+		if (notif.type === "question") {
+			console.log("Question notification fetched:", {
+				type: notif.type,
+				payload: notif.payload,
+				from_username: notif.payload?.from_username
+			});
+		}
+	});
+
+	return mappedNotifications;
 }
 
 export function subscribeToNotifications(
