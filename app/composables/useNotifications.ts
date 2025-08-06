@@ -80,7 +80,11 @@ export function subscribeToNotifications(
 				}
 			}
 		)
-		.subscribe();
+		.subscribe((status) => {
+			if (import.meta.dev) {
+				console.log(`Notifications subscription status: ${status}`);
+			}
+		});
 
 	return channel;
 }
