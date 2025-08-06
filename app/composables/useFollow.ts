@@ -31,10 +31,10 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 		await sendNotification({
 			user_id: targetUserId,
 			type: "follow",
-			message: `${username} followed you.`,
 			payload: {
 				follower_id: user.value.id,
 				following_id: targetUserId,
+				username: username,
 			},
 		});
 		return true;
