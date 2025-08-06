@@ -506,7 +506,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Answering or deleting questions automatically removes related notifications
 - Visit `/notifications` to see real-time notifications for user activity and events
   - Follow notifications: See who followed you
-  - Question notifications: See new questions you received (shows "Anonymous" for anonymous questions)
+  - Question notifications: See new questions you received
   - Answer notifications: See when your questions are answered
   - Click "Mark as read" to permanently delete individual notifications
   - Use "Clear All" to remove all notifications at once
