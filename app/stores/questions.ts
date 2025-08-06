@@ -58,10 +58,40 @@ export const useQuestionsStore = defineStore("questions", {
 				]);
 				if (error) throw error;
 
+				let from_username =
+					user.value?.user_metadata?.username || "Someone";
+				if (user.value) {
+					try {
+						const { data: profile } = await supabase
+							.from("profiles")
+							.select("username")
+							.eq("user_id", user.value.id)
+							.single<{ username: string }>();
+						if (profile && profile.username) {
+							from_username = profile.username;
+						}
+					} catch {
+						// Ignore profile fetch errors, fallback to user_metadata
+					}
+				}
+
 				const config = useRuntimeConfig();
 				const supabaseUrl = config.public.supabaseUrl;
 				const supabaseAnonKey = config.public.supabaseKey;
 				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+				
+				// Debug log to check what we're sending
+				console.log("Sending notification with from_username:", from_username);
+				console.log("Full payload:", {
+					user_id: payload.to_user_id,
+					type: "question",
+					payload: {
+						question_id: questionId,
+						from_user_id: payload.from_user_id,
+						from_username: from_username,
+					},
+				});
+				
 				await fetch(edgeFunctionUrl, {
 					method: "POST",
 					headers: {
@@ -74,9 +104,7 @@ export const useQuestionsStore = defineStore("questions", {
 						payload: {
 							question_id: questionId,
 							from_user_id: payload.from_user_id,
-							from_username:
-								user.value?.user_metadata?.username ||
-								"Someone",
+							from_username: from_username,
 						},
 					}),
 				});
@@ -114,10 +142,26 @@ export const useQuestionsStore = defineStore("questions", {
 					.eq("id", questionId);
 				if (error) throw error;
 
-				// Remove the question notification since it's been answered
 				const notifStore = useNotificationsStore();
 				await notifStore.markNotificationAsRead(questionId);
-				// Send notification to asker
+
+				let to_username =
+					user.value?.user_metadata?.username || "Someone";
+				if (user.value) {
+					try {
+						const { data: profile } = await supabase
+							.from("profiles")
+							.select("username")
+							.eq("user_id", user.value.id)
+							.single<{ username: string }>();
+						if (profile && profile.username) {
+							to_username = profile.username;
+						}
+					} catch {
+						// Ignore profile fetch errors, fallback to user_metadata
+					}
+				}
+
 				const config = useRuntimeConfig();
 				const supabaseUrl = config.public.supabaseUrl;
 				const supabaseAnonKey = config.public.supabaseKey;
@@ -134,9 +178,7 @@ export const useQuestionsStore = defineStore("questions", {
 						payload: {
 							question_id: questionId,
 							to_user_id: questionData.to_user_id,
-							to_username:
-								user.value?.user_metadata?.username ||
-								"Someone",
+							to_username: to_username,
 						},
 					}),
 				});
@@ -162,7 +204,6 @@ export const useQuestionsStore = defineStore("questions", {
 					.eq("id", questionId);
 				if (error) throw error;
 
-				// Remove the related notification
 				const notifStore = useNotificationsStore();
 				await notifStore.markNotificationAsRead(questionId);
 			} catch (err: unknown) {
