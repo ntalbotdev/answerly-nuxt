@@ -8,7 +8,7 @@ export interface Notification {
 	createdAt: string;
 	payload?: {
 		username?: string;
-		follower_id: string;
+		follower_id?: string;
 		following_id?: string;
 		question_id?: string;
 		from_user_id?: string;
@@ -23,7 +23,7 @@ export interface SendNotificationPayload {
 	type: string;
 	payload?: {
 		username?: string;
-		follower_id: string;
+		follower_id?: string;
 		following_id?: string;
 		question_id?: string;
 		from_user_id?: string;
@@ -90,8 +90,24 @@ export const useNotificationsStore = defineStore("notifications", {
 				);
 			}
 		},
-		clearNotifications() {
+		async clearNotifications() {
+			const user = useSupabaseUser();
+			if (!user.value) return;
+
 			this.notifications = [];
+
+			const supabase = useSupabaseClient();
+			const { error } = await supabase
+				.from("notifications")
+				.delete()
+				.eq("user_id", user.value.id);
+
+			if (error) {
+				console.error(
+					"Error clearing notifications from database:",
+					error
+				);
+			}
 		},
 	},
 });
