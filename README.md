@@ -14,6 +14,13 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Follow/unfollow users (social feature)
 - View followers and following lists for any user
 - See mutual follow status on profiles
+- Real-time notification system with automatic cleanup
+  - Get notified when someone follows you
+  - Get notified when someone asks you a question
+  - Get notified when someone answers your question
+  - Notifications are automatically removed when actions are completed (questions answered/deleted, users unfollowed)
+  - Real-time updates using Supabase subscriptions
+  - Mark notifications as read (delete from system)
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -26,7 +33,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - `layouts/` — Nuxt layouts
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
-  - `stores/` — Pinia stores (profile, questions)
+  - `stores/` — Pinia stores (profile, questions, notifications)
   - `utils/` — Utility functions and constants
 - `test/` — Unit and integration tests
   - `e2e/` — End-to-end tests using Playwright
@@ -75,18 +82,22 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | created_at   | timestamptz | Default: now()                   |
 | updated_at   | timestamptz | Default: now()                   |
 
-```sql
-create table profiles (
-  user_id uuid primary key default auth.uid() on delete cascade,
-  username text unique not null,
-  display_name text,
-  avatar_url text,
-  banner_url text,
-  bio text,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-```
+<details>
+  <summary>📄 <strong>Profiles Table SQL Query</strong></summary>
+
+  ```sql
+  create table profiles (
+    user_id uuid primary key default auth.uid() on delete cascade,
+    username text unique not null,
+    display_name text,
+    avatar_url text,
+    banner_url text,
+    bio text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+  );
+  ```
+</details>
 
 #### `follows` Table
 
@@ -96,14 +107,18 @@ create table profiles (
 | following_id | uuid        | Primary key, references profiles(user_id) |
 | created_at   | timestamptz | Default: now()                            |
 
-```sql
-create table follows (
-  follower_id uuid references profiles(user_id) on delete cascade,
-  following_id uuid references profiles(user_id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (follower_id, following_id)
-);
-```
+<details>
+  <summary>📄 <strong>Follows Table SQL Query</strong></summary>
+
+  ```sql
+  create table follows (
+    follower_id uuid references profiles(user_id) on delete cascade,
+    following_id uuid references profiles(user_id) on delete cascade,
+    created_at timestamptz not null default now(),
+    primary key (follower_id, following_id)
+  );
+  ```
+</details>
 
 #### `questions` Table
 
@@ -119,19 +134,158 @@ create table follows (
 | created_at   | timestamptz | Default: now()      |
 | answered_at  | timestamptz | Nullable            |
 
-```sql
-create table questions (
-  id uuid primary key default gen_random_uuid(),
-  from_user_id uuid not null references profiles(user_id) on delete cascade,
-  to_user_id uuid not null references profiles(user_id) on delete cascade,
-  question text not null,
-  is_anonymous boolean not null default false,
-  answer text,
-  published boolean not null default false,
-  created_at timestamptz not null default now(),
-  answered_at timestamptz
-);
-```
+<details>
+  <summary>📄 <strong>Questions Table SQL Query</strong></summary>
+
+  ```sql
+  create table questions (
+    id uuid primary key default gen_random_uuid(),
+    from_user_id uuid not null references profiles(user_id) on delete cascade,
+    to_user_id uuid not null references profiles(user_id) on delete cascade,
+    question text not null,
+    is_anonymous boolean not null default false,
+    answer text,
+    published boolean not null default false,
+    created_at timestamptz not null default now(),
+    answered_at timestamptz
+  );
+  ```
+</details>
+
+#### `notifications` Table
+
+| Column       | Type        | Description             |
+| ------------ | ----------- | ----------------------- |
+| id           | uuid        | Primary key             |
+| user_id      | uuid        | User ID, required       |
+| type         | text        | Notification type       |
+| payload      | jsonb       | Nullable, Flexible data |
+| message      | text        | Notification message    |
+| is_read      | boolean     | Default: false          |
+| created_at   | timestamptz | Default: now()          |
+| event_id     | text        | Generated from payload  |
+
+<details>
+  <summary>📄 <strong>Notifications Table SQL Query</strong></summary>
+
+  ```sql
+  create table notifications (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references auth.users on delete cascade,
+    type text not null check (type in ('follow', 'question', 'answer', 'system')),
+    payload jsonb,
+    message text not null,
+    is_read boolean not null default false,
+    created_at timestamptz not null default now(),
+    event_id text generated always as (
+      case
+        when type = 'follow' then COALESCE(payload::jsonb->>'follower_id', '') || ':' || COALESCE(payload::jsonb->>'following_id', '')
+        when type = 'question' then COALESCE(payload::jsonb->>'question_id', '')
+        else COALESCE(id::text, '')
+      end
+    ) stored,
+    unique (user_id, type, event_id)
+  );
+  ```
+</details>
+
+### Edge Functions
+
+<details>
+  <summary>🔧 <strong>send-notification Edge Function</strong></summary>
+
+  ```ts
+  import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  
+  serve(async (req) => {
+    const origin = req.headers.get('origin') || '*';
+    if (req.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': origin,
+          'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      return new Response('Missing environment variables', {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    if (req.method === 'DELETE') {
+      const { user_id, event_id, type } = await req.json();
+      if (!user_id || !event_id || !type) {
+        return new Response('Missing required fields for deletion', {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': origin
+          }
+        });
+      }
+      const { error } = await supabase.from('notifications').delete().eq('user_id', user_id).eq('event_id', event_id).eq('type', type);
+      if (error) {
+        return new Response(`Error deleting notification: ${error.message}`, {
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': origin
+          }
+        });
+      }
+      return new Response('Notification deleted', {
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    const { user_id, type, payload } = await req.json();
+    if (!user_id || !type) {
+      return new Response('Missing required fields', {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    const { error } = await supabase.from('notifications').upsert([
+      {
+        user_id,
+        type,
+        payload
+      }
+    ], {
+      onConflict: [
+        'user_id',
+        'type',
+        'event_id'
+      ]
+    });
+    if (error) {
+      return new Response(`Error: ${error.message}`, {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': origin
+        }
+      });
+    }
+    return new Response('Notification inserted', {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': origin
+      }
+    });
+  });
+  ```
+</details>
 
 ## Storage & Profile Assets
 
@@ -243,16 +397,14 @@ create table questions (
     ON follows
     FOR INSERT
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND follower_id = auth.uid()
-      );
+      follower_id = auth.uid()
+    );
 
   CREATE POLICY "Users can unfollow others"
     ON follows
     FOR DELETE
     USING (
-      auth.uid() IS NOT NULL
-      AND follower_id = auth.uid()
+      follower_id = auth.uid()
     );
   ```
 </details>
@@ -265,9 +417,7 @@ create table questions (
     ON questions
     FOR SELECT
     TO public
-    USING (
-      published = true
-    );
+    USING (published = true);
 
   CREATE POLICY "Users can view their own questions"
     ON questions
@@ -275,8 +425,7 @@ create table questions (
     USING (
       auth.uid() IS NOT NULL
       AND (
-        to_user_id = auth.uid()
-        OR from_user_id = auth.uid()
+        from_user_id = auth.uid()
       )
     );
 
@@ -284,20 +433,17 @@ create table questions (
     ON questions
     FOR INSERT
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND from_user_id = auth.uid()
+      from_user_id = auth.uid()
     );
 
   CREATE POLICY "Users can answer questions sent to them"
     ON questions
     FOR UPDATE
     USING (
-      auth.uid() IS NOT NULL
-      AND to_user_id = auth.uid()
+      to_user_id = auth.uid()
     )
     WITH CHECK (
-      auth.uid() IS NOT NULL
-      AND to_user_id = auth.uid()
+      to_user_id = auth.uid()
     );
 
   CREATE POLICY "Users can delete questions they asked or received"
@@ -306,10 +452,45 @@ create table questions (
     USING (
       auth.uid() IS NOT NULL
       AND (
-        from_user_id = auth.uid()
-        OR to_user_id = auth.uid()
+        to_user_id = auth.uid()
       )
     );
+  ```
+</details>
+
+<details>
+  <summary>🔔 <strong>Notifications RLS Policies</strong></summary>
+
+  ```sql
+  CREATE POLICY "Users can view their notifications"
+    ON notifications
+    FOR SELECT
+    USING (
+      user_id = auth.uid()
+    );
+
+  CREATE POLICY "Users can update their notifications"
+    ON notifications
+    FOR UPDATE
+    USING (
+      user_id = auth.uid()
+    )
+    WITH CHECK (
+      user_id = auth.uid()
+    );
+
+  CREATE POLICY "Users can delete their notifications"
+    ON notifications
+    FOR DELETE
+    USING (
+      user_id = auth.uid()
+    );
+
+  CREATE POLICY "Allow system inserts for notifications"
+    ON notifications
+    FOR INSERT
+    TO service_role
+    WITH CHECK (true);
   ```
 </details>
 
@@ -318,9 +499,16 @@ create table questions (
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
+  - Answering or deleting questions automatically removes related notifications
+- Visit `/notifications` to see real-time notifications for user activity and events
+  - Follow notifications: See who followed you
+  - Question notifications: See new questions you received
+  - Answer notifications: See when your questions are answered
+  - Click "Mark as read" to permanently delete notifications
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
+  - Follow/unfollow users with automatic notification management
 - Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following

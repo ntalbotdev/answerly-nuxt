@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 const profileStore = useProfileStore();
+const notificationsStore = useNotificationsStore();
 const questionsStore = useQuestionsStore();
 const { hasNewInboxItems, newInboxCount } = storeToRefs(questionsStore);
 const showMenu = ref(false);
@@ -101,6 +102,12 @@ onUnmounted(() => {
 								class="header__nav-link-icon"
 							/>
 							Notifications
+							<span
+								v-if="notificationsStore.unreadCount > 0"
+								class="notification-badge"
+							>
+								{{ notificationsStore.unreadCount }}
+							</span>
 						</NuxtLink>
 
 						<NuxtLink

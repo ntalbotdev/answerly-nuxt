@@ -14,6 +14,29 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 			.from("follows")
 			.insert([followObj] as any);
 		if (error) throw error;
+
+		let username = user.value.user_metadata?.username || "Someone";
+		try {
+			const { data: profile } = await supabase
+				.from("profiles")
+				.select("username")
+				.eq("user_id", user.value.id)
+				.single<{ username: string }>();
+			if (profile && profile.username) {
+				username = profile.username;
+			}
+		} catch {
+			// Ignore profile fetch errors, fallback to user_metadata
+		}
+		await sendNotification({
+			user_id: targetUserId,
+			type: "follow",
+			payload: {
+				follower_id: user.value.id,
+				following_id: targetUserId,
+				username: username,
+			},
+		});
 		return true;
 	} catch (err) {
 		console.error("Failed to follow user:", err);
@@ -35,6 +58,39 @@ export async function unfollowUser(targetUserId: string): Promise<boolean> {
 			.eq("following_id", targetUserId);
 
 		if (error) throw error;
+
+		try {
+			const followEventId = `${user.value.id}:${targetUserId}`;
+
+			const config = useRuntimeConfig();
+			const supabaseUrl = config.public.supabaseUrl;
+			const supabaseAnonKey = config.public.supabaseKey;
+			const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+
+			const response = await fetch(edgeFunctionUrl, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${supabaseAnonKey}`,
+				},
+				body: JSON.stringify({
+					user_id: targetUserId,
+					event_id: followEventId,
+					type: "follow",
+				}),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error(
+					"Failed to delete follow notification:",
+					errorText
+				);
+			}
+		} catch (notifError) {
+			console.error("Failed to handle notification cleanup:", notifError);
+		}
+
 		return true;
 	} catch (err) {
 		console.error("Failed to unfollow user:", err);

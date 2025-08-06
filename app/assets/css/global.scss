@@ -4,6 +4,7 @@
 @use "./profile";
 @use "./inbox";
 @use "./questions";
+@use "./notifications";
 
 body {
 	background: $color-bg;
@@ -26,12 +27,20 @@ body {
 	@apply text-red-500;
 }
 
+.muted-text {
+	color: $color-muted;
+}
+
 .btn {
 	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow shadow-sm transition-all;
 	border-radius: $radius-xs;
 
 	&:disabled {
 		@apply cursor-not-allowed opacity-50;
+	}
+
+	&--small {
+		@apply px-3 py-1 text-sm;
 	}
 
 	&--primary {
@@ -59,17 +68,11 @@ body {
 	}
 }
 
-.notification-badge {
-	@apply ml-4 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold;
-	// transform: translate(50%, -50%);
-	z-index: 10;
+.section {
+	@apply mx-auto flex w-full flex-col gap-4 p-4;
+}
+
+.section__title {
+	@apply mb-4 text-2xl font-semibold;
 	color: $color-text;
-
-	&:after {
-		content: attr(data-count);
-	}
-
-	@media (min-width: 768px) {
-		@apply ml-0;
-	}
 }

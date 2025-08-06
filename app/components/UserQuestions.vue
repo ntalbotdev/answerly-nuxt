@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { useQuestionsStore } from "~/stores/questions";
 import type { Profile } from "~/stores/profile";
+import type { Question } from "~/stores/questions";
 const props = defineProps<{ userId: string; profile: Profile }>();
 const { profile } = props;
-const questions = ref<any[]>([]);
+const questions = ref<Question[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const questionsStore = useQuestionsStore();
 
 async function fetchAnsweredQuestions() {
 	loading.value = true;
 	error.value = null;
 	try {
-		const data = await questionsStore.fetchAnsweredQuestionsForUser(
-			props.userId
-		);
+		const data = await fetchAnsweredQuestionsForUser(props.userId);
 		questions.value = data || [];
-	} catch (e: any) {
-		error.value = e.message || "Failed to load questions.";
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value = err.message || "Failed to load questions.";
+		} else {
+			error.value = "Failed to load questions.";
+		}
 	} finally {
 		loading.value = false;
 	}

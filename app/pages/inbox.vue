@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 const questionsStore = useQuestionsStore();
-const questions = ref<
-	(Question & { _answer: string; _saving: boolean; _showForm: boolean })[]
->([]);
+const { inboxQuestions } = storeToRefs(questionsStore);
 const loading = ref(true);
 const showRemoveModal = ref(false);
 const questionToRemove = ref<
@@ -10,20 +9,39 @@ const questionToRemove = ref<
 	| null
 >(null);
 
-definePageMeta({
-	middleware: "auth",
-});
+const questionsWithUi = ref<
+	Array<Question & { _answer: string; _saving: boolean; _showForm: boolean }>
+>([]);
+
+function syncQuestionsWithUi() {
+	const existingUiState = new Map<
+		string,
+		{ _answer: string; _saving: boolean; _showForm: boolean }
+	>();
+
+	questionsWithUi.value.forEach((q) => {
+		existingUiState.set(q.id, {
+			_answer: q._answer,
+			_saving: q._saving,
+			_showForm: q._showForm,
+		});
+	});
+
+	questionsWithUi.value = inboxQuestions.value.map((q) => ({
+		...q,
+		_answer: existingUiState.get(q.id)?._answer || "",
+		_saving: existingUiState.get(q.id)?._saving || false,
+		_showForm: existingUiState.get(q.id)?._showForm || false,
+	}));
+}
+
+watch(inboxQuestions, syncQuestionsWithUi, { immediate: true });
 
 async function fetchMyQuestions() {
 	loading.value = true;
-	const res = await questionsStore.fetchIncomingQuestions();
-	questions.value = res.map((q) => ({
-		...q,
-		_answer: "",
-		_saving: false,
-		_showForm: false,
-	}));
+	await fetchIncomingQuestions();
 	loading.value = false;
+	syncQuestionsWithUi();
 }
 onMounted(fetchMyQuestions);
 
@@ -35,10 +53,25 @@ async function answerQuestion(
 	q.answer = q._answer;
 	q._saving = false;
 	q._showForm = false;
-	// Remove from inboxQuestions in store so notification count updates
-	questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-		(qq) => qq.id !== q.id
-	);
+
+	questionsWithUi.value = questionsWithUi.value
+		.filter(
+			(qq, idx, arr) =>
+				qq.id !== q.id &&
+				arr.findIndex((item) => item.id === qq.id) === idx
+		)
+		.filter((qq) => qq.answer === null);
+
+	questionsStore.inboxQuestions = questionsStore.inboxQuestions
+		.filter(
+			(qq, idx, arr) =>
+				qq.id !== q.id &&
+				arr.findIndex((item) => item.id === qq.id) === idx
+		)
+		.filter((qq) => qq.answer === null);
+
+	const notificationsStore = useNotificationsStore();
+	await notificationsStore.fetchNotifications();
 }
 
 function openRemoveModal(
@@ -56,15 +89,32 @@ function closeRemoveModal() {
 async function confirmRemoveQuestion() {
 	if (questionToRemove.value) {
 		await questionsStore.deleteQuestion(questionToRemove.value.id);
-		questions.value = questions.value.filter(
-			(q) => q.id !== questionToRemove.value!.id
-		);
-		questionsStore.inboxQuestions = questionsStore.inboxQuestions.filter(
-			(q) => q.id !== questionToRemove.value!.id
-		);
+		questionsWithUi.value = questionsWithUi.value
+			.filter(
+				(q, idx, arr) =>
+					q.id !== questionToRemove.value!.id &&
+					arr.findIndex((item) => item.id === q.id) === idx
+			)
+			.filter((q) => q.answer === null);
+
+		questionsStore.inboxQuestions = questionsStore.inboxQuestions
+			.filter(
+				(q, idx, arr) =>
+					q.id !== questionToRemove.value!.id &&
+					arr.findIndex((item) => item.id === q.id) === idx
+			)
+			.filter((q) => q.answer === null);
+
+		const notificationsStore = useNotificationsStore();
+		await notificationsStore.fetchNotifications();
+
 		closeRemoveModal();
 	}
 }
+
+definePageMeta({
+	middleware: "auth",
+});
 
 useHead({
 	title: "Inbox",
@@ -75,8 +125,8 @@ useHead({
 </script>
 
 <template>
-	<div class="inbox">
-		<h2 class="inbox__title">Inbox</h2>
+	<div class="section inbox">
+		<h2 class="section__title inbox__title">Inbox</h2>
 		<AppModal v-model:open="showRemoveModal" title="Remove">
 			<template #default>
 				<div class="inbox__modal-text">
@@ -90,7 +140,7 @@ useHead({
 				<div class="inbox__modal-question">
 					{{ questionToRemove?.question }}
 				</div>
-				<div class="mt-4 flex justify-end gap-2">
+				<div class="inbox__modal-buttons">
 					<button
 						class="btn btn--secondary"
 						@click="closeRemoveModal"
@@ -110,11 +160,18 @@ useHead({
 		<div v-if="loading" class="loading-text">Loading...</div>
 
 		<div v-else class="inbox__questions">
-			<div v-if="questions.length === 0" class="inbox__no-questions">
+			<div
+				v-if="questionsWithUi.length === 0"
+				class="inbox__no-questions muted-text"
+			>
 				No questions to answer.
 			</div>
 
-			<div v-for="q in questions" :key="q.id" class="inbox__question">
+			<div
+				v-for="q in questionsWithUi"
+				:key="q.id"
+				class="inbox__question"
+			>
 				<div class="inbox__question-header">
 					<div class="inbox__question-text">{{ q.question }}</div>
 
@@ -130,11 +187,7 @@ useHead({
 
 							<template v-else-if="q.asker_username">
 								<NuxtLink
-									:to="
-										ROUTES.PROFILE_USER(
-											q.asker_username ?? ''
-										)
-									"
+									:to="ROUTES.PROFILE_USER(q.asker_username)"
 									class="inbox__question-asker inbox__question-asker--username"
 								>
 									{{ q.asker_username }}

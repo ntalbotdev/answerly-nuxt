@@ -62,7 +62,7 @@ function triggerBannerUpload() {
 
 async function handleAvatarCompressed(file: File) {
 	if (!user.value?.id) return;
-	const url = await uploadImage(file, "avatar", user.value.id);
+	const url = await uploadImage(file, "avatar");
 	if (url) {
 		form.avatar_url = url;
 	}
@@ -70,7 +70,7 @@ async function handleAvatarCompressed(file: File) {
 
 async function handleBannerCompressed(file: File) {
 	if (!user.value?.id) return;
-	const url = await uploadImage(file, "banner", user.value.id);
+	const url = await uploadImage(file, "banner");
 	if (url) {
 		form.banner_url = url;
 	}

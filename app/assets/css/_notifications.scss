@@ -1,0 +1,74 @@
+@use "./variables" as *;
+
+.notification-badge {
+	@apply ml-4 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-normal sm:ml-2;
+	color: $color-text;
+
+	&:after {
+		content: attr(data-count);
+	}
+
+	&--absolute {
+		@apply absolute right-0 top-0;
+	}
+}
+
+.notifications__list {
+	@apply flex flex-col gap-2;
+}
+
+.notifications__item {
+	@apply flex flex-col gap-4 p-4 transition-colors sm:flex-row sm:items-center;
+	color: $color-muted;
+	border-radius: $radius-sm;
+
+	&:hover {
+		background: $color-surface;
+	}
+}
+
+.notification-dot {
+	@apply ml-auto h-2 w-2 min-w-2 rounded-full;
+	background: $color-accent;
+}
+
+.notification__content {
+	@apply flex w-full flex-col gap-1;
+}
+
+.notification__date {
+	@apply text-xs;
+	color: $color-muted-dark;
+}
+
+.notification__text {
+	color: $color-text;
+
+	a {
+		color: $color-accent;
+
+		&:hover {
+			@apply underline;
+		}
+	}
+}
+
+.notification__buttons {
+	@apply ml-auto flex flex-row gap-2 sm:flex-col;
+
+	.btn {
+		@apply mt-0;
+	}
+}
+
+.notifications__header {
+	@apply mb-4 flex items-center justify-between;
+
+	.notifications__title {
+		@apply mb-0;
+	}
+
+	.btn {
+		@apply mt-0;
+	}
+}

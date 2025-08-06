@@ -1,25 +1,11 @@
 @use "./variables" as *;
 
-.inbox {
-	@apply mx-auto flex w-full flex-col gap-4 p-4;
-	background: $color-bg;
-}
-
-.inbox__title {
-	@apply mb-4 text-2xl font-semibold;
-	color: $color-text;
-}
-
 .inbox__questions {
 	@apply flex flex-col gap-4;
 
 	@media (min-width: 768px) {
 		@apply flex-row flex-wrap gap-6;
 	}
-}
-
-.inbox__no-questions {
-	color: $color-muted;
 }
 
 .inbox__question {
@@ -116,6 +102,10 @@
 .inbox__modal-question {
 	@apply mb-2 max-w-md break-words font-semibold;
 	color: $color-bg;
+}
+
+.inbox__modal-buttons {
+	@apply mt-4 flex justify-end gap-2;
 }
 
 .inbox__modal-text {

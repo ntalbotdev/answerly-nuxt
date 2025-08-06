@@ -11,6 +11,7 @@ export interface Question {
 	created_at: string;
 	answered_at?: string | null;
 	asker_username?: string;
+	profiles?: Profile;
 }
 
 export interface QuestionInput {
@@ -28,116 +29,165 @@ export const useQuestionsStore = defineStore("questions", {
 	}),
 	getters: {
 		hasNewInboxItems(state) {
-			// True if there are any unanswered questions in inboxQuestions
+			if (!state.inboxQuestions || state.inboxQuestions.length === 0)
+				return false;
 			return state.inboxQuestions.some((q) => !q.answer);
 		},
 		newInboxCount(state) {
+			if (!state.inboxQuestions || state.inboxQuestions.length === 0)
+				return 0;
 			return state.inboxQuestions.filter((q) => !q.answer).length;
 		},
 	},
 	actions: {
-		// Fetch questions the current user has asked
-		async fetchAskedQuestions(): Promise<
-			(Question & { to_username?: string })[]
-		> {
-			this.loading = true;
-			this.error = null;
-			try {
-				const supabase = useSupabaseClient();
-				const user = useSupabaseUser();
-				if (!user.value) throw new Error("Not logged in");
-				const { data, error } = await supabase
-					.from("questions")
-					.select(
-						"id, to_user_id, question, answer, published, created_at, profiles:to_user_id(username)"
-					)
-					.eq("from_user_id", user.value.id)
-					.order("created_at", { ascending: false });
-				if (error) throw error;
-				return (data || []).map((q: any) => ({
-					...q,
-					to_username: q.profiles?.username || undefined,
-				}));
-			} catch (err: any) {
-				this.error = err.message || "Failed to fetch asked questions";
-				return [];
-			} finally {
-				this.loading = false;
-			}
-		},
 		async createQuestion(payload: QuestionInput) {
 			this.loading = true;
 			this.error = null;
 			try {
 				const supabase = useSupabaseClient();
+				const user = useSupabaseUser();
+				const questionId = crypto.randomUUID();
 				const { error } = await supabase.from("questions").insert([
 					{
-						id: crypto.randomUUID(),
+						id: questionId,
 						...payload,
 						answer: null,
 						published: false,
+						created_at: new Date().toISOString(),
 					},
 				]);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to create question";
+
+				let from_username =
+					user.value?.user_metadata?.username || "Someone";
+				if (user.value) {
+					try {
+						const { data: profile } = await supabase
+							.from("profiles")
+							.select("username")
+							.eq("user_id", user.value.id)
+							.single<{ username: string }>();
+						if (profile && profile.username) {
+							from_username = profile.username;
+						}
+					} catch {
+						// Ignore profile fetch errors, fallback to user_metadata
+					}
+				}
+
+				const config = useRuntimeConfig();
+				const supabaseUrl = config.public.supabaseUrl;
+				const supabaseAnonKey = config.public.supabaseKey;
+				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+				
+				// Debug log to check what we're sending
+				console.log("Sending notification with from_username:", from_username);
+				console.log("Full payload:", {
+					user_id: payload.to_user_id,
+					type: "question",
+					payload: {
+						question_id: questionId,
+						from_user_id: payload.from_user_id,
+						from_username: from_username,
+					},
+				});
+				
+				await fetch(edgeFunctionUrl, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${supabaseAnonKey}`,
+					},
+					body: JSON.stringify({
+						user_id: payload.to_user_id,
+						type: "question",
+						payload: {
+							question_id: questionId,
+							from_user_id: payload.from_user_id,
+							from_username: from_username,
+						},
+					}),
+				});
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to create question";
+				} else {
+					this.error = "Failed to create question";
+				}
 			} finally {
 				this.loading = false;
 			}
 		},
 
-		// Fetch incoming questions for the current user (not yet answered/published)
-		async fetchIncomingQuestions(): Promise<Question[]> {
-			this.loading = true;
-			this.error = null;
-			try {
-				const supabase = useSupabaseClient();
-				const user = useSupabaseUser();
-				if (!user.value) throw new Error("Not logged in");
-				const { data, error } = await supabase
-					.from("questions")
-					.select(
-						"id, from_user_id, question, is_anonymous, answer, published, created_at, profiles:from_user_id(username)"
-					)
-					.eq("to_user_id", user.value.id)
-					.eq("published", false)
-					.order("created_at", { ascending: false });
-				if (error) throw error;
-				// Map username for display
-				const questions = (data || []).map((q: any) => ({
-					...q,
-					asker_username: q.is_anonymous
-						? undefined
-						: q.profiles?.username || "Unknown",
-				}));
-				this.inboxQuestions = questions;
-				return questions;
-			} catch (err: any) {
-				this.error = err.message || "Failed to fetch questions";
-				this.inboxQuestions = [];
-				return [];
-			} finally {
-				this.loading = false;
-			}
-		},
-
-		// Answer a question and publish it
 		async answerQuestion(questionId: string, answer: string) {
 			this.loading = true;
 			this.error = null;
 			try {
 				const supabase = useSupabaseClient();
+				const user = useSupabaseUser();
+				const { data: questionData, error: fetchError } = await supabase
+					.from("questions")
+					.select("from_user_id, to_user_id")
+					.eq("id", questionId)
+					.single<{ from_user_id: string; to_user_id: string }>();
+				if (fetchError || !questionData)
+					throw fetchError || new Error("Question not found");
 				const { error } = await supabase
 					.from("questions")
 					.update({
 						answer,
 						published: true,
 						answered_at: new Date().toISOString(),
-					})
+					} as any)
 					.eq("id", questionId);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to answer question";
+
+				const notifStore = useNotificationsStore();
+				await notifStore.markNotificationAsRead(questionId);
+
+				let to_username =
+					user.value?.user_metadata?.username || "Someone";
+				if (user.value) {
+					try {
+						const { data: profile } = await supabase
+							.from("profiles")
+							.select("username")
+							.eq("user_id", user.value.id)
+							.single<{ username: string }>();
+						if (profile && profile.username) {
+							to_username = profile.username;
+						}
+					} catch {
+						// Ignore profile fetch errors, fallback to user_metadata
+					}
+				}
+
+				const config = useRuntimeConfig();
+				const supabaseUrl = config.public.supabaseUrl;
+				const supabaseAnonKey = config.public.supabaseKey;
+				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+				await fetch(edgeFunctionUrl, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${supabaseAnonKey}`,
+					},
+					body: JSON.stringify({
+						user_id: questionData.from_user_id,
+						type: "answer",
+						payload: {
+							question_id: questionId,
+							to_user_id: questionData.to_user_id,
+							to_username: to_username,
+						},
+					}),
+				});
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to answer question";
+				} else {
+					this.error = "Failed to answer question";
+				}
 			} finally {
 				this.loading = false;
 			}
@@ -153,32 +203,15 @@ export const useQuestionsStore = defineStore("questions", {
 					.delete()
 					.eq("id", questionId);
 				if (error) throw error;
-			} catch (err: any) {
-				this.error = err.message || "Failed to delete question";
-			} finally {
-				this.loading = false;
-			}
-		},
 
-		async fetchAnsweredQuestionsForUser(userId: string) {
-			this.loading = true;
-			this.error = null;
-			try {
-				const supabase = useSupabaseClient();
-				const { data, error } = await supabase
-					.from("questions")
-					.select(
-						"id, question, answer, is_anonymous, created_at, answered_at, profiles:from_user_id(avatar_url, display_name, username)"
-					)
-					.eq("to_user_id", userId)
-					.eq("published", true)
-					.order("answered_at", { ascending: false });
-				if (error) throw error;
-				return data || [];
-			} catch (err: any) {
-				this.error =
-					err.message || "Failed to fetch answered questions.";
-				return [];
+				const notifStore = useNotificationsStore();
+				await notifStore.markNotificationAsRead(questionId);
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					this.error = err.message || "Failed to delete question";
+				} else {
+					this.error = "Failed to delete question";
+				}
 			} finally {
 				this.loading = false;
 			}
