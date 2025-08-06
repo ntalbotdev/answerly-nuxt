@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+import {
+	fetchNotifications,
+	subscribeToNotifications,
+} from "@/composables/useNotifications";
 
 export interface Notification {
 	id: string;
@@ -15,6 +19,7 @@ export interface Notification {
 		to_user_id?: string;
 		from_username?: string;
 		to_username?: string;
+		is_anonymous?: boolean;
 	};
 	eventId: string;
 }
@@ -30,8 +35,12 @@ export interface SendNotificationPayload {
 		to_user_id?: string;
 		from_username?: string;
 		to_username?: string;
+		is_anonymous?: boolean;
 	};
 }
+
+let realtimeSubscription: ReturnType<typeof subscribeToNotifications> | null =
+	null;
 
 export const useNotificationsStore = defineStore("notifications", {
 	state: () => ({
@@ -55,9 +64,6 @@ export const useNotificationsStore = defineStore("notifications", {
 					this.loading = false;
 					return;
 				}
-				const { fetchNotifications } = await import(
-					"@/composables/useNotifications"
-				);
 				this.notifications = await fetchNotifications(user.value.id);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -107,6 +113,42 @@ export const useNotificationsStore = defineStore("notifications", {
 					"Error clearing notifications from database:",
 					error
 				);
+			}
+		},
+
+		async startRealtimeSubscription() {
+			const user = useSupabaseUser();
+
+			if (!user.value) return;
+
+			if (realtimeSubscription) {
+				realtimeSubscription.unsubscribe();
+				realtimeSubscription = null;
+			}
+
+			realtimeSubscription = subscribeToNotifications(
+				user.value.id,
+				(notification, eventType) => {
+					if (eventType === "INSERT") {
+						// Direct store update similar to inbox implementation
+						const currentNotifications = [...this.notifications];
+						if (
+							!currentNotifications.some(
+								(n) => n.id === notification.id
+							)
+						) {
+							currentNotifications.unshift(notification);
+							this.notifications = currentNotifications;
+						}
+					}
+				}
+			);
+		},
+
+		stopRealtimeSubscription() {
+			if (realtimeSubscription) {
+				realtimeSubscription.unsubscribe();
+				realtimeSubscription = null;
 			}
 		},
 	},
