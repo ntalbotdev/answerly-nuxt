@@ -9,6 +9,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Public profile pages
 - Profile editing and assets upload (avatar/banner via Supabase Storage)
 - Ask questions to any user (optionally anonymously)
+  - Anonymous questions protect user privacy and show as "Anonymous" in notifications
 - Users can answer questions they receive
 - Questions are only published after being answered
 - Follow/unfollow users (social feature)
@@ -21,6 +22,10 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Notifications are automatically removed when actions are completed (questions answered/deleted, users unfollowed)
   - Real-time updates using Supabase subscriptions
   - Mark notifications as read (delete from system)
+  - Clear all notifications at once
+- Real-time inbox system
+  - Questions appear instantly when received
+  - Real-time updates when questions are answered or deleted
 - Pinia for state management
 - Middleware for route protection and redirects
 
@@ -160,7 +165,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | user_id      | uuid        | User ID, required       |
 | type         | text        | Notification type       |
 | payload      | jsonb       | Nullable, Flexible data |
-| message      | text        | Notification message    |
 | is_read      | boolean     | Default: false          |
 | created_at   | timestamptz | Default: now()          |
 | event_id     | text        | Generated from payload  |
@@ -174,7 +178,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     user_id uuid not null references auth.users on delete cascade,
     type text not null check (type in ('follow', 'question', 'answer', 'system')),
     payload jsonb,
-    message text not null,
     is_read boolean not null default false,
     created_at timestamptz not null default now(),
     event_id text generated always as (
@@ -195,68 +198,68 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   <summary>🔧 <strong>send-notification Edge Function</strong></summary>
 
   ```ts
-  import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-  
+  import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
   serve(async (req) => {
-    const origin = req.headers.get('origin') || '*';
-    if (req.method === 'OPTIONS') {
+    const origin = req.headers.get("origin") || "*";
+    if (req.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
         headers: {
-          'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         }
       });
     }
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!supabaseUrl || !supabaseServiceRoleKey) {
-      return new Response('Missing environment variables', {
+      return new Response("Missing environment variables", {
         status: 500,
         headers: {
-          'Access-Control-Allow-Origin': origin
+          "Access-Control-Allow-Origin": origin
         }
       });
     }
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-    if (req.method === 'DELETE') {
+    if (req.method === "DELETE") {
       const { user_id, event_id, type } = await req.json();
       if (!user_id || !event_id || !type) {
-        return new Response('Missing required fields for deletion', {
+        return new Response("Missing required fields for deletion", {
           status: 400,
           headers: {
-            'Access-Control-Allow-Origin': origin
+            "Access-Control-Allow-Origin": origin
           }
         });
       }
-      const { error } = await supabase.from('notifications').delete().eq('user_id', user_id).eq('event_id', event_id).eq('type', type);
+      const { error } = await supabase.from("notifications").delete().eq("user_id", user_id).eq("event_id", event_id).eq("type", type);
       if (error) {
         return new Response(`Error deleting notification: ${error.message}`, {
           status: 500,
           headers: {
-            'Access-Control-Allow-Origin': origin
+            "Access-Control-Allow-Origin": origin
           }
         });
       }
-      return new Response('Notification deleted', {
+      return new Response("Notification deleted", {
         status: 200,
         headers: {
-          'Access-Control-Allow-Origin': origin
+          "Access-Control-Allow-Origin": origin
         }
       });
     }
     const { user_id, type, payload } = await req.json();
     if (!user_id || !type) {
-      return new Response('Missing required fields', {
+      return new Response("Missing required fields", {
         status: 400,
         headers: {
-          'Access-Control-Allow-Origin': origin
+          "Access-Control-Allow-Origin": origin
         }
       });
     }
-    const { error } = await supabase.from('notifications').upsert([
+    const { data, error } = await supabase.from("notifications").upsert([
       {
         user_id,
         type,
@@ -264,23 +267,23 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
       }
     ], {
       onConflict: [
-        'user_id',
-        'type',
-        'event_id'
+        "user_id",
+        "type",
+        "event_id"
       ]
-    });
+    }).select();
     if (error) {
       return new Response(`Error: ${error.message}`, {
         status: 500,
         headers: {
-          'Access-Control-Allow-Origin': origin
+          "Access-Control-Allow-Origin": origin
         }
       });
     }
-    return new Response('Notification inserted', {
+    return new Response("Notification inserted", {
       status: 200,
       headers: {
-        'Access-Control-Allow-Origin': origin
+        "Access-Control-Allow-Origin": origin
       }
     });
   });
@@ -499,12 +502,14 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
 - Visit `/inbox` to answer questions sent to you (only published after answering)
+  - Real-time updates when new questions arrive
   - Answering or deleting questions automatically removes related notifications
 - Visit `/notifications` to see real-time notifications for user activity and events
   - Follow notifications: See who followed you
   - Question notifications: See new questions you received
   - Answer notifications: See when your questions are answered
-  - Click "Mark as read" to permanently delete notifications
+  - Click "Mark as read" to permanently delete individual notifications
+  - Use "Clear All" to remove all notifications at once
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button

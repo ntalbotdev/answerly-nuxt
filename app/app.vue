@@ -11,8 +11,6 @@
 const user = useSupabaseUser();
 const questionsStore = useQuestionsStore();
 const notificationsStore = useNotificationsStore();
-let notificationChannel: ReturnType<typeof subscribeToNotifications> | null =
-	null;
 
 const {
 	fetchInboxQuestions,
@@ -20,69 +18,26 @@ const {
 	unsubscribeInboxQuestions,
 } = useInboxQuestions();
 
-onMounted(() => {
-	if (user.value) {
-		fetchInboxQuestions();
-		subscribeToInboxQuestions();
-	}
-});
-
-watch(user, (newUser) => {
-	if (newUser) {
-		fetchInboxQuestions();
-		subscribeToInboxQuestions();
-	} else {
-		if (
-			!questionsStore.inboxQuestions.length ||
-			questionsStore.inboxQuestions.length === 0
-		) {
-			questionsStore.inboxQuestions = [];
-		}
-		unsubscribeInboxQuestions();
-		if (
-			!notificationsStore.notifications.length ||
-			notificationsStore.notifications.length === 0
-		) {
-			notificationsStore.notifications = [];
-		}
-	}
-});
-
 watch(
-	() => user.value?.id,
-	(id) => {
-		if (id) {
+	user,
+	(newUser, oldUser) => {
+		if (newUser && !oldUser) {
+			fetchInboxQuestions();
+			subscribeToInboxQuestions();
 			notificationsStore.fetchNotifications();
-			if (notificationChannel) notificationChannel.unsubscribe();
-			notificationChannel = subscribeToNotifications(
-				id,
-				(notif, eventType) => {
-					if (eventType === "INSERT") {
-						notificationsStore.addNotification(notif);
-					}
-					if (eventType === "UPDATE") {
-						const idx = notificationsStore.notifications.findIndex(
-							(n) =>
-								n.id === notif.id || n.eventId === notif.eventId
-						);
-						if (idx !== -1) {
-							notificationsStore.notifications[idx] = notif;
-						} else {
-							notificationsStore.addNotification(notif);
-						}
-					}
-				}
-			);
-		} else if (notificationChannel) {
-			notificationChannel.unsubscribe();
-			notificationChannel = null;
+			notificationsStore.startRealtimeSubscription();
+		} else if (!newUser && oldUser) {
+			questionsStore.inboxQuestions = [];
+			unsubscribeInboxQuestions();
+			notificationsStore.notifications = [];
+			notificationsStore.stopRealtimeSubscription();
 		}
 	},
 	{ immediate: true }
 );
 
 onUnmounted(() => {
-	if (notificationChannel) notificationChannel.unsubscribe();
+	notificationsStore.stopRealtimeSubscription();
 	unsubscribeInboxQuestions();
 });
 

@@ -4,7 +4,12 @@ import type { Notification } from "@/stores/notifications";
 const notificationsStore = useNotificationsStore();
 
 onMounted(() => {
-	notificationsStore.fetchNotifications();
+	if (
+		!notificationsStore.notifications.length &&
+		!notificationsStore.loading
+	) {
+		notificationsStore.fetchNotifications();
+	}
 });
 
 function getNotificationContent(notif: Notification) {
@@ -22,10 +27,13 @@ function getNotificationContent(notif: Notification) {
 		case "question":
 			return {
 				text: "asked you a question",
-				userLink: notif.payload?.from_username
-					? `/profile/${notif.payload.from_username}`
-					: null,
-				username: notif.payload?.from_username || "Someone",
+				userLink:
+					notif.payload?.is_anonymous || !notif.payload?.from_username
+						? null
+						: `/profile/${notif.payload.from_username}`,
+				username: notif.payload?.is_anonymous
+					? "Anonymous"
+					: notif.payload?.from_username || "Someone",
 				actionLink: ROUTES.INBOX,
 				actionText: "Answer Question",
 			};
@@ -75,7 +83,13 @@ definePageMeta({
 			</button>
 		</div>
 
-		<div v-if="notificationsStore.loading" class="loading-text">
+		<div
+			v-if="
+				notificationsStore.loading &&
+				!notificationsStore.notifications.length
+			"
+			class="loading-text"
+		>
 			Loading...
 		</div>
 

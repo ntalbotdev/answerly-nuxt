@@ -79,19 +79,7 @@ export const useQuestionsStore = defineStore("questions", {
 				const supabaseUrl = config.public.supabaseUrl;
 				const supabaseAnonKey = config.public.supabaseKey;
 				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
-				
-				// Debug log to check what we're sending
-				console.log("Sending notification with from_username:", from_username);
-				console.log("Full payload:", {
-					user_id: payload.to_user_id,
-					type: "question",
-					payload: {
-						question_id: questionId,
-						from_user_id: payload.from_user_id,
-						from_username: from_username,
-					},
-				});
-				
+
 				await fetch(edgeFunctionUrl, {
 					method: "POST",
 					headers: {
@@ -104,7 +92,10 @@ export const useQuestionsStore = defineStore("questions", {
 						payload: {
 							question_id: questionId,
 							from_user_id: payload.from_user_id,
-							from_username: from_username,
+							from_username: payload.is_anonymous
+								? null
+								: from_username,
+							is_anonymous: payload.is_anonymous,
 						},
 					}),
 				});
