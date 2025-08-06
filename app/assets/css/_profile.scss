@@ -296,3 +296,64 @@
 	@apply text-sm;
 	color: $color-bg;
 }
+
+.follow-grid {
+	@apply grid gap-4;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.profile-card {
+	@apply flex gap-3 p-4 transition-shadow hover:shadow-md;
+	background: $color-surface;
+	border-radius: $radius-md;
+
+	&--small {
+		@apply gap-2 p-2;
+	}
+
+	&--large {
+		@apply gap-4 p-6;
+	}
+}
+
+.profile-card__avatar {
+	@apply h-12 w-12 min-w-12 overflow-hidden rounded-full object-cover;
+
+	&-img {
+		@apply object-cover;
+	}
+
+	&-placeholder {
+		@apply flex items-center justify-center text-2xl font-bold;
+		background: $color-muted-light;
+		color: $color-surface;
+	}
+}
+
+.profile-card__info {
+	@apply flex w-full min-w-0 flex-col;
+}
+
+.profile-card__name {
+	@apply mb-1;
+}
+
+.profile-card__display-name {
+	@apply font-semibold;
+	color: $color-text;
+}
+
+.profile-card__username {
+	@apply text-sm;
+	color: $color-muted;
+}
+
+.profile-card__bio {
+	@apply mb-2 line-clamp-2 text-sm;
+	color: $color-muted-dark;
+}
+
+.profile-card__link {
+	@apply ml-auto mt-auto;
+	color: $color-accent;
+}
