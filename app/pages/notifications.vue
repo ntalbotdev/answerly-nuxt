@@ -4,7 +4,12 @@ import type { Notification } from "@/stores/notifications";
 const notificationsStore = useNotificationsStore();
 
 onMounted(() => {
-	notificationsStore.fetchNotifications();
+	if (
+		!notificationsStore.notifications.length &&
+		!notificationsStore.loading
+	) {
+		notificationsStore.fetchNotifications();
+	}
 });
 
 function getNotificationContent(notif: Notification) {
@@ -75,7 +80,13 @@ definePageMeta({
 			</button>
 		</div>
 
-		<div v-if="notificationsStore.loading" class="loading-text">
+		<div
+			v-if="
+				notificationsStore.loading &&
+				!notificationsStore.notifications.length
+			"
+			class="loading-text"
+		>
 			Loading...
 		</div>
 
