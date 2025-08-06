@@ -84,21 +84,16 @@ async function refreshProfile() {
 </script>
 
 <template>
-	<div class="profile-wrapper">
-		<template v-if="profileStore.loading">
-			<div class="loading-text">Loading...</div>
-		</template>
-
-		<template v-else-if="profileStore.error">
-			<div class="error-text">{{ profileStore.error }}</div>
-		</template>
-
-		<template v-else-if="profileStore.publicProfile">
-			<slot
-				:profile="profileStore.publicProfile"
-				:refresh-profile="refreshProfile"
-				:user="user"
-			/>
-		</template>
-	</div>
+	<LoadingError
+		:loading="profileStore.loading"
+		:error="profileStore.error || ''"
+		loading-text="Loading profile..."
+	>
+		<slot
+			v-if="profileStore.publicProfile"
+			:profile="profileStore.publicProfile"
+			:refresh-profile="refreshProfile"
+			:user="user"
+		/>
+	</LoadingError>
 </template>
