@@ -357,3 +357,8 @@
 	@apply ml-auto mt-auto;
 	color: $color-accent;
 }
+
+.follow-count {
+	@apply ml-2 text-base font-normal;
+	color: $color-muted;
+}
