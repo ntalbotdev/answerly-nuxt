@@ -160,7 +160,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | user_id      | uuid        | User ID, required       |
 | type         | text        | Notification type       |
 | payload      | jsonb       | Nullable, Flexible data |
-| message      | text        | Notification message    |
 | is_read      | boolean     | Default: false          |
 | created_at   | timestamptz | Default: now()          |
 | event_id     | text        | Generated from payload  |
@@ -174,7 +173,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     user_id uuid not null references auth.users on delete cascade,
     type text not null check (type in ('follow', 'question', 'answer', 'system')),
     payload jsonb,
-    message text not null,
     is_read boolean not null default false,
     created_at timestamptz not null default now(),
     event_id text generated always as (
