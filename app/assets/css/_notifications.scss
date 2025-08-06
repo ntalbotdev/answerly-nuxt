@@ -28,7 +28,7 @@
 }
 
 .notification-dot {
-	@apply ml-auto h-2 w-2 min-w-2 rounded-full;
+	@apply ml-auto hidden h-2 w-2 min-w-2 rounded-full sm:block;
 	background: $color-accent;
 }
 
