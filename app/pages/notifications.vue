@@ -27,10 +27,13 @@ function getNotificationContent(notif: Notification) {
 		case "question":
 			return {
 				text: "asked you a question",
-				userLink: notif.payload?.from_username
-					? `/profile/${notif.payload.from_username}`
-					: null,
-				username: notif.payload?.from_username || "Someone",
+				userLink:
+					notif.payload?.is_anonymous || !notif.payload?.from_username
+						? null
+						: `/profile/${notif.payload.from_username}`,
+				username: notif.payload?.is_anonymous
+					? "Anonymous"
+					: notif.payload?.from_username || "Someone",
 				actionLink: ROUTES.INBOX,
 				actionText: "Answer Question",
 			};
