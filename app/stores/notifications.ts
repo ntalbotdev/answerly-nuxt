@@ -130,7 +130,6 @@ export const useNotificationsStore = defineStore("notifications", {
 				user.value.id,
 				(notification, eventType) => {
 					if (eventType === "INSERT") {
-						// Direct store update similar to inbox implementation
 						const currentNotifications = [...this.notifications];
 						if (
 							!currentNotifications.some(
