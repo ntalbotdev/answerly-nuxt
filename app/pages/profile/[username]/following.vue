@@ -13,7 +13,14 @@ definePageMeta({
 });
 
 useHead({
-	title: `Following of ${username}`,
+	title: computed(() => {
+		if (profile.value) {
+			const displayName =
+				profile.value.display_name || profile.value.username;
+			return `${displayName} (@${profile.value.username}) Following`;
+		}
+		return `@${username} Following`;
+	}),
 	meta: [
 		{
 			name: "description",
@@ -52,7 +59,10 @@ async function loadFollowing() {
 		>
 			<div v-if="profile">
 				<h2 class="section__title following__title">
-					{{ profile.display_name || profile.username }} is Following
+					{{ profile.display_name || profile.username }}'s Following
+					<span v-if="!followingLoading" class="follow-count">
+						({{ following.length }})
+					</span>
 				</h2>
 
 				<LoadingError
