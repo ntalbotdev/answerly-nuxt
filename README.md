@@ -38,6 +38,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - `layouts/` — Nuxt layouts
   - `middleware/` — Route guards and redirects
   - `pages/` — Nuxt pages (routes)
+    - `profile/[username]/` — Profile pages using shared components
   - `stores/` — Pinia stores (profile, questions, notifications)
   - `utils/` — Utility functions and constants
 - `test/` — Unit and integration tests
@@ -165,7 +166,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 | user_id      | uuid        | User ID, required       |
 | type         | text        | Notification type       |
 | payload      | jsonb       | Nullable, Flexible data |
-| is_read      | boolean     | Default: false          |
 | created_at   | timestamptz | Default: now()          |
 | event_id     | text        | Generated from payload  |
 
@@ -175,15 +175,15 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   ```sql
   create table notifications (
     id uuid primary key default gen_random_uuid(),
-    user_id uuid not null references auth.users on delete cascade,
+    user_id uuid not null references profiles(user_id) on delete cascade,
     type text not null check (type in ('follow', 'question', 'answer', 'system')),
     payload jsonb,
-    is_read boolean not null default false,
     created_at timestamptz not null default now(),
     event_id text generated always as (
       case
         when type = 'follow' then COALESCE(payload::jsonb->>'follower_id', '') || ':' || COALESCE(payload::jsonb->>'following_id', '')
         when type = 'question' then COALESCE(payload::jsonb->>'question_id', '')
+        when type = 'answer' then COALESCE(payload::jsonb->>'question_id', '')
         else COALESCE(id::text, '')
       end
     ) stored,
@@ -514,7 +514,6 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button
   - Follow/unfollow users with automatic notification management
-- Visit `/profile/:username/questions` to see questions asked to a user
 - Visit `/profile/:username/followers` to see a user's followers
 - Visit `/profile/:username/following` to see who a user is following
 

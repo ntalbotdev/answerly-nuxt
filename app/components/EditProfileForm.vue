@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import { validateUsername } from "~/utils/profileUtils";
-
-interface Profile {
-	username?: string;
-	display_name?: string;
-	bio?: string;
-	avatar_url?: string;
-	banner_url?: string;
-	[key: string]: unknown;
-}
+import type { Profile } from "~/stores/profile";
 
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
@@ -34,7 +25,6 @@ const form = reactive({
 const loading = ref(false);
 const error = ref("");
 
-// Watch for changes in the profile prop to update the form
 watch(
 	() => props.profile,
 	(newProfile) => {
@@ -93,7 +83,6 @@ async function saveProfile() {
 		return;
 	}
 
-	// Update the store's myProfile with form data, then save
 	profileStore.setMyProfile({
 		user_id: typeof user.value?.id === "string" ? user.value.id : "",
 		username: form.username,

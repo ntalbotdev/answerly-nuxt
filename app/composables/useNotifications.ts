@@ -7,7 +7,7 @@ export async function fetchNotifications(
 
 	const { data, error } = await supabase
 		.from("notifications")
-		.select("id, user_id, type, is_read, created_at, payload, event_id")
+		.select("id, user_id, type, created_at, payload, event_id")
 		.eq("user_id", userId)
 		.order("created_at", { ascending: false });
 
@@ -21,7 +21,6 @@ export async function fetchNotifications(
 			id: n.id as string,
 			user_id: n.user_id as string,
 			type: n.type as string,
-			read: n.is_read as boolean,
 			createdAt: n.created_at as string,
 			payload: n.payload as
 				| {
@@ -70,7 +69,6 @@ export function subscribeToNotifications(
 						id: n.id,
 						user_id: n.user_id,
 						type: safeType,
-						read: n.is_read,
 						createdAt: n.created_at,
 						payload: n.payload,
 						eventId: n.event_id,

@@ -18,7 +18,7 @@ function getNotificationContent(notif: Notification) {
 			return {
 				text: "followed you",
 				userLink: notif.payload?.username
-					? `/profile/${notif.payload.username}`
+					? ROUTES.PROFILE_USER(notif.payload.username)
 					: null,
 				username: notif.payload?.username || "Someone",
 				actionLink: null,
@@ -30,7 +30,7 @@ function getNotificationContent(notif: Notification) {
 				userLink:
 					notif.payload?.is_anonymous || !notif.payload?.from_username
 						? null
-						: `/profile/${notif.payload.from_username}`,
+						: ROUTES.PROFILE_USER(notif.payload.from_username),
 				username: notif.payload?.is_anonymous
 					? "Anonymous"
 					: notif.payload?.from_username || "Someone",
@@ -41,11 +41,11 @@ function getNotificationContent(notif: Notification) {
 			return {
 				text: "answered your question",
 				userLink: notif.payload?.to_username
-					? `/profile/${notif.payload.to_username}`
+					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
 				username: notif.payload?.to_username || "Someone",
-				actionLink: notif.payload?.question_id
-					? `/profile/${notif.payload.to_username}/questions`
+				actionLink: notif.payload?.to_username
+					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
 				actionText: "View Answer",
 			};
@@ -83,91 +83,81 @@ definePageMeta({
 			</button>
 		</div>
 
-		<div
-			v-if="
+		<LoadingError
+			:loading="
 				notificationsStore.loading &&
 				!notificationsStore.notifications.length
 			"
-			class="loading-text"
+			:error="notificationsStore.error || ''"
+			:show-empty-state="notificationsStore.notifications.length === 0"
+			empty-state="No notifications yet."
+			loading-text="Loading notifications..."
 		>
-			Loading...
-		</div>
-
-		<div v-else-if="notificationsStore.error" class="error-text">
-			{{ notificationsStore.error }}
-		</div>
-
-		<div v-else class="notifications__list">
-			<div
-				v-if="notificationsStore.notifications.length === 0"
-				class="muted-text"
-			>
-				No notifications yet.
-			</div>
-
-			<li
-				v-for="notif in notificationsStore.notifications"
-				:key="notif.id"
-				class="notifications__item"
-			>
-				<div v-if="!notif.read" class="notification-dot" />
-				<div class="notification__content">
-					<div
-						v-if="getNotificationContent(notif).username"
-						class="notification__text"
-					>
-						<router-link
-							v-if="getNotificationContent(notif).userLink"
-							:to="getNotificationContent(notif).userLink!"
-							class="notification__username"
+			<div class="notifications__list">
+				<li
+					v-for="notif in notificationsStore.notifications"
+					:key="notif.id"
+					class="notifications__item"
+				>
+					<div v-if="!notif.read" class="notification-dot" />
+					<div class="notification__content">
+						<div
+							v-if="getNotificationContent(notif).username"
+							class="notification__text"
 						>
-							@{{ getNotificationContent(notif).username }}
-						</router-link>
-						<span v-else class="notification__username">
-							{{ getNotificationContent(notif).username }}
+							<router-link
+								v-if="getNotificationContent(notif).userLink"
+								:to="getNotificationContent(notif).userLink!"
+								class="notification__username"
+							>
+								@{{ getNotificationContent(notif).username }}
+							</router-link>
+							<span v-else class="notification__username">
+								{{ getNotificationContent(notif).username }}
+							</span>
+							{{ getNotificationContent(notif).text }}
+						</div>
+
+						<div v-else class="notification__text">
+							{{ getNotificationContent(notif).text }}
+						</div>
+
+						<span class="notification__date">
+							{{ formatDateNoSeconds(notif.createdAt) }}
 						</span>
-						{{ getNotificationContent(notif).text }}
 					</div>
 
-					<div v-else class="notification__text">
-						{{ getNotificationContent(notif).text }}
+					<div class="notification__buttons">
+						<router-link
+							v-if="
+								!notif.read &&
+								getNotificationContent(notif).actionLink
+							"
+							:to="getNotificationContent(notif).actionLink!"
+							class="btn btn--primary btn--small"
+							@click="
+								notificationsStore.markNotificationAsRead(
+									notif.eventId
+								)
+							"
+						>
+							{{ getNotificationContent(notif).actionText }}
+						</router-link>
+
+						<button
+							v-if="!notif.read"
+							class="btn btn--secondary btn--small"
+							@click="
+								notificationsStore.markNotificationAsRead(
+									notif.eventId
+								)
+							"
+						>
+							Mark as read
+						</button>
 					</div>
-
-					<span class="notification__date">
-						{{ formatDateNoSeconds(notif.createdAt) }}
-					</span>
-				</div>
-
-				<div class="notification__buttons">
-					<router-link
-						v-if="
-							!notif.read &&
-							getNotificationContent(notif).actionLink
-						"
-						:to="getNotificationContent(notif).actionLink!"
-						class="btn btn--primary btn--small"
-						@click="
-							notificationsStore.markNotificationAsRead(
-								notif.eventId
-							)
-						"
-					>
-						{{ getNotificationContent(notif).actionText }}
-					</router-link>
-
-					<button
-						v-if="!notif.read"
-						class="btn btn--secondary btn--small"
-						@click="
-							notificationsStore.markNotificationAsRead(
-								notif.eventId
-							)
-						"
-					>
-						Mark as read
-					</button>
-				</div>
-			</li>
-		</div>
+				</li>
+			</div>
+		</LoadingError>
 	</div>
 </template>

@@ -3,6 +3,7 @@ import { storeToRefs } from "pinia";
 const questionsStore = useQuestionsStore();
 const { inboxQuestions } = storeToRefs(questionsStore);
 const loading = ref(true);
+const error = ref<string | null>(null);
 const showRemoveModal = ref(false);
 const questionToRemove = ref<
 	| (Question & { _answer: string; _saving: boolean; _showForm: boolean })
@@ -38,10 +39,20 @@ watch(inboxQuestions, syncQuestionsWithUi, { immediate: true });
 
 async function fetchMyQuestions() {
 	loading.value = true;
-	const { fetchInboxQuestions } = useInboxQuestions();
-	await fetchInboxQuestions();
-	loading.value = false;
-	syncQuestionsWithUi();
+	error.value = null;
+	try {
+		const { fetchInboxQuestions } = useInboxQuestions();
+		await fetchInboxQuestions();
+		syncQuestionsWithUi();
+	} catch (err: unknown) {
+		if (err instanceof Error) {
+			error.value = err.message || "Failed to load questions.";
+		} else {
+			error.value = "Failed to load questions.";
+		}
+	} finally {
+		loading.value = false;
+	}
 }
 onMounted(fetchMyQuestions);
 
@@ -157,116 +168,121 @@ useHead({
 			</template>
 		</AppModal>
 
-		<div v-if="loading" class="loading-text">Loading...</div>
+		<LoadingError
+			:loading="loading"
+			:error="error || ''"
+			:show-empty-state="questionsWithUi.length === 0"
+			empty-state="No questions to answer."
+			loading-text="Loading questions..."
+		>
+			<div class="inbox__questions">
+				<div
+					v-for="q in questionsWithUi"
+					:key="q.id"
+					class="inbox__question"
+				>
+					<div class="inbox__question-header">
+						<div class="inbox__question-text">{{ q.question }}</div>
 
-		<div v-else class="inbox__questions">
-			<div
-				v-if="questionsWithUi.length === 0"
-				class="inbox__no-questions muted-text"
-			>
-				No questions to answer.
-			</div>
-
-			<div
-				v-for="q in questionsWithUi"
-				:key="q.id"
-				class="inbox__question"
-			>
-				<div class="inbox__question-header">
-					<div class="inbox__question-text">{{ q.question }}</div>
-
-					<div class="inbox__question-metadata">
-						<div class="inbox__question-asker-wrapper">
-							From:
-							<span
-								v-if="q.is_anonymous"
-								class="inbox__question-asker inbox__question-asker--anonymous"
-							>
-								Anonymous
-							</span>
-
-							<template v-else-if="q.asker_username">
-								<NuxtLink
-									:to="ROUTES.PROFILE_USER(q.asker_username)"
-									class="inbox__question-asker inbox__question-asker--username"
+						<div class="inbox__question-metadata">
+							<div class="inbox__question-asker-wrapper">
+								From:
+								<span
+									v-if="q.is_anonymous"
+									class="inbox__question-asker inbox__question-asker--anonymous"
 								>
-									{{ q.asker_username }}
-								</NuxtLink>
-							</template>
+									Anonymous
+								</span>
 
-							<template v-else>Unknown User</template>
+								<template v-else-if="q.asker_username">
+									<NuxtLink
+										:to="
+											ROUTES.PROFILE_USER(
+												q.asker_username
+											)
+										"
+										class="inbox__question-asker inbox__question-asker--username"
+									>
+										{{ q.asker_username }}
+									</NuxtLink>
+								</template>
+
+								<template v-else>Unknown User</template>
+							</div>
+
+							<span class="inbox__question-date">
+								{{ formatDateNoSeconds(q.created_at) }}
+							</span>
+						</div>
+					</div>
+
+					<div v-if="!q.answer" class="inbox__question-form-wrapper">
+						<div class="inbox__question-form-buttons">
+							<button
+								v-if="!q._showForm"
+								type="button"
+								class="btn btn--danger"
+								@click="openRemoveModal(q)"
+							>
+								Remove
+							</button>
+
+							<button
+								v-if="!q._showForm"
+								class="btn btn--primary"
+								@click="q._showForm = true"
+							>
+								Respond
+							</button>
 						</div>
 
-						<span class="inbox__question-date">
-							{{ formatDateNoSeconds(q.created_at) }}
-						</span>
+						<template v-if="q._showForm">
+							<form
+								class="inbox__question-form"
+								@submit.prevent="answerQuestion(q)"
+							>
+								<textarea
+									v-model="q._answer"
+									name="answer"
+									class="inbox__question-form-input"
+									placeholder="Type your answer..."
+									rows="3"
+								/>
+
+								<div class="inbox__question-form-buttons">
+									<button
+										type="button"
+										class="btn btn--secondary"
+										@click="
+											q._showForm = false;
+											q._answer = '';
+										"
+									>
+										Cancel
+									</button>
+
+									<button
+										type="submit"
+										class="btn btn--primary"
+										:disabled="q._saving || !q._answer"
+									>
+										Answer & Publish
+									</button>
+								</div>
+							</form>
+						</template>
 					</div>
-				</div>
 
-				<div v-if="!q.answer" class="inbox__question-form-wrapper">
-					<div class="inbox__question-form-buttons">
-						<button
-							v-if="!q._showForm"
-							type="button"
-							class="btn btn--danger"
-							@click="openRemoveModal(q)"
+					<div v-else class="inbox__question-answer">
+						<span class="inbox__question-answer-label"
+							>Answered:</span
 						>
-							Remove
-						</button>
-
-						<button
-							v-if="!q._showForm"
-							class="btn btn--primary"
-							@click="q._showForm = true"
-						>
-							Respond
-						</button>
+						<span class="inbox__question-answer-text">{{
+							q.answer
+						}}</span>
 					</div>
-
-					<template v-if="q._showForm">
-						<form
-							class="inbox__question-form"
-							@submit.prevent="answerQuestion(q)"
-						>
-							<textarea
-								v-model="q._answer"
-								name="answer"
-								class="inbox__question-form-input"
-								placeholder="Type your answer..."
-								rows="3"
-							/>
-
-							<div class="inbox__question-form-buttons">
-								<button
-									type="button"
-									class="btn btn--secondary"
-									@click="
-										q._showForm = false;
-										q._answer = '';
-									"
-								>
-									Cancel
-								</button>
-
-								<button
-									type="submit"
-									class="btn btn--primary"
-									:disabled="q._saving || !q._answer"
-								>
-									Answer & Publish
-								</button>
-							</div>
-						</form>
-					</template>
-				</div>
-
-				<div v-else class="inbox__question-answer">
-					<span class="inbox__question-answer-label">Answered:</span>
-					<span class="inbox__question-answer-text">{{
-						q.answer
-					}}</span>
 				</div>
 			</div>
-		</div>
+		</LoadingError>
 	</div>
 </template>

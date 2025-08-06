@@ -15,8 +15,29 @@ body {
 }
 
 .main {
-	@apply mx-auto max-w-4xl md:px-4;
+	@apply mx-auto min-h-screen max-w-4xl md:px-4;
 	padding-top: 65px; // Adjust for fixed header
+}
+
+.loading-error-container {
+	@apply flex h-full w-full items-center justify-center;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+	@apply flex flex-col items-center justify-center py-12 text-center;
+}
+
+.error-icon,
+.empty-icon {
+	@apply mb-2 text-2xl;
+}
+
+.loading-spinner {
+	@apply mb-4 h-8 w-8 animate-spin rounded-full border-4;
+	border-color: $color-muted;
+	border-top-color: $color-accent;
 }
 
 .loading-text {
@@ -32,7 +53,7 @@ body {
 }
 
 .btn {
-	@apply mt-4 whitespace-nowrap px-4 py-2 font-bold shadow shadow-sm transition-all;
+	@apply mt-4 whitespace-nowrap px-3.5 py-1.5 font-bold shadow-sm transition-all;
 	border-radius: $radius-xs;
 
 	&:disabled {
@@ -73,6 +94,6 @@ body {
 }
 
 .section__title {
-	@apply mb-4 text-2xl font-semibold;
+	@apply mb-4 flex items-center text-2xl font-semibold;
 	color: $color-text;
 }
