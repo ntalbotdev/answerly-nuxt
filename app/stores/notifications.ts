@@ -8,7 +8,6 @@ export interface Notification {
 	id: string;
 	user_id: string;
 	type: string;
-	read: boolean;
 	createdAt: string;
 	payload?: {
 		username?: string;
@@ -50,7 +49,7 @@ export const useNotificationsStore = defineStore("notifications", {
 	}),
 	getters: {
 		unreadCount(state): number {
-			return state.notifications.filter((n) => !n.read).length;
+			return state.notifications.length;
 		},
 	},
 	actions: {

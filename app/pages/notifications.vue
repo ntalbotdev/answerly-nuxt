@@ -99,7 +99,7 @@ definePageMeta({
 					:key="notif.id"
 					class="notifications__item"
 				>
-					<div v-if="!notif.read" class="notification-dot" />
+					<div class="notification-dot" />
 					<div class="notification__content">
 						<div
 							v-if="getNotificationContent(notif).username"
@@ -129,10 +129,7 @@ definePageMeta({
 
 					<div class="notification__buttons">
 						<router-link
-							v-if="
-								!notif.read &&
-								getNotificationContent(notif).actionLink
-							"
+							v-if="getNotificationContent(notif).actionLink"
 							:to="getNotificationContent(notif).actionLink!"
 							class="btn btn--primary btn--small"
 							@click="
@@ -145,7 +142,6 @@ definePageMeta({
 						</router-link>
 
 						<button
-							v-if="!notif.read"
 							class="btn btn--secondary btn--small"
 							@click="
 								notificationsStore.markNotificationAsRead(
