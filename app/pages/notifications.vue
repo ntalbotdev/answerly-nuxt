@@ -79,7 +79,7 @@ definePageMeta({
 				class="btn btn--secondary btn--small"
 				@click="notificationsStore.clearNotifications()"
 			>
-				Clear All
+				Clear all
 			</button>
 		</div>
 
@@ -90,7 +90,7 @@ definePageMeta({
 			"
 			:error="notificationsStore.error || ''"
 			:show-empty-state="notificationsStore.notifications.length === 0"
-			empty-state="No notifications yet."
+			empty-state="You have no notifications yet."
 			loading-text="Loading notifications..."
 		>
 			<div class="notifications__list">
