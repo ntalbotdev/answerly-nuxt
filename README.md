@@ -5,6 +5,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 ## Features
 
 - Supabase Auth (email/password)
+  - Email verification on signup
+  - Password reset functionality
 - User profile creation and management
 - Public profile pages
 - Profile editing and assets upload (avatar/banner via Supabase Storage)
@@ -501,6 +503,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
+- Visit `/` as a guest to see the welcome page; as a logged-in user, you'll see your feed.
 - Visit `/inbox` to answer questions sent to you (only published after answering)
   - Real-time updates when new questions arrive
   - Answering or deleting questions automatically removes related notifications
