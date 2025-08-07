@@ -78,7 +78,7 @@ export const useProfileStore = defineStore("profile", {
 				};
 				const { error } = await supabase
 					.from("profiles")
-					.update(updateObj as any)
+					.update(updateObj as never)
 					.eq("user_id", userId);
 				if (error) throw error;
 
