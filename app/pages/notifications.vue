@@ -90,7 +90,7 @@ definePageMeta({
 			"
 			:error="notificationsStore.error || ''"
 			:show-empty-state="notificationsStore.notifications.length === 0"
-			empty-state="You have no notifications yet."
+			empty-state="No notifications yet."
 			loading-text="Loading notifications..."
 		>
 			<div class="notifications__list">

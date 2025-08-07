@@ -26,16 +26,24 @@ body {
 .loading-state,
 .error-state,
 .empty-state {
-	@apply flex flex-col items-center justify-center py-12 text-center;
+	@apply flex flex-col items-center justify-center gap-1 py-12 text-center;
 }
 
 .error-icon,
 .empty-icon {
-	@apply mb-2 text-2xl;
+	@apply text-2xl;
+}
+
+.error-icon {
+	@apply text-red-500;
+}
+
+.empty-icon {
+	color: $color-muted;
 }
 
 .loading-spinner {
-	@apply mb-4 h-8 w-8 animate-spin rounded-full border-4;
+	@apply mb-3 h-8 w-8 animate-spin rounded-full border-4;
 	border-color: $color-muted;
 	border-top-color: $color-accent;
 }
