@@ -16,7 +16,6 @@ const logout = async () => {
 		@click="
 			async () => {
 				await logout();
-				handleDropdownLinkClick();
 			}
 		"
 	>
