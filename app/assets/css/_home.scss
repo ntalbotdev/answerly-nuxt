@@ -1,7 +1,11 @@
 @use "./variables" as *;
 
+.home {
+	@apply flex flex-col items-center justify-center;
+}
+
 .welcome {
-	@apply flex flex-col items-center justify-center p-4 pt-16 text-center;
+	@apply flex max-w-xs flex-col items-center p-4 pt-16 text-center sm:max-w-md;
 }
 
 .welcome__title {
@@ -18,5 +22,5 @@
 }
 
 .welcome__buttons {
-	@apply flex w-full max-w-xs flex-col gap-4 pt-20;
+	@apply flex w-full max-w-xs flex-col gap-4 pt-20 sm:p-4;
 }
