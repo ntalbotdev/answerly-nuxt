@@ -29,7 +29,7 @@ export async function fetchProfileByUsername(
 		const { data, error } = await supabase
 			.from("profiles")
 			.select("*")
-			.eq("username", username)
+			.eq("username", username.toLowerCase())
 			.single();
 
 		if (error) throw error;

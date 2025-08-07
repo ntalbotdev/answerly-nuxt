@@ -85,7 +85,7 @@ async function saveProfile() {
 
 	profileStore.setMyProfile({
 		user_id: typeof user.value?.id === "string" ? user.value.id : "",
-		username: form.username,
+		username: form.username.toLowerCase(),
 		display_name: form.display_name,
 		bio: form.bio,
 		avatar_url: form.avatar_url,
@@ -120,6 +120,7 @@ function handleCancel() {
 				type="text"
 				class="edit-profile__input"
 				required
+				@input="form.username = form.username.toLowerCase()"
 			/>
 		</div>
 		<div class="edit-profile__field">

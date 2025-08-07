@@ -34,7 +34,7 @@ if (isUUID && user.value && usernameParam === user.value.id) {
 
 onMounted(() => {
 	if (!isUUID) {
-		profileStore.fetchProfileByUsername(usernameParam);
+		profileStore.fetchProfileByUsername(usernameParam.toLowerCase());
 	}
 });
 
@@ -42,7 +42,7 @@ watch(
 	() => props.username,
 	(newUsername) => {
 		if (newUsername && !isUUID) {
-			profileStore.fetchProfileByUsername(newUsername);
+			profileStore.fetchProfileByUsername(newUsername.toLowerCase());
 		}
 	}
 );
