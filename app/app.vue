@@ -42,7 +42,7 @@ onUnmounted(() => {
 });
 
 useHead({
-	titleTemplate: "%s - Answerly",
+	titleTemplate: "%s – Answerly",
 	meta: [
 		{
 			name: "description",
