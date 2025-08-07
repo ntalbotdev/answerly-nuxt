@@ -57,7 +57,7 @@
 	@apply ml-auto flex flex-row gap-2 sm:flex-col;
 
 	.btn {
-		@apply mt-0;
+		@apply mt-0 sm:ml-auto;
 	}
 }
 
