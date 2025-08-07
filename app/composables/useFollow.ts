@@ -12,7 +12,7 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 
 		const { error } = await supabase
 			.from("follows")
-			.insert([followObj] as any);
+			.insert([followObj] as never[]);
 		if (error) throw error;
 
 		let username = user.value.user_metadata?.username || "Someone";
