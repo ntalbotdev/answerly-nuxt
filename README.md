@@ -30,6 +30,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Real-time updates when questions are answered or deleted
 - Pinia for state management
 - Middleware for route protection and redirects
+- See the full [TODO list](./TODO.md) for upcoming features and improvements.
 
 ## Project Structure
 

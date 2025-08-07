@@ -1,6 +1,5 @@
 export const ROUTES = {
 	HOME: "/",
-	PROFILE: "/profile",
 	PROFILE_USER: (username: string) => `/profile/${username}`,
 	PROFILE_USER_FOLLOWERS: (username: string) =>
 		`/profile/${username}/followers`,

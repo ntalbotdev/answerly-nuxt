@@ -26,7 +26,7 @@ watch(
 </script>
 
 <template>
-	<div class="home">
+	<div class="home section">
 		<template v-if="!user">
 			<WelcomeComponent />
 		</template>

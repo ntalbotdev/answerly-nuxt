@@ -62,12 +62,12 @@
 
 	&--secondary {
 		background: none;
-		border-color: $color-muted-hover;
-		color: $color-muted-hover;
+		border-color: $color-muted-light;
+		color: $color-muted-light;
 		box-shadow: 0 8px 24px 0 rgba(12, 30, 87, 0.2);
 		&:hover,
 		&:focus {
-			background: $color-muted-hover;
+			background: $color-muted-light;
 			color: $color-bg;
 			box-shadow: 0 8px 24px 0 $color-surface;
 		}
