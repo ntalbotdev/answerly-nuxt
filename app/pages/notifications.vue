@@ -2,6 +2,18 @@
 import type { Notification } from "@/stores/notifications";
 
 const notificationsStore = useNotificationsStore();
+const notificationIcon = (type: string) => {
+	switch (type) {
+		case "follow":
+			return "bx:user-plus";
+		case "question":
+			return "bx:message";
+		case "answer":
+			return "bx:message-check";
+		default:
+			return "bx:bell";
+	}
+};
 
 onMounted(() => {
 	if (
@@ -99,7 +111,10 @@ definePageMeta({
 					:key="notif.id"
 					class="notifications__item"
 				>
-					<div class="notification-dot" />
+					<Icon
+						:name="notificationIcon(notif.type)"
+						class="notification-icon"
+					/>
 					<div class="notification__content">
 						<div
 							v-if="getNotificationContent(notif).username"
