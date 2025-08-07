@@ -2,7 +2,7 @@ export const useProfilePage = (username: string) => {
 	const supabase = useSupabaseClient();
 	const loading = ref(true);
 	const error = ref("");
-	const profile = ref<any>(null);
+	const profile = ref<Profile | null>(null);
 
 	const fetchUserProfile = async () => {
 		loading.value = true;
@@ -23,7 +23,7 @@ export const useProfilePage = (username: string) => {
 
 			profile.value = data;
 			return data;
-		} catch (err) {
+		} catch {
 			error.value = "Failed to load profile.";
 			profile.value = null;
 			return null;
