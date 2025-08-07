@@ -48,7 +48,7 @@ export async function createProfile(
 	const supabase = useSupabaseClient();
 
 	try {
-		const profileData = {
+		const profileData: Partial<Profile> = {
 			user_id: userId,
 			username: username.toLowerCase(),
 			display_name: displayName || username,
@@ -56,7 +56,7 @@ export async function createProfile(
 
 		const { error } = await supabase
 			.from("profiles")
-			.insert([profileData] as any);
+			.insert([profileData] as never[]);
 		if (error) throw error;
 		return true;
 	} catch (err) {
@@ -81,7 +81,7 @@ export async function updateProfile(profile: Profile): Promise<Profile | null> {
 
 		const { error } = await supabase
 			.from("profiles")
-			.update(updateObj as any)
+			.update(updateObj as never)
 			.eq("user_id", profile.user_id);
 
 		if (error) throw error;

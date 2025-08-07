@@ -55,7 +55,7 @@ export const useQuestionsStore = defineStore("questions", {
 						published: false,
 						created_at: new Date().toISOString(),
 					},
-				]);
+				] as never);
 				if (error) throw error;
 
 				let from_username =
@@ -129,7 +129,7 @@ export const useQuestionsStore = defineStore("questions", {
 						answer,
 						published: true,
 						answered_at: new Date().toISOString(),
-					} as any)
+					} as never)
 					.eq("id", questionId);
 				if (error) throw error;
 
