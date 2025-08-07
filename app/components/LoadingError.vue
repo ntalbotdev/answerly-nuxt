@@ -17,21 +17,21 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
 	<div v-if="loading" class="loading-error-container">
 		<div class="loading-state">
-			<div class="loading-spinner"></div>
+			<div class="loading-spinner" />
 			<p class="loading-text">{{ loadingText }}</p>
 		</div>
 	</div>
 
 	<div v-else-if="error" class="loading-error-container">
 		<div class="error-state">
-			<div class="error-icon">⚠️</div>
+			<Icon name="bx:error-circle" class="error-icon" />
 			<p class="error-text">{{ error }}</p>
 		</div>
 	</div>
 
 	<div v-else-if="showEmptyState" class="loading-error-container">
 		<div class="empty-state">
-			<div class="empty-icon">📭</div>
+			<Icon name="bx:time" class="empty-icon" />
 			<p class="muted-text">{{ emptyState }}</p>
 		</div>
 	</div>
