@@ -27,8 +27,8 @@
 	}
 }
 
-.notification-dot {
-	@apply ml-auto hidden h-2 w-2 min-w-2 rounded-full sm:block;
+.notification__icon {
+	@apply ml-auto hidden min-w-2 rounded-full text-3xl sm:block;
 	background: $color-accent;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .notification__text {
-	color: $color-text;
+	color: $color-muted-light;
 
 	a {
 		color: $color-accent;
@@ -54,10 +54,14 @@
 }
 
 .notification__buttons {
-	@apply ml-auto flex flex-row gap-2 sm:flex-col;
+	@apply ml-auto flex flex-row gap-2 text-center sm:flex-col;
 
 	.btn {
-		@apply mt-0;
+		@apply mt-0 sm:ml-auto;
+	}
+
+	@media (max-width: 320px) {
+		@apply w-full flex-col;
 	}
 }
 

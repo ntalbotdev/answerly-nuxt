@@ -2,6 +2,18 @@
 import type { Notification } from "@/stores/notifications";
 
 const notificationsStore = useNotificationsStore();
+const notificationIcon = (type: string) => {
+	switch (type) {
+		case "follow":
+			return "bx:user-plus";
+		case "question":
+			return "bx:message";
+		case "answer":
+			return "bx:message-check";
+		default:
+			return "bx:bell";
+	}
+};
 
 onMounted(() => {
 	if (
@@ -33,7 +45,7 @@ function getNotificationContent(notif: Notification) {
 						: ROUTES.PROFILE_USER(notif.payload.from_username),
 				username: notif.payload?.is_anonymous
 					? "Anonymous"
-					: notif.payload?.from_username || "Someone",
+					: notif.payload?.from_username,
 				actionLink: ROUTES.INBOX,
 				actionText: "Answer Question",
 			};
@@ -43,7 +55,7 @@ function getNotificationContent(notif: Notification) {
 				userLink: notif.payload?.to_username
 					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
-				username: notif.payload?.to_username || "Someone",
+				username: notif.payload?.to_username,
 				actionLink: notif.payload?.to_username
 					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
@@ -99,7 +111,10 @@ definePageMeta({
 					:key="notif.id"
 					class="notifications__item"
 				>
-					<div class="notification-dot" />
+					<Icon
+						:name="notificationIcon(notif.type)"
+						class="notification__icon"
+					/>
 					<div class="notification__content">
 						<div
 							v-if="getNotificationContent(notif).username"
