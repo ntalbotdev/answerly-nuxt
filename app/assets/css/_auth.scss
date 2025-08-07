@@ -47,17 +47,30 @@
 
 .auth-form__button {
 	@apply mt-2 block w-full px-3 py-2 font-bold;
-	border: none;
+	border: 2px solid transparent;
 	border-radius: $radius-lg;
 	background: $color-button;
 	color: $color-accent-text;
-	box-shadow: 0 8px 24px 0 rgb(255 205 105 / 20%);
+	box-shadow: 0 8px 24px 0 rgba(255, 205, 105, 0.2);
 	transition: all 0.3s ease-in-out;
 	&:hover,
 	&:focus {
 		background: $color-accent;
 		color: $color-accent-text-hover;
-		box-shadow: 0 8px 24px 0 rgb(16 39 112 / 20%);
+		box-shadow: 0 8px 24px 0 rgba(16, 39, 112, 0.2);
+	}
+
+	&--secondary {
+		background: none;
+		border-color: $color-muted-hover;
+		color: $color-muted-hover;
+		box-shadow: 0 8px 24px 0 rgba(12, 30, 87, 0.2);
+		&:hover,
+		&:focus {
+			background: $color-muted-hover;
+			color: $color-bg;
+			box-shadow: 0 8px 24px 0 $color-surface;
+		}
 	}
 }
 
