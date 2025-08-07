@@ -45,7 +45,7 @@ function getNotificationContent(notif: Notification) {
 						: ROUTES.PROFILE_USER(notif.payload.from_username),
 				username: notif.payload?.is_anonymous
 					? "Anonymous"
-					: notif.payload?.from_username || "Someone",
+					: notif.payload?.from_username,
 				actionLink: ROUTES.INBOX,
 				actionText: "Answer Question",
 			};
@@ -55,7 +55,7 @@ function getNotificationContent(notif: Notification) {
 				userLink: notif.payload?.to_username
 					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
-				username: notif.payload?.to_username || "Someone",
+				username: notif.payload?.to_username,
 				actionLink: notif.payload?.to_username
 					? ROUTES.PROFILE_USER(notif.payload.to_username)
 					: null,
@@ -113,7 +113,7 @@ definePageMeta({
 				>
 					<Icon
 						:name="notificationIcon(notif.type)"
-						class="notification-icon"
+						class="notification__icon"
 					/>
 					<div class="notification__content">
 						<div
