@@ -32,7 +32,6 @@
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
-    - [ ] middleware
 - [ ] Add e2e tests (Playwright) for:
     - [ ] auth
     - [ ] notifications

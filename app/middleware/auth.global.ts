@@ -5,6 +5,6 @@ export default defineNuxtRouteMiddleware((to, _from) => {
 	}
 
 	if (!user.value && (to.path === "/auth" || to.path === "/auth/")) {
-		return navigateTo(ROUTES.LOGIN);
+		return navigateTo(ROUTES.HOME);
 	}
 });
