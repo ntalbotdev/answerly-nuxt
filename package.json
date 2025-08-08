@@ -10,9 +10,9 @@
 		"postinstall": "nuxt prepare",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"test": "vitest",
-		"test:e2e": "npx playwright test --ui",
-		"codegen:e2e": "npx playwright codegen http://localhost:3000"
+		"test": "vitest --dir test/unit",
+		"test:e2e": "playwright test --ui test/e2e",
+		"codegen:e2e": "playwright codegen http://localhost:3000"
 	},
 	"dependencies": {
 		"@nuxt/eslint": "^1.5.2",

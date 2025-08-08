@@ -9,10 +9,8 @@ export default defineVitestConfig({
 					intersectionObserver: true,
 					indexedDb: true,
 				},
-				overrides: {
-					// Override Nuxt config options for tests
-				},
 			},
 		},
+		setupFiles: ["./test/unit/setup.ts"],
 	},
 });
