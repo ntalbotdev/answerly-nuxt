@@ -8,6 +8,20 @@ export const mockUser = ref<{
 	username?: string;
 } | null>(null);
 
+export const mockNavigateTo = vi.fn();
+
+export const ROUTES = {
+	HOME: "/",
+	DISCOVER: "/discover",
+	NOTIFICATIONS: "/notifications",
+	LOGIN: "/auth/login",
+	SIGNUP: "/auth/signup",
+	INBOX: "/inbox",
+	PROFILE_USER: (username = "") => `/profile/${username}`,
+	MY_QUESTIONS: "/my-questions",
+	SETTINGS: "/settings",
+};
+
 vi.mock("#imports", () => {
 	return {
 		useSupabaseUser: () => mockUser,
@@ -28,17 +42,8 @@ vi.mock("#imports", () => {
 		useNotificationsStore: () => ({
 			unreadCount: 0,
 		}),
-		ROUTES: {
-			HOME: "/",
-			DISCOVER: "/discover",
-			NOTIFICATIONS: "/notifications",
-			LOGIN: "/auth/login",
-			SIGNUP: "/auth/signup",
-			INBOX: "/inbox",
-			PROFILE_USER: (username = "") => `/profile/${username}`,
-			MY_QUESTIONS: "/my-questions",
-			SETTINGS: "/settings",
-		},
+		ROUTES,
+		navigateTo: mockNavigateTo,
 	};
 });
 
@@ -47,7 +52,6 @@ config.global.stubs = {
 		template: '<a :href="to"><slot /></a>',
 		props: ["to"],
 	},
-	Icon: { template: "<span />" },
 	HeaderNavbar: {
 		template: `
 			<nav data-testid="header-navbar">
