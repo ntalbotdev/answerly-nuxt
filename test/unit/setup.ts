@@ -2,7 +2,7 @@ import { config } from "@vue/test-utils";
 
 config.global.stubs = {
 	NuxtLink: {
-		template: "<a><slot /></a>",
+		template: '<a :href="to"><slot /></a>',
 		props: ["to"],
 	},
 };
