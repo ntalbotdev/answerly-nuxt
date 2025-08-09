@@ -12,7 +12,7 @@ test("login page loads correctly", async ({ page }) => {
 	).toBeVisible();
 });
 
-test("login form works", async ({ page }) => {
+test("login form submits correctly", async ({ page }) => {
 	await page.goto("auth/login");
 	await page.waitForLoadState("networkidle");
 	await page.pause();

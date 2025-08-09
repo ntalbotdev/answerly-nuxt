@@ -64,7 +64,6 @@ useHead({
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
-				id="email"
 				v-model="email"
 				type="email"
 				placeholder="Email"
@@ -78,7 +77,6 @@ useHead({
 		<div class="auth-form__field">
 			<Icon name="bx:user" class="auth-form__input-icon" />
 			<input
-				id="username"
 				v-model="username"
 				type="text"
 				placeholder="Username"
@@ -93,7 +91,6 @@ useHead({
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
-				id="password"
 				v-model="password"
 				type="password"
 				placeholder="Password"
@@ -107,7 +104,6 @@ useHead({
 		<div class="auth-form__field">
 			<Icon name="bx:lock-alt" class="auth-form__input-icon" />
 			<input
-				id="confirm-password"
 				v-model="confirmPassword"
 				type="password"
 				placeholder="Confirm Password"
