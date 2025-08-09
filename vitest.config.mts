@@ -11,6 +11,6 @@ export default defineVitestConfig({
 				},
 			},
 		},
-		setupFiles: ["./test/unit/setup.ts"],
+		setupFiles: ["./test/unit/vitest.setup.ts"],
 	},
 });
