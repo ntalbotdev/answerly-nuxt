@@ -1,5 +1,17 @@
 import { test, expect } from "@playwright/test";
 
+test("login page loads correctly", async ({ page }) => {
+	await page.goto("auth/login");
+	await page.pause();
+
+	await expect(
+		page.getByRole("link", { name: "Forgot password?" })
+	).toBeVisible();
+	await expect(
+		page.locator(".auth-form__footer-link", { hasText: "Sign up" })
+	).toBeVisible();
+});
+
 test("login form works", async ({ page }) => {
 	await page.goto("auth/login");
 	await page.waitForLoadState("networkidle");
