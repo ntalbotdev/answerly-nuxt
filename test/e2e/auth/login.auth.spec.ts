@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 test("login page loads correctly", async ({ page }) => {
-	await page.goto("auth/login");
+	await page.goto("/auth/login");
 	await page.pause();
 
+	await expect(page.locator(".auth-form")).toBeVisible();
 	await expect(
 		page.getByRole("link", { name: "Forgot password?" })
 	).toBeVisible();
