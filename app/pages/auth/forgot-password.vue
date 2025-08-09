@@ -39,7 +39,6 @@ useHead({
 		<div class="auth-form__field">
 			<Icon name="bx:envelope" class="auth-form__input-icon" />
 			<input
-				id="email"
 				v-model="email"
 				type="email"
 				placeholder="Enter your email"
