@@ -28,12 +28,15 @@
 ## Testing
 
 - [ ] Add unit tests (Vitest) for:
-    - [ ] auth
+    - [ ] auth/login
+    - [ ] auth/signup
+    - [ ] auth/forgot-password
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
 - [ ] Add e2e tests (Playwright) for:
-    - [ ] auth
+    - [ ] auth/signup
+    - [ ] auth/forgot-password
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
