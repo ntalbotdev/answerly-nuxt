@@ -75,29 +75,17 @@ export const useQuestionsStore = defineStore("questions", {
 					}
 				}
 
-				const config = useRuntimeConfig();
-				const supabaseUrl = config.public.supabaseUrl;
-				const supabaseAnonKey = config.public.supabaseKey;
-				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
-
-				await fetch(edgeFunctionUrl, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${supabaseAnonKey}`,
+				await callSupabaseEdgeFunction("send-notification", "POST", {
+					user_id: payload.to_user_id,
+					type: "question",
+					payload: {
+						question_id: questionId,
+						from_user_id: payload.from_user_id,
+						from_username: payload.is_anonymous
+							? null
+							: from_username,
+						is_anonymous: payload.is_anonymous,
 					},
-					body: JSON.stringify({
-						user_id: payload.to_user_id,
-						type: "question",
-						payload: {
-							question_id: questionId,
-							from_user_id: payload.from_user_id,
-							from_username: payload.is_anonymous
-								? null
-								: from_username,
-							is_anonymous: payload.is_anonymous,
-						},
-					}),
 				});
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -153,25 +141,14 @@ export const useQuestionsStore = defineStore("questions", {
 					}
 				}
 
-				const config = useRuntimeConfig();
-				const supabaseUrl = config.public.supabaseUrl;
-				const supabaseAnonKey = config.public.supabaseKey;
-				const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
-				await fetch(edgeFunctionUrl, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${supabaseAnonKey}`,
+				await callSupabaseEdgeFunction("send-notification", "POST", {
+					user_id: questionData.from_user_id,
+					type: "answer",
+					payload: {
+						question_id: questionId,
+						to_user_id: questionData.to_user_id,
+						to_username: to_username,
 					},
-					body: JSON.stringify({
-						user_id: questionData.from_user_id,
-						type: "answer",
-						payload: {
-							question_id: questionId,
-							to_user_id: questionData.to_user_id,
-							to_username: to_username,
-						},
-					}),
 				});
 			} catch (err: unknown) {
 				if (err instanceof Error) {
