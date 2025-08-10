@@ -30,7 +30,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Real-time updates when questions are answered or deleted
 - Pinia for state management
 - Middleware for route protection and redirects
-- See the full [TODO list](./TODO.md) for upcoming features and improvements.
+- See the full [TODO list](./TODO.md) for upcoming features and improvements
 
 ## Project Structure
 
@@ -518,7 +518,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
-- Visit `/` as a guest to see the welcome page; as a logged-in user, you'll see your feed.
+- Visit `/` as a guest to see the welcome page; as a logged-in user, you'll see your feed
 - Visit `/inbox` to answer questions sent to you (only published after answering)
   - Real-time updates when new questions arrive
   - Answering or deleting questions automatically removes related notifications
