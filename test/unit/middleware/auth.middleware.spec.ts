@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { mockNavigateTo } from "../setup";
+import { mockNavigateTo } from "../vitest.setup";
 
 describe("Auth middleware", () => {
 	let authMiddleware: () => Promise<unknown>;

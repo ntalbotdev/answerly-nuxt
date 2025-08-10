@@ -528,7 +528,6 @@ npm run dev
 ```
 
 ## Testing
-
 - Run unit tests using Vitest:
   ```bash
   npm run test
@@ -543,7 +542,7 @@ npm run dev
   ```bash
   npm run codegen:e2e
   ```
-  - This will open a browser window where you can interact with the app and generate tests automatically.
+  - This will open a browser window where you can interact with the app and record your actions.
 
 ### Test User
 - Email: `test@test.com`

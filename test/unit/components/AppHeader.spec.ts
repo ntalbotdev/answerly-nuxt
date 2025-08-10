@@ -1,8 +1,8 @@
 import { setActivePinia, createPinia } from "pinia";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, it, expect, beforeEach } from "vitest";
+import { mockUser } from "../vitest.setup";
 import AppHeader from "@/components/AppHeader.vue";
-import { mockUser } from "../setup";
 
 describe("AppHeader", () => {
 	beforeEach(() => {
