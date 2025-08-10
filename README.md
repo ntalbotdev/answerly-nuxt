@@ -30,7 +30,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Real-time updates when questions are answered or deleted
 - Pinia for state management
 - Middleware for route protection and redirects
-- See the full [TODO list](./TODO.md) for upcoming features and improvements.
+- See the full [TODO list](./TODO.md) for upcoming features and improvements
 
 ## Project Structure
 
@@ -315,7 +315,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     USING (
       bucket_id = 'profile-assets'
       AND (
-         name LIKE '%/avatar.webp'
+        name LIKE '%/avatar.webp'
         OR name LIKE '%/banner.webp'
       )
     );
@@ -323,44 +323,43 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   CREATE POLICY "Users can upload avatar/banner to their folder"
     ON storage.objects
     FOR INSERT
+    TO authenticated
     WITH CHECK (
       bucket_id = 'profile-assets'
-      AND auth.uid() IS NOT NULL
       AND (
-        name = auth.uid()::text || '/avatar.webp'
-        OR name = auth.uid()::text || '/banner.webp'
+        name = (select auth.uid())::text || '/avatar.webp'
+        OR name = (select auth.uid())::text || '/banner.webp'
       )
     );
 
   CREATE POLICY "Users can update avatar/banner in their folder"
     ON storage.objects
     FOR UPDATE
+    TO authenticated
     USING (
       bucket_id = 'profile-assets'
-      AND auth.uid() IS NOT NULL
       AND (
-        name = auth.uid()::text || '/avatar.webp'
-        OR name = auth.uid()::text || '/banner.webp'
+        name = (select auth.uid())::text || '/avatar.webp'
+        OR name = (select auth.uid())::text || '/banner.webp'
       )
     )
     WITH CHECK (
       bucket_id = 'profile-assets'
-      AND auth.uid() IS NOT NULL
       AND (
-        name = auth.uid()::text || '/avatar.webp'
-        OR name = auth.uid()::text || '/banner.webp'
+        name = (select auth.uid())::text || '/avatar.webp'
+        OR name = (select auth.uid())::text || '/banner.webp'
       )
     );
 
   CREATE POLICY "Users can delete avatar/banner from their folder"
     ON storage.objects
     FOR DELETE
+    TO authenticated
     USING (
       bucket_id = 'profile-assets'
-      AND auth.uid() IS NOT NULL
       AND (
-        name = auth.uid()::text || '/avatar.webp'
-        OR name = auth.uid()::text || '/banner.webp'
+        name = (select auth.uid())::text || '/avatar.webp'
+        OR name = (select auth.uid())::text || '/banner.webp'
       )
     );
   ```
@@ -379,13 +378,21 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   CREATE POLICY "Users can create their own profile"
     ON profiles
     FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+    TO authenticated
+    WITH CHECK (
+      user_id = (select auth.uid())
+    );
 
   CREATE POLICY "Users can update their own profile"
     ON profiles
     FOR UPDATE
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
+    TO authenticated
+    USING (
+      user_id = (select auth.uid())
+    )
+    WITH CHECK (
+      user_id = (select auth.uid())
+    );
   ```
 </details>
 
@@ -402,15 +409,17 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   CREATE POLICY "Users can follow others"
     ON follows
     FOR INSERT
+    TO authenticated
     WITH CHECK (
-      follower_id = auth.uid()
+      follower_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can unfollow others"
     ON follows
     FOR DELETE
+    TO authenticated
     USING (
-      follower_id = auth.uid()
+      follower_id = (select auth.uid())
     );
   ```
 </details>
@@ -423,43 +432,45 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     ON questions
     FOR SELECT
     TO public
-    USING (published = true);
+    USING (
+      published = true
+    );
 
   CREATE POLICY "Users can view their own questions"
     ON questions
     FOR SELECT
+    TO authenticated
     USING (
-      auth.uid() IS NOT NULL
-      AND (
-        from_user_id = auth.uid()
-      )
+      from_user_id = (select auth.uid())
+      OR to_user_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can ask questions"
     ON questions
     FOR INSERT
+    TO authenticated
     WITH CHECK (
-      from_user_id = auth.uid()
+      from_user_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can answer questions sent to them"
     ON questions
     FOR UPDATE
+    TO authenticated
     USING (
-      to_user_id = auth.uid()
+      to_user_id = (select auth.uid())
     )
     WITH CHECK (
-      to_user_id = auth.uid()
+      to_user_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can delete questions they asked or received"
     ON questions
     FOR DELETE
+    TO authenticated
     USING (
-      auth.uid() IS NOT NULL
-      AND (
-        to_user_id = auth.uid()
-      )
+      from_user_id = (select auth.uid())
+      OR to_user_id = (select auth.uid())
     );
   ```
 </details>
@@ -471,25 +482,28 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   CREATE POLICY "Users can view their notifications"
     ON notifications
     FOR SELECT
+    TO authenticated
     USING (
-      user_id = auth.uid()
+      user_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can update their notifications"
     ON notifications
     FOR UPDATE
+    TO authenticated
     USING (
-      user_id = auth.uid()
+      user_id = (select auth.uid())
     )
     WITH CHECK (
-      user_id = auth.uid()
+      user_id = (select auth.uid())
     );
 
   CREATE POLICY "Users can delete their notifications"
     ON notifications
     FOR DELETE
+    TO authenticated
     USING (
-      user_id = auth.uid()
+      user_id = (select auth.uid())
     );
 
   CREATE POLICY "Allow system inserts for notifications"
@@ -504,7 +518,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
 
 - Sign up and log in with email/password (needs email verification)
 - After signup, a profile is created in the `profiles` table
-- Visit `/` as a guest to see the welcome page; as a logged-in user, you'll see your feed.
+- Visit `/` as a guest to see the welcome page; as a logged-in user, you'll see your feed
 - Visit `/inbox` to answer questions sent to you (only published after answering)
   - Real-time updates when new questions arrive
   - Answering or deleting questions automatically removes related notifications
