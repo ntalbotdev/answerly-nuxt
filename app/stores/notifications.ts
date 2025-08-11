@@ -83,16 +83,13 @@ export const useNotificationsStore = defineStore("notifications", {
 			);
 
 			const supabase = useSupabaseClient();
-			const { error } = await supabase
-				.from("notifications")
-				.delete()
-				.eq("event_id", id);
-
-			if (error) {
-				console.error(
-					"Error deleting notification from database:",
-					error
-				);
+			try {
+			 await supabase
+			 .from("notifications")
+			 .delete()
+			 .eq("event_id", id);
+			} catch {
+			 // handle error if needed
 			}
 		},
 		async clearNotifications() {
@@ -102,16 +99,13 @@ export const useNotificationsStore = defineStore("notifications", {
 			this.notifications = [];
 
 			const supabase = useSupabaseClient();
-			const { error } = await supabase
-				.from("notifications")
-				.delete()
-				.eq("user_id", user.value.id);
-
-			if (error) {
-				console.error(
-					"Error clearing notifications from database:",
-					error
-				);
+			try {
+			 await supabase
+			 .from("notifications")
+			 .delete()
+			 .eq("user_id", user.value.id);
+			} catch {
+			 // handle error if needed
 			}
 		},
 
@@ -138,6 +132,10 @@ export const useNotificationsStore = defineStore("notifications", {
 							currentNotifications.unshift(notification);
 							this.notifications = currentNotifications;
 						}
+					} else if (eventType === "DELETE") {
+						this.notifications = this.notifications.filter(
+						 (n) => n.eventId !== notification.eventId
+						);
 					}
 				}
 			);
