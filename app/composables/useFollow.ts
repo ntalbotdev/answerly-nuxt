@@ -38,8 +38,7 @@ export async function followUser(targetUserId: string): Promise<boolean> {
 			},
 		});
 		return true;
-	} catch (err) {
-		console.error("Failed to follow user:", err);
+	} catch {
 		return false;
 	}
 }
@@ -62,38 +61,22 @@ export async function unfollowUser(targetUserId: string): Promise<boolean> {
 		try {
 			const followEventId = `${user.value.id}:${targetUserId}`;
 
-			const config = useRuntimeConfig();
-			const supabaseUrl = config.public.supabaseUrl;
-			const supabaseAnonKey = config.public.supabaseKey;
-			const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
+			const { error: deleteError } = await supabase
+				.from("notifications")
+				.delete()
+				.eq("user_id", targetUserId)
+				.eq("event_id", followEventId)
+				.eq("type", "follow");
 
-			const response = await fetch(edgeFunctionUrl, {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${supabaseAnonKey}`,
-				},
-				body: JSON.stringify({
-					user_id: targetUserId,
-					event_id: followEventId,
-					type: "follow",
-				}),
-			});
-
-			if (!response.ok) {
-				const errorText = await response.text();
-				console.error(
-					"Failed to delete follow notification:",
-					errorText
-				);
+			if (deleteError) {
+				// handle error if needed
 			}
-		} catch (notifError) {
-			console.error("Failed to handle notification cleanup:", notifError);
+		} catch {
+			// handle error if needed
 		}
 
 		return true;
-	} catch (err) {
-		console.error("Failed to unfollow user:", err);
+	} catch {
 		return false;
 	}
 }
@@ -109,10 +92,13 @@ export async function isFollowing(targetUserId: string): Promise<boolean> {
 			.from("follows")
 			.select("follower_id")
 			.eq("follower_id", user.value.id)
-			.eq("following_id", targetUserId)
-			.single();
+			.eq("following_id", targetUserId);
 
-		return !!data && !error;
+		if (error) {
+			return false;
+		}
+
+		return data && data.length > 0;
 	} catch {
 		return false;
 	}
@@ -129,8 +115,7 @@ export async function isFollowingMe(followerUserId: string): Promise<boolean> {
 			.from("follows")
 			.select("follower_id")
 			.eq("follower_id", followerUserId)
-			.eq("following_id", user.value.id)
-			.single();
+			.eq("following_id", user.value.id);
 
 		return !!data && !error;
 	} catch {
@@ -183,8 +168,7 @@ export async function fetchFollowers(userId: string) {
 
 		if (error) throw new Error(error.message);
 		return data || [];
-	} catch (err) {
-		console.error("Failed to fetch followers:", err);
+	} catch {
 		return [];
 	}
 }
@@ -202,8 +186,7 @@ export async function fetchFollows(userId: string) {
 
 		if (error) throw new Error(error.message);
 		return data || [];
-	} catch (err) {
-		console.error("Failed to fetch follows:", err);
+	} catch {
 		return [];
 	}
 }
