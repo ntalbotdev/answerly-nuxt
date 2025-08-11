@@ -4,6 +4,9 @@
 
 - [ ] Create feed component for logged-in users
 - [ ] Create discover (search) page
+    - [ ] Implement search functionality
+    - [ ] Add filters (by user, date, etc.)
+    - [ ] Implement sorting (by relevance, date, etc.)
 - [ ] Add notification icon colors by type (follow, question, answer, etc.)
 - [ ] Add likes on questions and answers on user profiles
 - [ ] Add dark mode/light mode support
@@ -11,7 +14,10 @@
 - [ ] Create block component for user profiles
 - [ ] Create report component for users, questions and answers
 - [ ] Create footer component
-- [ ] Create 404 page
+- [ ] Create 404 and other error pages
+- [ ] Create pagination component
+    - [ ] Implement infinite scrolling for feeds and profiles, and add "load more" button
+    - [ ] Add page numbers for search results
 
 ## UI/UX Improvements
 
