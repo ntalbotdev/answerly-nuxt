@@ -237,7 +237,11 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
           }
         });
       }
-      const { error } = await supabase.from("notifications").delete().eq("user_id", user_id).eq("event_id", event_id).eq("type", type);
+      const { error } = await supabase.from("notifications")
+        .delete()
+        .eq("user_id", user_id)
+        .eq("event_id", event_id)
+        .eq("type", type);
       if (error) {
         return new Response(`Error deleting notification: ${error.message}`, {
           status: 500,
@@ -527,7 +531,7 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
   - Question notifications: See new questions you received
   - Answer notifications: See when your questions are answered
   - Click "Mark as read" to permanently delete individual notifications
-  - Use "Clear All" to remove all notifications at once
+  - Use "Clear all" to remove all notifications at once
 - Visit `/my-questions` to see questions you have asked others
 - Visit `/profile/:username` to view a public profile (ex: [/profile/axile](https://answerly-nuxt.vercel.app/profile/axile))
   - If it's your own profile, you can edit it by clicking the edit button

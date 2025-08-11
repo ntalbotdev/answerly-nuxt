@@ -12,7 +12,6 @@ export async function fetchNotifications(
 		.order("created_at", { ascending: false });
 
 	if (error) {
-		console.error("[Composable] Fetch error:", error);
 		return [];
 	}
 
@@ -73,7 +72,17 @@ export function subscribeToNotifications(
 						payload: n.payload,
 						eventId: n.event_id,
 					} as Notification;
-
+					onChange(notification, payload.eventType);
+				} else if (payload.eventType === "DELETE") {
+					const n = payload.old;
+					const notification = {
+						id: n.id,
+						user_id: n.user_id,
+						type: n.type,
+						createdAt: n.created_at,
+						payload: n.payload,
+						eventId: n.event_id,
+					} as Notification;
 					onChange(notification, payload.eventType);
 				}
 			}
@@ -88,26 +97,10 @@ export function subscribeToNotifications(
 }
 
 export async function sendNotification(notification: SendNotificationPayload) {
-	const config = useRuntimeConfig();
-	const supabaseUrl = config.public.supabaseUrl;
-	const supabaseAnonKey = config.public.supabaseKey;
-	const edgeFunctionUrl = `${supabaseUrl}/functions/v1/send-notification`;
-	if (!supabaseUrl || !supabaseAnonKey) {
-		throw new Error("Environment variables are not set in runtime config");
-	}
-
-	const res = await fetch(edgeFunctionUrl, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${supabaseAnonKey}`,
-		},
-		body: JSON.stringify(notification),
-	});
-
-	if (!res.ok) {
-		const error = await res.text();
-		throw new Error(error);
-	}
+	const res = await callSupabaseEdgeFunction(
+		"send-notification",
+		"POST",
+		notification
+	);
 	return await res.text();
 }
