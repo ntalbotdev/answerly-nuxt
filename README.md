@@ -237,7 +237,11 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
           }
         });
       }
-      const { error } = await supabase.from("notifications").delete().eq("user_id", user_id).eq("event_id", event_id).eq("type", type);
+      const { error } = await supabase.from("notifications")
+        .delete()
+        .eq("user_id", user_id)
+        .eq("event_id", event_id)
+        .eq("type", type);
       if (error) {
         return new Response(`Error deleting notification: ${error.message}`, {
           status: 500,
