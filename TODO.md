@@ -34,9 +34,7 @@
 ## Testing
 
 - [ ] Add unit tests (Vitest) for:
-    - [ ] header
-        - [ ] nav hamburger
-        - [ ] user dropdown
+    - [ ] header user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
@@ -49,6 +47,9 @@
 
 - [ ] Add e2e tests (Playwright) for:
     - [ ] header
+        - [ ] navbar
+        - [ ] nav hamburger
+        - [ ] user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
