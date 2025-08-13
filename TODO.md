@@ -30,6 +30,7 @@
 - [ ] Review and optimize Supabase queries
 - [ ] Polish README and developer docs
 - [ ] Refactor variables.scss
+- [ ] Make notification-badge its own component
 
 ## Testing
 
@@ -54,3 +55,4 @@
     - [ ] inbox
     - [ ] user profiles
     - [ ] following/followers
+    - [ ] logout
