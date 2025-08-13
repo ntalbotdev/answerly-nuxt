@@ -13,7 +13,6 @@ test.describe("logged in users", () => {
 	test.use({ storageState: "test/e2e/auth.json" });
 	test("renders the user dropdown component", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
 		const dropdown = page.locator(".header__user-dropdown");
 		await expect(
 			dropdown.locator(".header__user-dropdown-avatar")
@@ -22,7 +21,6 @@ test.describe("logged in users", () => {
 
 	test("shows user avatar and display name", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
 		const dropdown = page.locator(".header__user-dropdown");
 		await expect(
 			dropdown.locator(".header__user-dropdown-avatar")
