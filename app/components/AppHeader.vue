@@ -22,7 +22,7 @@ watchEffect(async () => {
 		<div class="header__inner">
 			<div class="header__content">
 				<div class="header__logo">
-					<NuxtLink :to="ROUTES.HOME">
+					<NuxtLink :to="ROUTES.HOME" class="header__logo-link">
 						<Icon
 							name="heroicons:chat-bubble-left-20-solid"
 							class="header__logo-icon"
