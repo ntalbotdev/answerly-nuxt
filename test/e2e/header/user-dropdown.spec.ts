@@ -70,7 +70,7 @@ test.describe("logged in users", () => {
 		);
 		await expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
 			"href",
-			"/questions"
+			"/my-questions"
 		);
 		await expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
 			"href",
