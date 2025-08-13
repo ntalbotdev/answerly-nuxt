@@ -7,7 +7,7 @@ import { useSupabaseUser } from "#imports";
 describe("HeaderNavHamburger", () => {
 	beforeEach(() => {
 		const user = useSupabaseUser();
-		if (user && typeof user === "object" && "$ssupabase_user" in user) {
+		if (user && typeof user === "object" && "value" in user) {
 			user.value = mockUser.value;
 		}
 	});
