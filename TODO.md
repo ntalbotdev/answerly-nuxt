@@ -34,12 +34,23 @@
 ## Testing
 
 - [ ] Add unit tests (Vitest) for:
-    - [ ] header
+    - [ ] header user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
+    - [ ] modals
+    - [ ] ask form
+    - [ ] edit profile form
+    - [ ] follow count
+    - [ ] loading/error component
+    - [ ] logout
+
 - [ ] Add e2e tests (Playwright) for:
     - [ ] header
+        - [ ] navbar
+        - [ ] nav hamburger
+        - [ ] user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
+    - [ ] following/followers

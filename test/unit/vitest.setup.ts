@@ -42,6 +42,13 @@ vi.mock("#imports", () => {
 		useNotificationsStore: () => ({
 			unreadCount: 0,
 		}),
+		useQuestionsStore: () => ({
+			hasNewInboxItems: false,
+			newInboxCount: 0,
+		}),
+		useRoute: () => ({
+			path: "/",
+		}),
 		ROUTES,
 		navigateTo: mockNavigateTo,
 	};
@@ -66,8 +73,11 @@ config.global.stubs = {
 	HeaderUserDropdown: {
 		template: '<div data-testid="header-user-dropdown"></div>',
 	},
-	HeaderNavHamburger: {
-		template: '<div data-testid="header-nav-hamburger"></div>',
+	LogoutButton: {
+		template: '<button data-testid="logout-button">Logout</button>',
 	},
-	LogoutButton: { template: "<button>Logout</button>" },
+	Icon: {
+		template: "<span></span>",
+		props: ["name"],
+	},
 };
