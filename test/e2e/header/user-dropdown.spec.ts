@@ -60,24 +60,24 @@ test.describe("logged in", () => {
 		const button = page.locator(".header__user-dropdown-button");
 		await button.click();
 		const dropdownMenu = page.locator(".header__user-dropdown-menu");
-		expect(dropdownMenu.locator("a")).toHaveCount(4);
-		expect(dropdownMenu.locator("a").nth(0)).toHaveAttribute(
+		await expect(dropdownMenu.locator("a")).toHaveCount(4);
+		await expect(dropdownMenu.locator("a").nth(0)).toHaveAttribute(
 			"href",
 			"/inbox"
 		);
-		expect(dropdownMenu.locator("a").nth(1)).toHaveAttribute(
+		await expect(dropdownMenu.locator("a").nth(1)).toHaveAttribute(
 			"href",
 			"/profile/test"
 		);
-		expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
+		await expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
 			"href",
 			"/my-questions"
 		);
-		expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
+		await expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
 			"href",
 			"/settings"
 		);
-		expect(
+		await expect(
 			dropdownMenu.locator("button", { hasText: "Logout" })
 		).toBeVisible();
 	});
