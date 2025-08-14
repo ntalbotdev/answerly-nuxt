@@ -10,7 +10,7 @@ test("user dropdown is not rendered for unauthenticated users", async ({
 });
 
 test.describe("logged in", () => {
-	test.use({ storageState: "test/e2e/auth.json" });
+	test.use({ storageState: "tests/e2e/auth.json" });
 	test("renders the user dropdown component", async ({ page }) => {
 		await page.goto("/");
 		const dropdown = page.locator(".header__user-dropdown");
