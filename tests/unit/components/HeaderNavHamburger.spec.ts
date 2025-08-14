@@ -1,5 +1,5 @@
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mockUser } from "../vitest.setup";
 import HeaderNavHamburger from "@/components/HeaderNavHamburger.vue";
 import { useSupabaseUser } from "#imports";
@@ -10,6 +10,7 @@ describe("HeaderNavHamburger", () => {
 		if (user && typeof user === "object" && "value" in user) {
 			user.value = mockUser.value;
 		}
+		vi.clearAllMocks();
 	});
 
 	it("renders the component", async () => {
