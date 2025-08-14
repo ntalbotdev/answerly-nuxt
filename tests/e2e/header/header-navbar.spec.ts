@@ -9,13 +9,13 @@ test("header navbar is visible", async ({ page }) => {
 test("renders auth links for unauthenticated users", async ({ page }) => {
 	await page.goto("/");
 	const links = page.locator(".header__nav-link");
-	expect(links).toHaveCount(2);
-	expect(links.nth(0)).toHaveAttribute("href", "/auth/login");
-	expect(links.nth(1)).toHaveAttribute("href", "/auth/signup");
+	await expect(links).toHaveCount(2);
+	await expect(links.nth(0)).toHaveAttribute("href", "/auth/login");
+	await expect(links.nth(1)).toHaveAttribute("href", "/auth/signup");
 });
 
 test.describe("logged in", () => {
-	test.use({ storageState: "test/e2e/auth.json" });
+	test.use({ storageState: "tests/e2e/auth.json" });
 	test("renders nav links", async ({ page }) => {
 		await page.goto("/");
 		const links = page.locator(".header__nav-link");
