@@ -21,6 +21,7 @@ test.describe("logged in", () => {
 
 	test("shows user avatar and display name", async ({ page }) => {
 		await page.goto("/");
+		await page.waitForLoadState("networkidle");
 		const dropdown = page.locator(".header__user-dropdown");
 		await expect(
 			dropdown.locator(".header__user-dropdown-avatar")
@@ -59,23 +60,25 @@ test.describe("logged in", () => {
 		const button = page.locator(".header__user-dropdown-button");
 		await button.click();
 		const dropdownMenu = page.locator(".header__user-dropdown-menu");
-		await expect(dropdownMenu.locator("a")).toHaveCount(4);
-		await expect(dropdownMenu.locator("a").nth(0)).toHaveAttribute(
+		expect(dropdownMenu.locator("a")).toHaveCount(4);
+		expect(dropdownMenu.locator("a").nth(0)).toHaveAttribute(
 			"href",
 			"/inbox"
 		);
-		await expect(dropdownMenu.locator("a").nth(1)).toHaveAttribute(
+		expect(dropdownMenu.locator("a").nth(1)).toHaveAttribute(
 			"href",
 			"/profile/test"
 		);
-		await expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
+		expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
 			"href",
 			"/my-questions"
 		);
-		await expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
+		expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
 			"href",
 			"/settings"
 		);
-		await expect(dropdownMenu.locator("button", { hasText: "Logout" }));
+		expect(
+			dropdownMenu.locator("button", { hasText: "Logout" })
+		).toBeVisible();
 	});
 });
