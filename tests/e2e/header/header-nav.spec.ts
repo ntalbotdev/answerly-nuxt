@@ -8,21 +8,23 @@ test("header navbar is visible", async ({ page }) => {
 
 test("renders auth links for unauthenticated users", async ({ page }) => {
 	await page.goto("/");
-	const links = page.locator(".header__nav-link");
-	await expect(links).toHaveCount(2);
-	await expect(links.nth(0)).toHaveAttribute("href", "/auth/login");
-	await expect(links.nth(1)).toHaveAttribute("href", "/auth/signup");
+	const navLink = page.locator(".header__nav-link");
+
+	await expect(navLink).toHaveCount(2);
+	await expect(navLink.nth(0)).toHaveAttribute("href", "/auth/login");
+	await expect(navLink.nth(1)).toHaveAttribute("href", "/auth/signup");
 });
 
 test.describe("logged in", () => {
 	test.use({ storageState: "tests/e2e/auth.json" });
 	test("renders nav links", async ({ page }) => {
 		await page.goto("/");
-		const links = page.locator(".header__nav-link");
-		await expect(links).toHaveCount(3);
-		await expect(links.nth(0)).toHaveAttribute("href", "/");
-		await expect(links.nth(1)).toHaveAttribute("href", "/discover");
-		await expect(links.nth(2)).toHaveAttribute("href", "/notifications");
+		const navLink = page.locator(".header__nav-link");
+
+		await expect(navLink).toHaveCount(3);
+		await expect(navLink.nth(0)).toHaveAttribute("href", "/");
+		await expect(navLink.nth(1)).toHaveAttribute("href", "/discover");
+		await expect(navLink.nth(2)).toHaveAttribute("href", "/notifications");
 	});
 
 	test("toggles active class on nav links", async ({ page }) => {
@@ -31,8 +33,8 @@ test.describe("logged in", () => {
 		const notificationsLink = page.locator(
 			'.header__nav-link[href="/notifications"]'
 		);
-		await expect(homeLink).toHaveClass(/--active/);
 
+		await expect(homeLink).toHaveClass(/--active/);
 		await notificationsLink.click();
 		await expect(page).toHaveURL("/notifications");
 		await expect(notificationsLink).toHaveClass(/--active/);
