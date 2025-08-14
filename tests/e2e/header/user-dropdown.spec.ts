@@ -6,6 +6,7 @@ test("user dropdown is not rendered for unauthenticated users", async ({
 	await page.goto("/");
 	await page.waitForLoadState("networkidle");
 	const dropdown = page.locator(".header__user-dropdown");
+
 	await expect(dropdown).toBeHidden();
 });
 
@@ -14,6 +15,7 @@ test.describe("logged in", () => {
 	test("renders the user dropdown component", async ({ page }) => {
 		await page.goto("/");
 		const dropdown = page.locator(".header__user-dropdown");
+
 		await expect(
 			dropdown.locator(".header__user-dropdown-avatar")
 		).toBeVisible();
@@ -35,10 +37,11 @@ test.describe("logged in", () => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 		const dropdownMenu = page.locator(".header__user-dropdown-menu");
-		const button = page.locator(".header__user-dropdown-button");
-		await button.click();
+		const dropdownButton = page.locator(".header__user-dropdown-button");
+
+		await dropdownButton.click();
 		await expect(dropdownMenu).toBeVisible();
-		await button.click();
+		await dropdownButton.click();
 		await expect(dropdownMenu).toBeHidden();
 	});
 
@@ -47,8 +50,11 @@ test.describe("logged in", () => {
 		await page.waitForLoadState("networkidle");
 		const dropdown = page.locator(".header__user-dropdown");
 		const dropdownMenu = dropdown.locator(".header__user-dropdown-menu");
-		const button = dropdown.locator(".header__user-dropdown-button");
-		await button.click();
+		const dropdownButton = dropdown.locator(
+			".header__user-dropdown-button"
+		);
+
+		await dropdownButton.click();
 		await expect(dropdownMenu).toBeVisible();
 		await page.click("body");
 		await expect(dropdownMenu).toBeHidden();
@@ -57,26 +63,26 @@ test.describe("logged in", () => {
 	test("shows links in menu", async ({ page }) => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
-		const button = page.locator(".header__user-dropdown-button");
-		await button.click();
+		const dropdownButton = page.locator(".header__user-dropdown-button");
 		const dropdownMenu = page.locator(".header__user-dropdown-menu");
-		await expect(dropdownMenu.locator("a")).toHaveCount(4);
-		await expect(dropdownMenu.locator("a").nth(0)).toHaveAttribute(
-			"href",
-			"/inbox"
+		const dropdownLink = dropdownMenu.locator(
+			".header__user-dropdown-link"
 		);
-		await expect(dropdownMenu.locator("a").nth(1)).toHaveAttribute(
-			"href",
-			"/profile/test"
-		);
-		await expect(dropdownMenu.locator("a").nth(2)).toHaveAttribute(
-			"href",
-			"/my-questions"
-		);
-		await expect(dropdownMenu.locator("a").nth(3)).toHaveAttribute(
-			"href",
-			"/settings"
-		);
+		const expectedHrefs = [
+			"/inbox",
+			"/profile/test",
+			"/my-questions",
+			"/settings",
+		];
+
+		await dropdownButton.click();
+		await expect(dropdownLink).toHaveCount(4);
+		for (let i = 0; i < expectedHrefs.length; i++) {
+			await expect(dropdownLink.nth(i)).toHaveAttribute(
+				"href",
+				expectedHrefs[i]
+			);
+		}
 		await expect(
 			dropdownMenu.locator("button", { hasText: "Logout" })
 		).toBeVisible();
