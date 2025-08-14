@@ -9,7 +9,7 @@ test("user dropdown is not rendered for unauthenticated users", async ({
 	await expect(dropdown).not.toBeVisible();
 });
 
-test.describe("logged in users", () => {
+test.describe("logged in", () => {
 	test.use({ storageState: "test/e2e/auth.json" });
 	test("renders the user dropdown component", async ({ page }) => {
 		await page.goto("/");
@@ -76,6 +76,6 @@ test.describe("logged in users", () => {
 			"href",
 			"/settings"
 		);
-		await expect(dropdownMenu.locator("button")).toHaveText("Logout");
+		await expect(dropdownMenu.locator("button", { hasText: "Logout" }));
 	});
 });
