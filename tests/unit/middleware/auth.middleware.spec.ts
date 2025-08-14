@@ -12,6 +12,6 @@ describe("Auth middleware", () => {
 
 	it("does not redirect if user is logged in (default state)", async () => {
 		await authMiddleware();
-		expect(mockNavigateTo).not.toBeCalled();
+		expect(mockNavigateTo).not.toHaveBeenCalled();
 	});
 });
