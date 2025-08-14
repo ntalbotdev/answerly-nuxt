@@ -11,7 +11,7 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"test": "vitest",
-		"test:e2e": "playwright test --ui",
+		"test:e2e": "npx tsx scripts/generate-auth-json.ts && playwright test --ui",
 		"codegen:e2e": "playwright codegen http://localhost:3000"
 	},
 	"dependencies": {

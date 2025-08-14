@@ -4,6 +4,18 @@ export const mockPassword = "test123";
 export const mockUsername = "test";
 export const mockDisplayName = "Test User";
 
+export const mockSupabaseUser = {
+	id: mockUserId,
+	email: mockEmail,
+	username: mockUsername,
+};
+
+export const mockSupabaseSession = {
+	access_token: "test-access-token",
+	refresh_token: "test-refresh-token",
+	user: mockSupabaseUser,
+};
+
 export async function registerRouteMocks(
 	context: import("@playwright/test").BrowserContext
 ) {
@@ -24,9 +36,7 @@ export async function registerRouteMocks(
 			status: 200,
 			contentType: "application/json",
 			body: JSON.stringify({
-				access_token: "mock-access-token",
-				refresh_token: "mock-refresh-token",
-				user: { id: mockUserId, email: mockEmail },
+				...mockSupabaseSession,
 				token_type: "bearer",
 				expires_in: 3600,
 			}),
@@ -47,8 +57,7 @@ export async function registerRouteMocks(
 			contentType: "application/json",
 			body: JSON.stringify([
 				{
-					user_id: mockUserId,
-					username: mockUsername,
+					...mockSupabaseUser,
 					display_name: mockDisplayName,
 				},
 			]),

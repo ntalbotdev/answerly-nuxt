@@ -30,6 +30,7 @@
 - [ ] Review and optimize Supabase queries
 - [ ] Polish README and developer docs
 - [ ] Refactor variables.scss
+- [ ] Make notification-badge its own component
 
 ## Testing
 
@@ -47,10 +48,9 @@
 
 - [ ] Add e2e tests (Playwright) for:
     - [ ] header
-        - [ ] navbar
         - [ ] nav hamburger
-        - [ ] user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
     - [ ] following/followers
+    - [ ] logout

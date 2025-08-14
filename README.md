@@ -44,7 +44,8 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
     - `profile/[username]/` — Profile pages using shared components
   - `stores/` — Pinia stores (profile, questions, notifications)
   - `utils/` — Utility functions and constants
-- `test/` — Unit and end-to-end tests
+- `scripts/` — Scripts for automation and development tasks
+- `tests/` — Unit and end-to-end tests
   - `e2e/` — End-to-end tests using Playwright
   - `unit/` — Unit tests using Vitest
 
@@ -57,11 +58,12 @@ A robust Nuxt 4 CRUD application leveraging Supabase for authentication, databas
         SUPABASE_ANON_KEY=your-supabase-anon-key
         ```
 2. **Nuxt Modules**
-    - `@nuxt/eslint`
     - `@nuxtjs/supabase`
     - `@pinia/nuxt`
     - `@nuxtjs/tailwindcss`
     - `@nuxt/test-utils/module`
+    - `@nuxt/eslint`
+    - `@nuxt/icon`
 
 3. **Install dependencies**
     ```
@@ -546,6 +548,7 @@ npm run dev
 ```
 
 ## Testing
+
 - Run unit tests using Vitest:
   ```bash
   npm run test
@@ -555,6 +558,7 @@ npm run dev
   ```bash
   npm run test:e2e
   ```
+  - This will generate `tests/e2e/auth.json` with authenticated user session data and open Playwright in UI mode.
 
 - Use Playwright codegen to generate tests:
   ```bash
