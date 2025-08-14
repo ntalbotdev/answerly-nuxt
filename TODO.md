@@ -46,8 +46,6 @@
     - [ ] logout
 
 - [ ] Add e2e tests (Playwright) for:
-    - [ ] header
-        - [ ] nav hamburger
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
