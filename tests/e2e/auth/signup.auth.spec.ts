@@ -33,6 +33,6 @@ test("sign up form submits correctly (mock)", async ({ page, context }) => {
 		.fill(mockPassword);
 	await page.getByRole("button", { name: "Sign up" }).click();
 	await page.waitForTimeout(500);
-	expect(alertMessage).toContain("Check your email");
+	await expect(alertMessage).toContain("Check your email");
 	await expect(page).toHaveURL("/auth/login");
 });
