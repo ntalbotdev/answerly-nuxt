@@ -145,6 +145,4 @@ vite.config.ts.timestamp-*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
-# Auth JSON
-auth.json
+*/e2e/auth.json
