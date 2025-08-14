@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 
 	await page.waitForURL("http://localhost:3000/");
 
-	await page.context().storageState({ path: "test/e2e/auth.json" });
+	await page.context().storageState({ path: "tests/e2e/auth.json" });
 	await browser.close();
-	console.log("✅ auth.json generated at test/e2e/auth.json");
+	console.log("✅ auth.json generated at tests/e2e/auth.json");
 })();
