@@ -50,7 +50,6 @@
     - [ ] header
         - [ ] navbar
         - [ ] nav hamburger
-        - [ ] user dropdown
     - [ ] notifications
     - [ ] inbox
     - [ ] user profiles
