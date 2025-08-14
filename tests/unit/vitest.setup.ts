@@ -54,6 +54,11 @@ vi.mock("#imports", () => {
 	};
 });
 
+vi.mock("@/composables/useFollow", () => ({
+	fetchFollowingCount: vi.fn().mockResolvedValue(17),
+	fetchFollowerCount: vi.fn().mockResolvedValue(42),
+}));
+
 config.global.stubs = {
 	NuxtLink: {
 		template: '<a :href="to"><slot /></a>',
