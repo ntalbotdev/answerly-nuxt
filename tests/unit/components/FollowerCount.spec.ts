@@ -18,7 +18,7 @@ describe("FollowerCount", () => {
 	});
 
 	it("shows 1 follower if user has one follower", async () => {
-		fetchFollowerCount.mockResolvedValueOnce(1);
+		vi.mocked(fetchFollowerCount).mockResolvedValueOnce(1);
 		const component = mount(FollowerCount, {
 			props: { userId: "1" },
 		});
