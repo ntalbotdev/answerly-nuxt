@@ -48,7 +48,6 @@
 
 - [ ] Add e2e tests (Playwright) for:
     - [ ] header
-        - [ ] navbar
         - [ ] nav hamburger
     - [ ] notifications
     - [ ] inbox
