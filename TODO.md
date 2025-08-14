@@ -42,7 +42,6 @@
     - [ ] modals
     - [ ] ask form
     - [ ] edit profile form
-    - [ ] follow count
     - [ ] loading/error component
     - [ ] logout
 
