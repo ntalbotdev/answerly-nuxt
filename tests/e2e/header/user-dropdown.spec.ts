@@ -6,7 +6,7 @@ test("user dropdown is not rendered for unauthenticated users", async ({
 	await page.goto("/");
 	await page.waitForLoadState("networkidle");
 	const dropdown = page.locator(".header__user-dropdown");
-	await expect(dropdown).not.toBeVisible();
+	await expect(dropdown).toBeHidden();
 });
 
 test.describe("logged in", () => {
@@ -39,7 +39,7 @@ test.describe("logged in", () => {
 		await button.click();
 		await expect(dropdownMenu).toBeVisible();
 		await button.click();
-		await expect(dropdownMenu).not.toBeVisible();
+		await expect(dropdownMenu).toBeHidden();
 	});
 
 	test("menu closes when clicking outside", async ({ page }) => {
@@ -51,7 +51,7 @@ test.describe("logged in", () => {
 		await button.click();
 		await expect(dropdownMenu).toBeVisible();
 		await page.click("body");
-		await expect(dropdownMenu).not.toBeVisible();
+		await expect(dropdownMenu).toBeHidden();
 	});
 
 	test("shows links in menu", async ({ page }) => {
