@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const year = new Date().getFullYear();
+const githubUrl = "https://github.com/ntalbotdev/answerly-nuxt";
 </script>
 
 <template>
@@ -9,7 +10,7 @@ const year = new Date().getFullYear();
 			Project made to showcase my skills.
 			<a
 				class="footer__link"
-				href="https://github.com/ntalbotdev/answerly-nuxt"
+				:href="githubUrl"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
