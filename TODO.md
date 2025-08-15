@@ -13,11 +13,14 @@
 - [ ] Create user settings page
 - [ ] Create block component for user profiles
 - [ ] Create report component for users, questions and answers
-- [ ] Create footer component
 - [ ] Create 404 and other error pages
 - [ ] Create pagination component
     - [ ] Implement infinite scrolling for feeds and profiles, and add "load more" button
     - [ ] Add page numbers for search results
+- [ ] SEO optimization
+    - [ ] Add meta tags for pages
+    - [ ] Implement Open Graph tags for social sharing
+    - [ ] Improve sitemap.xml and robots.txt
 
 ## UI/UX Improvements
 
@@ -44,6 +47,7 @@
     - [ ] edit profile form
     - [ ] loading/error component
     - [ ] logout
+    - [ ] footer
 
 - [ ] Add e2e tests (Playwright) for:
     - [ ] notifications
