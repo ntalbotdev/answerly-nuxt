@@ -13,7 +13,6 @@
 - [ ] Create user settings page
 - [ ] Create block component for user profiles
 - [ ] Create report component for users, questions and answers
-- [ ] Create footer component
 - [ ] Create 404 and other error pages
 - [ ] Create pagination component
     - [ ] Implement infinite scrolling for feeds and profiles, and add "load more" button
