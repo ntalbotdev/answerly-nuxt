@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { GITHUB_URL } from "@/utils/constants";
 const year = new Date().getFullYear();
-const githubUrl = "https://github.com/ntalbotdev/answerly-nuxt";
 </script>
 
 <template>
@@ -10,7 +10,7 @@ const githubUrl = "https://github.com/ntalbotdev/answerly-nuxt";
 			Project made to showcase my skills.
 			<a
 				class="footer__link"
-				:href="githubUrl"
+				:href="GITHUB_URL"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
