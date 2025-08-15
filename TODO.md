@@ -47,6 +47,7 @@
     - [ ] edit profile form
     - [ ] loading/error component
     - [ ] logout
+    - [ ] footer
 
 - [ ] Add e2e tests (Playwright) for:
     - [ ] notifications
