@@ -12,11 +12,11 @@ body {
 }
 
 .layout {
-	@apply min-h-screen;
+	@apply flex min-h-screen flex-col;
 }
 
 .main {
-	@apply mx-auto min-h-screen max-w-4xl md:px-4;
+	@apply mx-auto max-w-4xl md:px-4;
 	padding-top: 65px; // Adjust for fixed header
 }
 
@@ -105,4 +105,25 @@ body {
 .section__title {
 	@apply mb-4 flex items-center text-2xl font-semibold;
 	color: $color-text;
+}
+
+.footer {
+	@apply mx-auto mt-auto flex flex-col gap-1 p-4 text-center;
+	color: $color-text;
+}
+
+.footer__copyright {
+	@apply text-sm;
+}
+
+.footer__note {
+	@apply text-xs;
+}
+
+.footer__link {
+	@apply whitespace-nowrap underline transition-colors;
+
+	&:hover {
+		color: $color-accent;
+	}
 }
