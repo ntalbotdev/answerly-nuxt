@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import AppFooter from "@/components/AppFooter.vue";
+import { GITHUB_URL } from "@/utils/constants";
 
 describe("AppFooter", () => {
 	it("renders correctly", () => {
@@ -16,9 +17,8 @@ describe("AppFooter", () => {
 
 	it("displays the correct GitHub link", () => {
 		const component = mount(AppFooter);
-		const githubUrl = "https://github.com/ntalbotdev/answerly-nuxt";
 		expect(component.find(".footer__link").attributes("href")).toBe(
-			githubUrl
+			GITHUB_URL
 		);
 	});
 });
