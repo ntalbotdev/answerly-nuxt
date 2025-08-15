@@ -18,6 +18,10 @@
 - [ ] Create pagination component
     - [ ] Implement infinite scrolling for feeds and profiles, and add "load more" button
     - [ ] Add page numbers for search results
+- [ ] SEO optimization
+    - [ ] Add meta tags for pages
+    - [ ] Implement Open Graph tags for social sharing
+    - [ ] Improve sitemap.xml and robots.txt
 
 ## UI/UX Improvements
 
